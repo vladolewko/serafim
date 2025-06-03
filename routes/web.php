@@ -19,10 +19,12 @@ Route::post('/admin/signin', [AdminController::class, 'signIn'])->name('admin.si
 
 
 Route::middleware(AdminMiddleware::class)->group(function () {
-Route::get('/admin/logout', [AdminController::class, 'logOut'])->name('admin.logout');
-Route::get('/admin/products', [AdminProductController::class, 'products'])->name('admin.products');
-Route::get('/admin/products/create', [AdminProductController::class, 'create'])->name('admin.products.create');
-Route::put('/admin/products/store', [AdminProductController::class, 'store'])->name('admin.products.store');
-Route::get('/admin/product/{id}', [AdminProductController::class, 'edit'])->name('admin.products.edit');
+    Route::get('/admin/logout', [AdminController::class, 'logOut'])->name('admin.logout');
+    Route::get('/admin/products', [AdminProductController::class, 'products'])->name('admin.products');
+    Route::get('/admin/products/create', [AdminProductController::class, 'create'])->name('admin.products.create');
+    Route::put('/admin/products/store', [AdminProductController::class, 'store'])->name('admin.products.store');
+    Route::patch('/admin/products/update', [AdminProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/admin/products/destroy/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
+    Route::get('/admin/product/{id}', [AdminProductController::class, 'edit'])->name('admin.products.edit');
 });
 

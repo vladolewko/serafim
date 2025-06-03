@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Models\Product;
-use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 
 
 class ProductController extends Controller
@@ -35,7 +36,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateProductRequest $request)
+    public function store(ProductRequest $request)
     {
         if ($request->hasFile('product_image')) {
         
@@ -68,9 +69,21 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request)
     {
-        // Logic to update a specific product
+        $product = $this->productService->getById($request->product_id);
+        if ($request->hasFile('product_image')) {
+            $productImage = $request->file('product_image');
+        }
+
+        $data = $request->validated();
+        $data['content'] = array_map('trim', explode(',', $data['content']));
+        $data['for_whom'] = array_map('trim', explode(',', $data['for_whom']));
+
+        if ($this->productService->update($request->product_id, $data, $productImage ?? null)) {
+            return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
+        }
+        return redirect()->back()->with('error', 'Failed to update product. Please try again.');
     }
 
     /**
@@ -78,6 +91,9 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        // Logic to delete a specific product
+        if ($this->productService->destroy($id)) {
+            return redirect()->route('admin.products')->with('success', 'Product deleted successfully.');
+        }
+        return redirect()->back()->with('error', 'Failed to delete product. Please try again.');
     }
 }
