@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->integer('quantity')->default(0);
-            $table->decimal('weight', 8, 2)->nullable();
-            $table->string('dimension')->nullable();
-            $table->string('target');
-            $table->json('for_whom');
+            $table->string('name')->unique(); // Назва комплекту +
+            $table->text('description')->nullable(); // Опис комплекту +
+            $table->decimal('price', 10, 2); // Ціна комплекту +
+            $table->integer('books_quantity'); // Кількість книг у комплекті +
+            $table->decimal('weight', 8, 2); // Вага комплекту +
+            $table->string('dimension'); // Розміри комплекту +
+            $table->json('content'); // Вміст комплекту +
+            $table->json('for_whom'); // Для кого призначено комплект +
+            $table->string('appointment'); // призначення комплекту +
             $table->timestamps();
         });
     }
