@@ -17,15 +17,22 @@ class ProductService implements ProductServiceInterface
         return Product::find($id);
     }
 
-    public function create(array $data): Product
+    public function create(array $data, $profileImage = null): Product
     {
-        return Product::create($data);
+        $product = Product::create($data);
+        if ($profileImage) {
+            $product->addMedia($profileImage)->toMediaCollection('product_images');
+        }
+        return $product;
     }
 
-    public function update(int $id, array $data): Product
+    public function update(int $id, array $data, $profileImage = null): Product
     {
         $product = Product::findOrFail($id);
         $product->update($data);
+        if ($profileImage) {
+            $product->addMedia($profileImage)->toMediaCollection('product_images');
+        }
         return $product;
     }
 

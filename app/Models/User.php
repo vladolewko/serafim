@@ -45,4 +45,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public static function signIn($login, $password): bool
+    {
+        $user = User::where('name', $login)->first();
+        if (!$user) {
+            return false;
+        }
+
+        if (!password_verify($password, $user->password)) {
+            return false;
+        }
+
+        auth()->login($user);
+
+        return true;
+    }
 }

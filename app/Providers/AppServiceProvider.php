@@ -14,6 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
+        
 
     }
 

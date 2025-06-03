@@ -20,12 +20,12 @@ class ProductFactory extends Factory
             'name' => $this->faker->unique()->word(),
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2, 1, 100),
+            'books_quantity' => $this->faker->numberBetween(1, 10),
             'weight' => $this->faker->randomFloat(2, 0.1, 10),
-            'quantity' => 100,
-            'dimension' => 'some dimension',
-            'target' => 'some target',
-            'for_whom' => json_encode(['tag1', 'tag2', 'tag3'])
-
+            'dimension' => '10x10x10',
+            'content' => json_encode(['some content', 'more content', 'even more content']),
+            'for_whom' => json_encode(['tag1', 'tag2', 'tag3']),
+            'appointment' => $this->faker->word(),
         ];
     }
 }
