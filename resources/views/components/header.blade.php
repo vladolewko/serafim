@@ -25,11 +25,43 @@
     @endif
 </head>
 <body>
-<header>
+<header class="pt-3">
 
     <!-- Navigation -->
     @include('components.navigation')
+    <div class="text-white flex justify-center gap-3">
+        <div class="text-center">
+            <p class="text-sm">
+                авторська онлайн-школа
+            </p>
+            <p class="text-2xl">
+                “серафим”
+            </p>
+            <p class="text-sm">
+                від солдата - для людей
+            </p>
+        </div>
 
+        <img src="{{ asset('img/line_vertical.svg') }}" alt="">
+
+        <img src="{{ asset('img/logo.png') }}" alt="logo">
+
+        <img src="{{ asset('img/line_vertical.svg') }}" alt="">
+
+        <div class="w-2/6">
+            <p class="text-base">
+                Стаття 68 Конституції України:
+            </p>
+            <p class="text-sm">
+                Кожен зобов'язаний неухильно додержуватися Конституції
+            </p>
+            <p class="text-sm">
+                України та законів України, не посягати на права і свободи, честь і гідність інших людей.
+            </p>
+        </div>
+    </div>
+
+    <hr class="my-3 bg-white border-0 h-px mx-auto">
 </header>
 
 
