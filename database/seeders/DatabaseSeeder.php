@@ -14,7 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create();
+        if (User::count() == 0) {
+            
+            User::factory()->create();
+
+        }
         Product::factory(10)->create();
 
     }

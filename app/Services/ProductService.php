@@ -36,7 +36,7 @@ class ProductService implements ProductServiceInterface
         return $product;
     }
 
-      public function delete(int $id): bool
+      public function destroy(int $id): bool
     {
         $product = Product::findOrFail($id);
 

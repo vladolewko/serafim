@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('media')) {
+            Schema::dropIfExists('media');
+        }
         Schema::create('media', function (Blueprint $table) {
             $table->id();
 
