@@ -23,17 +23,14 @@
     @endif
 </head>
 <body>
-    <div class="w-full bg-blue-400">
-        <div class="w-4/6  mx-auto">
-            @include('components.header')
+    <div class="w-full">
+        @include('components.header')
 
-            <main>
-                @yield('content')
-            </main>
+        <main>
+            @yield('content')
+        </main>
 
-            @include('components.footer')
-        </div>
-
+        @include('components.footer')
     </div>
 
 

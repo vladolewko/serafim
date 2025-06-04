@@ -25,7 +25,8 @@
     @endif
 </head>
 <body>
-<header class="pt-3">
+<header class="pt-3 bg-blue-400 w-full">
+<div class="w-4/6 mx-auto">
 
     <!-- Navigation -->
     @include('components.navigation')
@@ -49,19 +50,20 @@
         <img src="{{ asset('img/line_vertical.svg') }}" alt="">
 
         <div class="w-2/6">
-            <p class="text-base">
+            <p class="text-base/ font-bold">
                 Стаття 68 Конституції України:
             </p>
-            <p class="text-sm">
+            <p class="text-sm/[1]">
                 Кожен зобов'язаний неухильно додержуватися Конституції
             </p>
-            <p class="text-sm">
+            <p class="text-sm/[1]">
                 України та законів України, не посягати на права і свободи, честь і гідність інших людей.
             </p>
         </div>
     </div>
 
-    <hr class="my-3 bg-white border-0 h-px mx-auto">
+    <hr class="mt-3 bg-white border-0 h-px mx-auto w-full">
+    </div>
 </header>
 
 
