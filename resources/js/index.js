@@ -51,11 +51,33 @@ checkboxes.forEach((checkbox) => {
             // Видаляємо класи при виключенні
             if (parentDiv) {
                 parentDiv.classList.remove("bg-yellow-400");
+                parentDiv.classList.add("bg-blue-400");
             }
             if (label) {
                 label.classList.add("text-white");
                 label.classList.remove("text-black");
             }
+        }
+    });
+});
+
+checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", async () => {
+        // Збираємо всі вибрані checkbox
+        const selectedOptions = Array.from(
+            document.querySelectorAll('input[name="options"]:checked')
+        ).map((cb) => cb.value);
+
+        try {
+            const response = await fetch("/product", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ options: selectedOptions }),
+            });
+            const result = await response.json();
+            console.log("Відповідь від бекенду:", result);
+        } catch (error) {
+            console.error("Помилка:", error);
         }
     });
 });

@@ -22,7 +22,7 @@
         </style>
     @endif
 </head>
-<body>
+<body class=" overflow-x-hidden">
     <div class="w-full">
         @include('components.header')
 

@@ -4,11 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-    box-sizing: border-box;
-}
-
 /* Перевизначаємо стиль для checkbox */
 [type="checkbox"]:checked {
     background-image: none; /* Прибираємо SVG-зображення */
+}
+
+* {
+    box-sizing: border-box;
 }
