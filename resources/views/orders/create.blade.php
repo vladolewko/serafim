@@ -3,13 +3,6 @@
 
 @section('content')
 <div id="ttn-form">
-        <!-- Статус налаштувань -->
-        <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
-            <h3>Статус налаштувань</h3>
-            <button type="button" id="check-status-btn">Перевірити статус</button>
-            <div id="status-info" style="margin-top: 10px;"></div>
-        </div>
-
         <!-- Форма пошуку міста -->
         <form action="{{ route('orders.searchSettlement') }}" method="POST">
             @csrf
