@@ -3,5 +3,4 @@
 
 @section('content')
 <!-- write here -->
- 
 @endsection
