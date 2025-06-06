@@ -17,10 +17,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'admin',
+            'name' => env('ADMIN_LOGIN', 'admin'),
             'email' => 'admin@example.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('admin'),
+            'password' => bcrypt(env('ADMIN_PASSWORD', 'admin')),
             'remember_token' => $this->faker->sha256(),
         ];
     }

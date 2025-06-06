@@ -27,4 +27,9 @@ class AdminController extends Controller
 
         return redirect('/');
     }
+
+    public function novaPostSetup()
+    {
+        return view('admin.novaPostSetup');
+    }
 }

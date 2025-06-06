@@ -9,6 +9,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "lis-dev/nova-poshta-api-2": "^0.1.6",
         "spatie/laravel-medialibrary": "^11.13"
     },
     "require-dev": {

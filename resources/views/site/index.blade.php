@@ -766,6 +766,17 @@
         </div>
     </div>
 </div>
+@foreach ($products as $product)
+    <p>{{ $product->name }}</p>
+    <form action="{{ route('orders.create', $product->id) }}" method="GET">
+        <input type="text" name="quantity" placeholder="Кількість" required>
+        <button type="submit">Замовити</button>
+    </form>
+@endforeach
+
 
 <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
 @endsection

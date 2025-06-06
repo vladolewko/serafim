@@ -8,6 +8,8 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
+        <a href="{{ route('admin.novaPostSetup') }}">Nova Poshta Setup</a>
+
 
      <a href="{{ route('admin.logout') }}">Log Out</a>
      <a href="{{ route('admin.products.create') }}">Create New Product</a>
