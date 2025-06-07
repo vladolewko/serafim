@@ -1,8 +1,9 @@
 @extends('layouts.site')
 
+@include('components.header')
+
 
 @section('content')
-
 <div class="bg-blue-400 text-white w-full">
     <div class="w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto">
         <div class="flex flex-col lg:flex-row items-center py-8 lg:py-16">
@@ -27,7 +28,7 @@
                     <span class="text-xl lg:text-2xl text-yellow-400 mt-4 lg:mt-12 inline-block font-semibold">
                         Тематика школи
                     </span>
-                    <ul class="list-disc ml-6 lg:ml-8 text-sm lg:text-base leading-relaxed w-full lg:w-11/12 mt-2">
+                    <ul class="list-disc ml-5 lg:ml-8 text-sm lg:text-base leading-relaxed w-11/12 sm:w-full lg:w-11/12 mt-2">
                         <li>Взаємодія з державними органами влади та засобами масової інформації (ЗМІ)</li>
                         <li>Правовий захист військових і цивільних (СЗЧ, пільги, рапорти, переведення)</li>
                         <li>Психологічна підтримка мобілізованих, родин, повернення з війни</li>
@@ -40,7 +41,7 @@
                     <span class="text-xl lg:text-2xl text-yellow-400 mt-4 lg:mt-6 inline-block font-semibold">
                         Мій підхід
                     </span>
-                    <ul class="list-disc ml-6 lg:ml-8 mb-8 lg:mb-12 text-sm lg:text-base leading-relaxed w-full lg:w-11/12 mt-2">
+                    <ul class="list-disc ml-5 lg:ml-8 mb-8 lg:mb-12 text-sm lg:text-base leading-relaxed w-11/12 sm:w-full lg:w-11/12 mt-2">
                         <li>Практичність: реальні інструкці, шаблони, приклади звернень</li>
                         <li>Соціальна місія: підтримка, допомога й відновлення справедливості</li>
                     </ul>
@@ -775,8 +776,11 @@
 @endforeach
 
 
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
 @endsection
+
+@include('components.footer')

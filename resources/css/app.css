@@ -9,6 +9,11 @@
     background-image: none; /* Прибираємо SVG-зображення */
 }
 
+/* Перевизначаємо стиль для radio */
+[type="radio"]:checked {
+    background-image: none; /* Прибираємо SVG-зображення */
+}
+
 * {
     box-sizing: border-box;
 }
