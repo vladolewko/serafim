@@ -63,17 +63,19 @@
             </p>
         </div>
 
+
+        <!-- Change text -->
         <div class="border border-blue-400 rounded-lg p-4 lg:p-6">
             <div class="flex items-center gap-3 mb-6 lg:mb-10">
                 <!-- <div class="w-8 h-8 bg-blue-100 rounded flex-shrink-0"></div> -->
                 <img src="{{ asset('img/law_knowledge.svg') }}" alt="law_knowledge img">
-                <p class="text-slate-600 font-bold text-sm lg:text-base">
+                <p class="text-slate-600 font-bold text-sm lg:text-base" id="top7">
                     ТОП-7 Переваг знання законів та прав людини
                 </p>
             </div>
 
             <ul class="list-disc ml-6 pr-2 mb-6">
-                <li class="text-slate-600 text-sm lg:text-base leading-relaxed">
+                <li class="text-slate-600 text-sm lg:text-base leading-relaxed" id="description">
                     Знання Конституції України, законів, прав людини та міжнародного права — це не просто освіченість.
                     Це влада, безпека та свобода у щоденному житті. Ось ключові переваги:
                 </li>
@@ -83,31 +85,31 @@
                 <div class="flex gap-3 items-start">
                     <!-- <div class="w-5 h-5 bg-green-500 rounded-full flex-shrink-0 mt-0.5"></div> -->
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <span class="text-slate-600 text-sm lg:text-base">Правовий захист у будь-якій ситуації</span>
+                    <span class="text-slate-600 text-sm lg:text-base" id="argument-1">Правовий захист у будь-якій ситуації</span>
                 </div>
                 <div class="flex gap-3 items-start">
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-sm lg:text-base">Гарантована свобода та недоторканність</p>
+                    <p class="text-slate-600 text-sm lg:text-base" id="argument-2">Гарантована свобода та недоторканність</p>
                 </div>
                 <div class="flex gap-3 items-start">
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-sm lg:text-base">Можливість законного самозахисту</p>
+                    <p class="text-slate-600 text-sm lg:text-base" id="argument-3">Можливість законного самозахисту</p>
                 </div>
                 <div class="flex gap-3 items-start">
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-sm lg:text-base">Контроль над державою, а не навпаки</p>
+                    <p class="text-slate-600 text-sm lg:text-base" id="argument-4">Контроль над державою, а не навпаки</p>
                 </div>
                 <div class="flex gap-3 items-start">
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-sm lg:text-base">Неможливість маніпуляцій</p>
+                    <p class="text-slate-600 text-sm lg:text-base" id="argument-5">Неможливість маніпуляцій</p>
                 </div>
                 <div class="flex gap-3 items-start">
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-sm lg:text-base">Готовність до міжнародного захисту</p>
+                    <p class="text-slate-600 text-sm lg:text-base" id="argument-6">Готовність до міжнародного захисту</p>
                 </div>
                 <div class="flex gap-3 items-start">
                     <img src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-sm lg:text-base">Повага і впевненість</p>
+                    <p class="text-slate-600 text-sm lg:text-base" id="argument-7">Повага і впевненість</p>
                 </div>
             </div>
         </div>
@@ -117,8 +119,8 @@
                 <!-- <div class="w-8 h-8 bg-orange-200 rounded flex-shrink-0"></div> -->
                 <img src="{{ asset('img/result.svg') }}" alt="result img">
                 <div class="text-slate-600 text-sm lg:text-base leading-relaxed">
-                    <span class="font-bold">Результат: </span>
-                    Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.
+                    <span class="font-bold" id="result">Результат: </span>
+                    <span id="result_desc">Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.</span>
                 </div>
             </div>
         </div>
@@ -126,20 +128,20 @@
 
     <div class="w-full lg:w-[50.25%]">
         <div class="flex gap-1 justify-start mt-0 lg:mt-8 flex-wrap">
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 checkbox-div">
-                <input id="checkbox-1" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="checkbox" value="1">
-                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-1">Громадянину</label>
+            <div class="flex items-center gap-2 bg-yellow-400 rounded-lg px-2 py-2 radio-div">
+                <input id="checkbox-1" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="1" checked>
+                <label class="cursor-pointer text-black text-sm lg:text-base" for="checkbox-1">Громадянину</label>
             </div>
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 checkbox-div">
-                <input id="checkbox-2" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="checkbox" value="2">
+            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
+                <input id="checkbox-2" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="2">
                 <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-2">Військовослужбовцю</label>
             </div>
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 checkbox-div">
-                <input id="checkbox-3" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="checkbox" value="3">
+            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
+                <input id="checkbox-3" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="3">
                 <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-3">Поліцейському</label>
             </div>
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 checkbox-div">
-                <input id="checkbox-4" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="checkbox" value="4">
+            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
+                <input id="checkbox-4" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="4">
                 <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-4">Юристу</label>
             </div>
         </div>
@@ -767,13 +769,16 @@
         </div>
     </div>
 </div>
-@foreach ($products as $product)
+
+
+
+<!-- @foreach ($products as $product)
     <p>{{ $product->name }}</p>
     <form action="{{ route('orders.create', $product->id) }}" method="GET">
         <input type="text" name="quantity" placeholder="Кількість" required>
         <button type="submit">Замовити</button>
     </form>
-@endforeach
+@endforeach -->
 
 
 
@@ -781,6 +786,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
+@include('components.footer')
+
 @endsection
 
-@include('components.footer')
+
