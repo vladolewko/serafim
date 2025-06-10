@@ -42,12 +42,11 @@ class ProductController extends Controller
 
             $profileImage = $request->file('product_image');
         }
-        // dd($request->all());
+
         $data = $request->validated();
-        // dd($data);
         $data['content'] = array_map('trim', explode('|', $data['content']));
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
-        // dd($data);
+
 
         if ($this->productService->create($data, $profileImage ?? null)) {
             return redirect()->route('admin.products')->with('success', 'Product created successfully.');
@@ -55,7 +54,6 @@ class ProductController extends Controller
         return redirect()->back()->with('error', 'Failed to create product. Please try again.');
 
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -79,8 +77,8 @@ class ProductController extends Controller
         }
 
         $data = $request->validated();
-        $data['content'] = array_map('trim', explode(',', $data['content']));
-        $data['for_whom'] = array_map('trim', explode(',', $data['for_whom']));
+        $data['content'] = array_map('trim', explode('|', $data['content']));
+        $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
         if ($this->productService->update($request->product_id, $data, $productImage ?? null)) {
             return redirect()->route('admin.products')->with('success', 'Product updated successfully.');

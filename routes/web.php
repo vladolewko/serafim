@@ -38,7 +38,7 @@ Route::middleware(AdminMiddleware::class)->group(function () {
 
 // Роути для замовлень
 Route::prefix('orders')->group(function () {
-    Route::get('/', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/', [OrderController::class, 'create'])->name('orders.create');
 
     // Route::post('/', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/setArea', [NovaPostController::class, 'setArea'])->name('orders.setArea');
@@ -76,8 +76,6 @@ Route::get('/wayForPay', function () {
 })->name('wayForPay');
 
 
-Route::get('/orders/{id}/payment', [PaymentController::class, 'showOrderPayment'])->name('orders.payment');
-Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
-Route::post('/payment/widget-data', [PaymentController::class, 'getWidgetData'])->name('payment.widget-data');
-Route::post('/payment/callback', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
-Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+// У web.php
+Route::post('/payment/success', [OrderController::class, 'paymentSuccess'])->name('payment.success');
+Route::post('/payment/fail', [OrderController::class, 'paymentFail'])->name('payment.fail');

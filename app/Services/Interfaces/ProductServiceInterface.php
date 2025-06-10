@@ -10,6 +10,6 @@ interface ProductServiceInterface
     public function getAll(): Collection;
     public function getById(int $id): Product;
     public function create(array $data, $profileImage = null): Product;
-    public function update(int $id, array $data, $profileImage = null): Product;
+    public function update(int $id, array $data, $productImage = null): Product;
     public function destroy(int $id): bool;
 }
