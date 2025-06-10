@@ -19,13 +19,9 @@ class ProductController extends Controller
     {
         $products = $this->productService->getAll();
 
-//        dd($products);
-
-
-
         return view('site.index', [
-            'productsChunks' => $products->chunk(3), // Для карусели
-            'products' => $products                   // Для форм
+            'productsChunks' => $products->chunk(3),
+            'products' => $products
         ]);
     }
     /**
@@ -38,11 +34,11 @@ class ProductController extends Controller
     {
         $product = $this->productService->getById($id);
 
-        // Отримуємо всі товари крім поточного
-        $products = Product::whereNot('id', $id)->get(); // Додаємо ->get()
+        $products = Product::whereNot('id', $id)->get();
 
         return view('site.product', [
             'productsChunks' => $products->chunk(3),
+            'products' => $products,
             'product' => $product
         ]);
     }

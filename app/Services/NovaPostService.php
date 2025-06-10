@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -66,9 +67,11 @@ class NovaPostService
         ]);
     }
 
-    public function createTTN($data)
+    public function createTTN($data, $cart, $payment)
     {
         try {
+
+            $product = $cart['product'];
             Log::info('Creating TTN with data', $data);
 
             $requiredEnvVars = [
@@ -97,11 +100,10 @@ class NovaPostService
                 'DateTime' => now()->addDay()->format('d.m.Y'),
                 'CargoType' => 'Cargo',
                 'VolumeGeneral' => '0.1',
-                'Weight' => '0.5',
+                'Weight' => $product->weight,
                 'ServiceType' => 'WarehouseWarehouse',
                 'SeatsAmount' => '1',
                 'Description' => 'Замовлення з інтернет-магазину',
-                'Cost' => '1500',
                 'CitySender' => env('NOVA_POST_CITY_SENDER'),
                 'Sender' => env('NOVA_POST_SENDER_REF'),
                 'SenderAddress' => env('NOVA_POST_SENDER_ADDRESS'),
@@ -111,8 +113,17 @@ class NovaPostService
                 'Recipient' => $data['counterparty_ref'],
                 'RecipientAddress' => $data['warehouse'],
                 'ContactRecipient' => $contactRecipient,
-                'RecipientsPhone' => $data['phone']
+                'RecipientsPhone' => $data['phone'],
             ];
+            if ($payment === 'cash') {
+                $ttnData['BackwardDeliveryData'] = [
+                    [
+                        'PayerType' => 'Recipient',
+                        'CargoType' => 'Money',
+                        'RedeliveryString' => $cart['total'],
+                    ],
+                ];
+            }
 
             Log::info('TTN request data', $ttnData);
 
@@ -138,38 +149,52 @@ class NovaPostService
         }
     }
 
+    public function getServiceCosts(
+        string $recipientCityRef,
+        float $weight,
+        float $total,
+    )
+    {
+        $request = $this->makeRequest('InternetDocument', 'getDocumentPrice', [
+            'CitySender' =>env('NOVA_POST_CITY_SENDER'),
+            'CityRecipient' => $recipientCityRef,
+            'Weight' => (string) $weight,
+            'ServiceType' => 'WarehouseWarehouse',
+            'CargoType' => 'Cargo',
+            'SeatsAmount' => '1',
+            'RedeliveryCalculate' => [
+                'CargoType' => 'Money',
+                'Amount' => $total
+            ]
+        ])['data'][0];
+        $totalWithDelivery = $request['Cost'] + $request['CostRedelivery'];
+        return $totalWithDelivery;
+    }
+
     public function setupSender($data)
     {
         try {
-            // Встановлюємо місто відправника
             $cityRef = $this->setCitySender($data['city']);
             if (!$cityRef) {
                 throw new \Exception('Не вдалося знайти місто відправника');
             }
 
-            // Створюємо/отримуємо відправника
             $senderRef = $this->createOrGetSender($data);
-//            dd($senderRef);
             if (!$senderRef) {
                 throw new \Exception('Не вдалося створити/отримати відправника');
             }
             $senderSettlement = $this->searchSettlement($data['city']);
-//            dd($senderSettlement);
 
-            // Отримуємо адресу відправника
             $senderAddress = $this->getSenderAddress($senderSettlement[0]['Ref']);
-//            dd($senderAddress);
             if (!$senderAddress) {
                 throw new \Exception('Не вдалося отримати адресу відправника');
             }
 
-            // Отримуємо контакт відправника
             $contactSender = $this->getContactPerson($senderRef);
             if (!$contactSender) {
                 throw new \Exception('Не вдалося отримати контактну особу відправника');
             }
 
-            // Зберігаємо
             $this->updateEnvFile('NOVA_POST_CITY_SENDER', $cityRef);
             $this->updateEnvFile('NOVA_POST_SENDER_REF', $senderRef);
             $this->updateEnvFile('NOVA_POST_SENDER_ADDRESS', $senderAddress);
@@ -194,7 +219,6 @@ class NovaPostService
 
     private function createOrGetSender($data)
     {
-        // Спочатку шукаємо існуючого
         $response = $this->makeRequest('Counterparty', 'getCounterparties', [
             'CounterpartyProperty' => 'Sender'
         ]);
@@ -203,7 +227,6 @@ class NovaPostService
             return $response['data'][0]['Ref'];
         }
 
-        // Створюємо нового відправника
         $response = $this->makeRequest('Counterparty', 'save', [
             'FirstName' => $data['name'],
             'LastName' => $data['surname'],
@@ -216,11 +239,10 @@ class NovaPostService
         $senderRef = $response['data'][0]['Ref'] ?? null;
 
         if ($senderRef) {
-            // Після створення відправника, створюємо контактну особу
             $this->makeRequest('ContactPersonGeneral', 'save', [
                 'CounterpartyRef' => $senderRef,
                 'FirstName' => $data['name'],
-                'MiddleName' => '', // Якщо немає по батькові
+                'MiddleName' => '',
                 'LastName' => $data['surname'],
                 'Phone' => $data['phone'],
             ]);
@@ -229,35 +251,17 @@ class NovaPostService
         return $senderRef;
     }
 
-    // ВИПРАВЛЕНО: додано параметр cityRef та створення адреси якщо потрібно
     private function getSenderAddress($cityRef)
     {
         $response = $this->makeRequest('AddressGeneral', 'getWarehouses', [
             'SettlementRef' => $cityRef,
         ]);
-//        dd($response);
-//        $response = $this->makeRequest('CounterpartyGeneral', 'getCounterpartyAddresses', [
-//            'Ref' => $senderRef,
-//            'CounterpartyProperty' => 'Sender',
-//        ]);
 
-        // Якщо адреса існує, повертаємо її
         if (isset($response['data'][0]['Ref'])) {
             return $response['data'][0]['Ref'];
         } else {
             throw new \Exception('Не вдалося знайти відділення для створення адреси відправника');
         }
-
-//        // Створюємо адресу з правильним StreetRef
-//        $addressResponse = $this->makeRequest('Address', 'save', [
-//            'CounterpartyRef' => $senderRef,
-//            'StreetRef' => $streetRef,
-//            'BuildingNumber' => '1',
-//            'Flat' => '',
-//            'Note' => 'Адреса відправника'
-//        ]);
-
-//        return $addressResponse['data'][0]['Ref'] ?? null;
     }
 
     private function getStreetRef($cityRef)
@@ -392,7 +396,6 @@ class NovaPostService
 
             $data = $response->json();
 
-            // Перевіряємо чи є помилки в відповіді API
             if (isset($data['errors']) && !empty($data['errors'])) {
                 Log::error('Nova Post API response errors', [
                     'errors' => $data['errors'],

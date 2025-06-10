@@ -2,10 +2,7 @@
 
 
 @section('content')
-    <!-- write here -->
-     <!-- @if ($product)
-     <p>{{ $product->name }}</p>
-     @endif -->
+
 <div class="w-4/6 mx-auto">
     <!-- <div class="flex items-center gap-4 mt-8">
         <a class="text-slate-600" href="{{ route('home') }}">головна</a>
@@ -117,7 +114,7 @@
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb navigation -->
         <div class="flex items-center gap-4 mt-4 sm:mt-8">
-            <a class="text-slate-600 hover:text-slate-800 transition-colors" href="#">головна</a>
+            <a class="text-slate-600 hover:text-slate-800 transition-colors" href="{{ route('home') }}">головна</a>
             <p class="text-yellow-400 text-xl sm:text-2xl font-medium">замовлення</p>
         </div>
 
@@ -129,12 +126,11 @@
             <!-- Left column - Image and delivery info -->
             <div class="w-full lg:w-6/12">
                 <!-- Product image placeholder -->
-                <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[548px] rounded-lg mb-4">
+                <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[548px] rounded-lg mb-4 overflow-hidden">
                     @if($product->getMedia('product_images')->isNotEmpty())
-                            <img src="{{ $product->getFirstMediaUrl('product_images') }}" alt="{{ $product->title }}">
+                            <img class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}" alt="{{ $product->title }}">
 
                     @endif
-                    <img src="{{ asset($product->getFirstMediaUrl()) }}" alt="">
                 </div>
 
                 <!-- Delivery and payment info -->
@@ -148,7 +144,7 @@
                             </div>
                             <ul class="list-disc text-slate-600 ml-6 text-sm sm:text-base space-y-1">
                                 <li>Доставка у відділення нової пошти</li>
-                                <li>Доставка кур'єром нової пошти</li>
+{{--                                <li>Доставка кур'єром нової пошти</li>--}}
                             </ul>
                         </div>
 
@@ -189,7 +185,7 @@
                 <!-- Price -->
                 <div class="mb-6">
                     <p class="text-4xl sm:text-5xl font-bold">
-                        <span class="text-yellow-400">{{ $product->price }}</span> грн
+                        <span class="text-yellow-400">{{ (int)$product->price }}</span> грн
                     </p>
                 </div>
 
@@ -197,24 +193,95 @@
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-8">
                     <!-- Quantity selector -->
                     <div class="border-2 border-yellow-400 rounded-lg px-4 py-2 flex items-center justify-between w-full sm:w-32">
-                        <button class="p-1 hover:bg-yellow-50 rounded transition-colors">
+                        <button type="button" id="decreaseBtn" class="p-1 hover:bg-yellow-50 rounded transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M19 13H5v-2h14v2z"/>
                             </svg>
                         </button>
-                        <span class="text-xl sm:text-2xl font-medium px-4">1</span>
-                        <button class="p-1 hover:bg-yellow-50 rounded transition-colors">
+                        <span id="quantityDisplay" class="text-xl sm:text-2xl font-medium px-4">1</span>
+                        <button type="button" id="increaseBtn" class="p-1 hover:bg-yellow-50 rounded transition-colors">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                             </svg>
                         </button>
                     </div>
+
                     <!-- Order button -->
-                    <button class="bg-yellow-400 hover:bg-yellow-500 px-6 py-3 rounded-lg text-black text-lg sm:text-xl lg:text-2xl font-medium transition-colors flex-1 sm:flex-none">
-                        замовити
-                    </button>
-                    <a class="bg-yellow-400 hover:bg-yellow-500 px-6 py-3 rounded-lg text-black text-lg sm:text-xl lg:text-2xl font-medium transition-colors flex-1 sm:flex-none" href="{{ route('orders.create') }}">замовити</a>
+                    <form id="orderForm" action="{{ route('orders.create') }}" method="post">
+                        @csrf
+                        <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 px-6 py-3 rounded-lg text-black text-lg sm:text-xl lg:text-2xl font-medium transition-colors flex-1 sm:flex-none">
+                            замовити
+                        </button>
+                    </form>
                 </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const decreaseBtn = document.getElementById('decreaseBtn');
+                        const increaseBtn = document.getElementById('increaseBtn');
+                        const quantityDisplay = document.getElementById('quantityDisplay');
+                        const orderForm = document.getElementById('orderForm');
+
+                        let quantity = 1;
+                        const minQuantity = 1;
+                        const maxQuantity = 999;
+
+                        function updateQuantity(newQuantity) {
+                            quantity = Math.max(minQuantity, Math.min(maxQuantity, newQuantity));
+                            quantityDisplay.textContent = quantity;
+
+                            // Оновлюємо стан кнопок
+                            decreaseBtn.disabled = quantity <= minQuantity;
+                            increaseBtn.disabled = quantity >= maxQuantity;
+
+                            // Додаємо візуальні стилі для заблокованих кнопок
+                            if (quantity <= minQuantity) {
+                                decreaseBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                            } else {
+                                decreaseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                            }
+
+                            if (quantity >= maxQuantity) {
+                                increaseBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                            } else {
+                                increaseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                            }
+                        }
+
+                        decreaseBtn.addEventListener('click', function() {
+                            if (quantity > minQuantity) {
+                                updateQuantity(quantity - 1);
+                            }
+                        });
+
+                        increaseBtn.addEventListener('click', function() {
+                            if (quantity < maxQuantity) {
+                                updateQuantity(quantity + 1);
+                            }
+                        });
+
+                        // Обробляємо відправку форми
+                        orderForm.addEventListener('submit', function(e) {
+                            // Створюємо тимчасові приховані поля
+                            const quantityInput = document.createElement('input');
+                            quantityInput.type = 'hidden';
+                            quantityInput.name = 'quantity';
+                            quantityInput.value = quantity;
+
+                            const productIdInput = document.createElement('input');
+                            productIdInput.type = 'hidden';
+                            productIdInput.name = 'productId';
+                            productIdInput.value = '{{ $product->id }}';
+
+                            // Додаємо поля до форми
+                            this.appendChild(quantityInput);
+                            this.appendChild(productIdInput);
+                        });
+
+                        // Ініціалізуємо стан кнопок
+                        updateQuantity(quantity);
+                    });
+                </script>
 
                 <!-- Target audience -->
                 <div class="mb-6">
@@ -339,7 +406,6 @@
 
         <div class="relative h-56 overflow-hidden rounded-lg md:h-[500px] w-full">
             <!-- Item 1 -->
-            <!-- Item 1 -->
             @foreach ($productsChunks as $perPage)
 
                 <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
@@ -350,7 +416,12 @@
                                 <div class="bg-white flex flex-col items-center rounded-xl ">
                                     <!-- posible img -->
 
-                                    <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center"></div>
+                                    <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center">
+                                        @if($product->getMedia('product_images')->isNotEmpty())
+                                            <img class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}" alt="{{ $product->title }}">
+
+                                        @endif
+                                    </div>
 
                                     <p class="text-2xl/6 font-bold text-center">{{$product->name}}</p>
                                     <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
