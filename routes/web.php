@@ -70,3 +70,14 @@ Route::get('setSenderRef', [NovaPostController::class, 'setSenderRef']);
 
 Route::post('/setup-sender', [NovaPostController::class, 'setupSender'])->name('orders.setupSender');
 Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('orders.checkStatus');
+
+Route::get('/wayForPay', function () {
+    return view('orders.wayForPay');
+})->name('wayForPay');
+
+
+Route::get('/orders/{id}/payment', [PaymentController::class, 'showOrderPayment'])->name('orders.payment');
+Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::post('/payment/widget-data', [PaymentController::class, 'getWidgetData'])->name('payment.widget-data');
+Route::post('/payment/callback', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
+Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');

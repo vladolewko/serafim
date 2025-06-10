@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\ProductServiceInterface;
 
@@ -17,7 +18,15 @@ class ProductController extends Controller
     public function getAll()
     {
         $products = $this->productService->getAll();
-        return view('site.index', compact('products'));
+
+//        dd($products);
+
+
+
+        return view('site.index', [
+            'productsChunks' => $products->chunk(3), // Для карусели
+            'products' => $products                   // Для форм
+        ]);
     }
     /**
      * Display a product by its ID.
@@ -29,6 +38,12 @@ class ProductController extends Controller
     {
         $product = $this->productService->getById($id);
 
-        return view('site.product', compact('product'));
+        // Отримуємо всі товари крім поточного
+        $products = Product::whereNot('id', $id)->get(); // Додаємо ->get()
+
+        return view('site.product', [
+            'productsChunks' => $products->chunk(3),
+            'product' => $product
+        ]);
     }
 }

@@ -15,39 +15,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         if (User::count() == 0) {
-            
+
             User::factory()->create();
 
         }
-        Product::factory(10)->create();
+        Product::factory()->create([
+            'name' => 'комплект громадянина3',
+            'description' => 'Цей набір створено ветераном, який особисто пройшов через свавілля системи і переміг. У ньому — не суха теорія, а перевірені інструкції, які допомогли відстояти свої права в реальних судах.',
+            'price' => 600,
+            'for_whom' => ['Військовослужбовці ЗСУ', 'Військовослужбовці ТРО', 'добровольці'],
+            'content' => ['Покрокові інструкції щодо оформлення статусу УБД, інвалідності, компенсацій.', 'Як подати позов до державних структур та виграти справу.', 'Шаблони документів', 'Пояснення термінів', 'Посилання на актуальні закони'],
+            'weight' => 2,
+            'books_quantity' => 5,
+            'dimension' => '20 на 20 на 20',
+            'appointment' => 'інформування щодо юридичного захисту'
+        ]);
 
-
-        //  // Створюємо тестові замовлення
-        // Order::factory(10)->pending()->create();
-        // Order::factory(5)->shipped()->create();
-        // Order::factory(3)->delivered()->create();
-        // Order::factory(15)->cashOnDelivery()->create();
-        
-        // // Додаємо кілька замовлень з конкретними даними для тестування
-        // Order::factory()->create([
-        //     'recipient_first_name' => 'Іван',
-        //     'recipient_last_name' => 'Петренко',
-        //     'recipient_phone' => '380971234567',
-        //     'recipient_email' => 'ivan@example.com',
-        //     'total_amount' => 1500.00,
-        //     'payment_method' => 'cash_on_delivery',
-        //     'status' => 'pending'
-        // ]);
-        
-        // Order::factory()->create([
-        //     'recipient_first_name' => 'Марія',
-        //     'recipient_last_name' => 'Коваленко',
-        //     'recipient_phone' => '380501234567',
-        //     'recipient_email' => 'maria@example.com',
-        //     'total_amount' => 2500.50,
-        //     'payment_method' => 'card',
-        //     'status' => 'processing'
-        // ]);
 
     }
 }

@@ -38,7 +38,7 @@ class NovaPostService
     {
         $response = $this->makeRequest('CounterpartyGeneral', 'save', [
             'FirstName' => $data['name'],
-            'MiddleName' => $data['middlename'],
+            'MiddleName' => '',
             'LastName' => $data['surname'],
             'Phone' => $data['phone'],
             'Email' => 'test@example.com',
@@ -60,7 +60,7 @@ class NovaPostService
         return $this->makeRequest('ContactPersonGeneral', 'save', [
             'CounterpartyRef' => $counterpartyRef,
             'FirstName' => $data['name'],
-            'MiddleName' => $data['middlename'],
+            'MiddleName' => '',
             'LastName' => $data['surname'],
             'Phone' => $data['phone'],
         ]);
@@ -70,15 +70,15 @@ class NovaPostService
     {
         try {
             Log::info('Creating TTN with data', $data);
-            
+
             $requiredEnvVars = [
                 'NOVA_POST_CITY_SENDER',
-                'NOVA_POST_SENDER_REF', 
+                'NOVA_POST_SENDER_REF',
                 'NOVA_POST_SENDER_ADDRESS',
                 'NOVA_POST_CONTACT_SENDER',
                 'NOVA_POST_SENDER_PHONE'
             ];
-            
+
             foreach ($requiredEnvVars as $var) {
                 if (empty(env($var))) {
                     throw new \Exception("Не налаштована змінна оточення: {$var}. Спочатку налаштуйте відправника.");
@@ -86,7 +86,7 @@ class NovaPostService
             }
 
             $contactRecipient = $this->getContactPerson($data['counterparty_ref']);
-            
+
             if (!$contactRecipient) {
                 throw new \Exception('Не вдалося отримати контактну особу отримувача');
             }
@@ -98,7 +98,7 @@ class NovaPostService
                 'CargoType' => 'Cargo',
                 'VolumeGeneral' => '0.1',
                 'Weight' => '0.5',
-                'ServiceType' => 'DoorsWarehouse',
+                'ServiceType' => 'WarehouseWarehouse',
                 'SeatsAmount' => '1',
                 'Description' => 'Замовлення з інтернет-магазину',
                 'Cost' => '1500',
@@ -128,7 +128,7 @@ class NovaPostService
 
             Log::info('TTN created successfully', $response['data'][0]);
             return $response['data'][0];
-            
+
         } catch (\Exception $e) {
             Log::error('TTN creation exception', [
                 'message' => $e->getMessage(),
@@ -147,14 +147,18 @@ class NovaPostService
                 throw new \Exception('Не вдалося знайти місто відправника');
             }
 
-            // Створюємо/отримуємо відправника  
+            // Створюємо/отримуємо відправника
             $senderRef = $this->createOrGetSender($data);
+//            dd($senderRef);
             if (!$senderRef) {
                 throw new \Exception('Не вдалося створити/отримати відправника');
             }
+            $senderSettlement = $this->searchSettlement($data['city']);
+//            dd($senderSettlement);
 
             // Отримуємо адресу відправника
-            $senderAddress = $this->getSenderAddress($senderRef, $cityRef);
+            $senderAddress = $this->getSenderAddress($senderSettlement[0]['Ref']);
+//            dd($senderAddress);
             if (!$senderAddress) {
                 throw new \Exception('Не вдалося отримати адресу відправника');
             }
@@ -226,35 +230,34 @@ class NovaPostService
     }
 
     // ВИПРАВЛЕНО: додано параметр cityRef та створення адреси якщо потрібно
-    private function getSenderAddress($senderRef, $cityRef)
+    private function getSenderAddress($cityRef)
     {
-        $response = $this->makeRequest('CounterpartyGeneral', 'getCounterpartyAddresses', [
-            'Ref' => $senderRef,
-            'CounterpartyProperty' => 'Sender',
+        $response = $this->makeRequest('AddressGeneral', 'getWarehouses', [
+            'SettlementRef' => $cityRef,
         ]);
+//        dd($response);
+//        $response = $this->makeRequest('CounterpartyGeneral', 'getCounterpartyAddresses', [
+//            'Ref' => $senderRef,
+//            'CounterpartyProperty' => 'Sender',
+//        ]);
 
         // Якщо адреса існує, повертаємо її
         if (isset($response['data'][0]['Ref'])) {
             return $response['data'][0]['Ref'];
+        } else {
+            throw new \Exception('Не вдалося знайти відділення для створення адреси відправника');
         }
 
-        // Якщо адреси немає, спочатку знаходимо вулицю в місті
-        $streetRef = $this->getStreetRef($cityRef);
-        
-        if (!$streetRef) {
-            throw new \Exception('Не вдалося знайти вулицю для створення адреси відправника');
-        }
+//        // Створюємо адресу з правильним StreetRef
+//        $addressResponse = $this->makeRequest('Address', 'save', [
+//            'CounterpartyRef' => $senderRef,
+//            'StreetRef' => $streetRef,
+//            'BuildingNumber' => '1',
+//            'Flat' => '',
+//            'Note' => 'Адреса відправника'
+//        ]);
 
-        // Створюємо адресу з правильним StreetRef
-        $addressResponse = $this->makeRequest('Address', 'save', [
-            'CounterpartyRef' => $senderRef,
-            'StreetRef' => $streetRef,
-            'BuildingNumber' => '1',
-            'Flat' => '',
-            'Note' => 'Адреса відправника'
-        ]);
-
-        return $addressResponse['data'][0]['Ref'] ?? null;
+//        return $addressResponse['data'][0]['Ref'] ?? null;
     }
 
     private function getStreetRef($cityRef)
@@ -266,13 +269,13 @@ class NovaPostService
 
         if (empty($response['data'])) {
             $commonStreets = ['Головна', 'Перша', 'Київська', 'Шевченка', 'Незалежності'];
-            
+
             foreach ($commonStreets as $streetName) {
                 $response = $this->makeRequest('Address', 'getStreet', [
                     'CityRef' => $cityRef,
                     'FindByString' => $streetName
                 ]);
-                
+
                 if (!empty($response['data'])) {
                     break;
                 }
@@ -303,14 +306,14 @@ class NovaPostService
         $requiredVars = [
             'NOVA_POST_CITY_SENDER' => 'Місто відправника',
             'NOVA_POST_SENDER_REF' => 'Відправник',
-            'NOVA_POST_SENDER_ADDRESS' => 'Адреса відправника',
+            'NOVA_POST_SENDER_ADDRESS' => 'Адреса(відділення) відправника',
             'NOVA_POST_CONTACT_SENDER' => 'Контактна особа відправника',
             'NOVA_POST_SENDER_PHONE' => 'Телефон відправника'
         ];
-        
+
         $missing = [];
         $existing = [];
-        
+
         foreach ($requiredVars as $var => $name) {
             if (empty(env($var))) {
                 $missing[] = $name;
@@ -318,7 +321,7 @@ class NovaPostService
                 $existing[$name] = env($var);
             }
         }
-        
+
         return [
             'is_configured' => empty($missing),
             'missing' => $missing,
@@ -333,13 +336,13 @@ class NovaPostService
                 'FindByString' => 'Київ',
                 'Limit' => 1
             ]);
-            
+
             return [
                 'success' => true,
                 'message' => 'API ключ працює коректно',
                 'data' => $response
             ];
-            
+
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -368,7 +371,7 @@ class NovaPostService
             $response = Http::timeout(30)
                 ->retry(3, 1000)
                 ->withOptions([
-                    'verify' => false, 
+                    'verify' => false,
                 ])
                 ->post('https://api.novaposhta.ua/v2.0/json/', [
                     'apiKey' => $this->apiKey,
@@ -388,7 +391,7 @@ class NovaPostService
             }
 
             $data = $response->json();
-            
+
             // Перевіряємо чи є помилки в відповіді API
             if (isset($data['errors']) && !empty($data['errors'])) {
                 Log::error('Nova Post API response errors', [
@@ -400,7 +403,7 @@ class NovaPostService
             }
 
             return $data;
-            
+
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             Log::error('Nova Post connection error', [
                 'message' => $e->getMessage(),
@@ -408,7 +411,7 @@ class NovaPostService
                 'method' => $calledMethod
             ]);
             throw new \Exception('Помилка з\'єднання з API Нової Пошти. Перевірте інтернет-з\'єднання.');
-            
+
         } catch (\Illuminate\Http\Client\RequestException $e) {
             Log::error('Nova Post request error', [
                 'message' => $e->getMessage(),
@@ -422,19 +425,19 @@ class NovaPostService
     private function updateEnvFile($key, $value)
     {
         $envPath = base_path('.env');
-        
+
         if (!file_exists($envPath)) {
             return;
         }
 
         $envContent = file_get_contents($envPath);
-        
+
         if (strpos($envContent, $key) !== false) {
             $envContent = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $envContent);
         } else {
             $envContent .= "\n{$key}={$value}";
         }
-        
+
         file_put_contents($envPath, $envContent);
     }
 }
