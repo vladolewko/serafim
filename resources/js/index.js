@@ -166,60 +166,6 @@ radios.forEach((radio) => {
     });
 });
 
-// radios.forEach((radio) => {
-//     radio.addEventListener("change", () => {
-//         // Отримуємо батьківський div і label для кожної радіокнопки
-//         const parentDiv = radio.closest("div"); // Або ваш селектор для батьківського елемента
-//         const label = radio.nextElementSibling; // Або ваш селектор для label
-
-//         // Видаляємо класи з усіх радіокнопок
-//         radios.forEach((r) => {
-//             const rParentDiv = r.closest("div");
-//             const rLabel = r.nextElementSibling;
-
-//             if (rParentDiv) {
-//                 rParentDiv.classList.remove("bg-yellow-400");
-//                 rParentDiv.classList.add("bg-blue-400");
-//             }
-//             if (rLabel) {
-//                 rLabel.classList.remove("text-black");
-//                 rLabel.classList.add("text-white");
-//             }
-//         });
-
-//         // Додаємо класи тільки для вибраної радіокнопки
-//         if (radio.checked) {
-//             if (parentDiv) {
-//                 parentDiv.classList.add("bg-yellow-400");
-//                 parentDiv.classList.remove("bg-blue-400");
-//             }
-//             if (label) {
-//                 label.classList.add("text-black");
-//                 label.classList.remove("text-white");
-//             }
-//             switch (radio.value) {
-//                 case "1":
-//                     textElement.textContent =
-//                         "Заплануйте консультацію з нами сьогодні!";
-//                     top7.textContent = "7";
-//                     break;
-//                 case "2":
-//                     textElement.textContent =
-//                         "Організуйте свою подорож з комфортом!";
-//                     break;
-//                 case "3":
-//                     textElement.textContent =
-//                         "Змініть свій тур за вашими побажаннями!";
-//                     break;
-//                 case "4":
-//                     textElement.textContent =
-//                         "Перевірте деталі вашої подорожі!";
-//                     break;
-//             }
-//         }
-//     });
-// });
-
 radios.forEach((radio) => {
     radio.addEventListener("change", async () => {
         // Збираємо всі вибрані checkbox
