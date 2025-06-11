@@ -29,18 +29,18 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
-        // $product = $this->productService->getById($productId);
-        // $quantity = $request->get('quantity', 1);
+        $productId = $request->input('productId');
+        $quantity = $request->input('quantity');
+         $product = $this->productService->getById($productId);
 
-        // if (!$quantity || $quantity < 1) {
-        //     return redirect()->route('products.index')->withErrors(['error' => 'Кількість товару має бути більше 0']);
-        // }
-        // if($product) {
-        //     $request->session()->put('product_id', $productId);
-        // } else {
-        //     return redirect()->route('products.index')->withErrors(['error' => 'Товар не знайдено']);
-        // }
+         if ($product && $quantity && $quantity >0) {
+             session()->put('cart', ['product' => $product, 'quantity' => $quantity, 'total' => $product->price * $quantity]);
+             $cart = session()->get('cart');
 
-        return view('orders.create');
+             return view('site.orders.create', compact('cart'));
+
+         }
+
+        return back()->with('error', 'Помилка');
     }
 }

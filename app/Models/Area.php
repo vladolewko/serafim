@@ -21,17 +21,10 @@ class Area extends Model
         'updated_at' => 'datetime',
     ];
 
-    /**
-     * Райони що належать до цієї області
-     */
     public function districts(): HasMany
     {
         return $this->hasMany(District::class, 'area_ref', 'ref');
     }
-
-    /**
-     * Замовлення з цієї області
-     */
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'recipient_city_ref', 'ref');

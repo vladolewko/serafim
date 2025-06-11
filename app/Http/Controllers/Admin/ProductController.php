@@ -36,18 +36,17 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductRequest $request)
+    public function store(CreateProductRequest $request)
     {
         if ($request->hasFile('product_image')) {
-        
+
             $profileImage = $request->file('product_image');
         }
-        // dd($request->all());
+
         $data = $request->validated();
-        // dd($data);
-        $data['content'] = array_map('trim', explode(',', $data['content']));
-        $data['for_whom'] = array_map('trim', explode(',', $data['for_whom']));
-        // dd($data);
+        $data['content'] = array_map('trim', explode('|', $data['content']));
+        $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
+
 
         if ($this->productService->create($data, $profileImage ?? null)) {
             return redirect()->route('admin.products')->with('success', 'Product created successfully.');
@@ -56,13 +55,14 @@ class ProductController extends Controller
 
     }
 
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
     {
         $product = $this->productService->getById($id);
+        $product->content = implode('|', $product->content);
+        $product->for_whom = implode('|', $product->for_whom);
         return view('admin.products.edit', compact('product'));
     }
 
@@ -77,8 +77,8 @@ class ProductController extends Controller
         }
 
         $data = $request->validated();
-        $data['content'] = array_map('trim', explode(',', $data['content']));
-        $data['for_whom'] = array_map('trim', explode(',', $data['for_whom']));
+        $data['content'] = array_map('trim', explode('|', $data['content']));
+        $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
         if ($this->productService->update($request->product_id, $data, $productImage ?? null)) {
             return redirect()->route('admin.products')->with('success', 'Product updated successfully.');

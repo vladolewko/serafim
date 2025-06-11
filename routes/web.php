@@ -38,7 +38,7 @@ Route::middleware(AdminMiddleware::class)->group(function () {
 
 // Роути для замовлень
 Route::prefix('orders')->group(function () {
-    Route::get('/', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/', [OrderController::class, 'create'])->name('orders.create');
 
     // Route::post('/', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/setArea', [NovaPostController::class, 'setArea'])->name('orders.setArea');
@@ -70,3 +70,12 @@ Route::get('setSenderRef', [NovaPostController::class, 'setSenderRef']);
 
 Route::post('/setup-sender', [NovaPostController::class, 'setupSender'])->name('orders.setupSender');
 Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('orders.checkStatus');
+
+Route::get('/wayForPay', function () {
+    return view('orders.wayForPay');
+})->name('wayForPay');
+
+
+// У web.php
+Route::post('/payment/success', [OrderController::class, 'paymentSuccess'])->name('payment.success');
+Route::post('/payment/fail', [OrderController::class, 'paymentFail'])->name('payment.fail');

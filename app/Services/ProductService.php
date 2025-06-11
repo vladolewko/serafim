@@ -26,12 +26,16 @@ class ProductService implements ProductServiceInterface
         return $product;
     }
 
-    public function update(int $id, array $data, $profileImage = null): Product
+    public function update(int $id, array $data, $productImage = null): Product
     {
         $product = Product::findOrFail($id);
         $product->update($data);
-        if ($profileImage) {
-            $product->addMedia($profileImage)->toMediaCollection('product_images');
+        if ($productImage) {
+            if ($product->hasMedia('product_images')) {
+                $product->clearMediaCollection('product_images');
+            }
+
+            $product->addMedia($productImage)->toMediaCollection('product_images');
         }
         return $product;
     }

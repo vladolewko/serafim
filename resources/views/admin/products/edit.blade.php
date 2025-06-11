@@ -43,19 +43,19 @@
             <span class="text-danger">{{ $errors->first('dimension') }}</span>
         @endif
         <label for="content">Вміст:</label>
-        <input type="text" id="content" name="content" value="{{ implode(',', json_decode($product->content)) }}" required>
+        <textarea id="content" name="content"  required>{{ $product->content }}</textarea>
         @if($errors->has('content'))
             <span class="text-danger">{{ $errors->first('content') }}</span>
         @endif
         <label for="for_whom">Для кого призначено:</label>
-        <input type="text" id="for_whom" name="for_whom" value="{{ implode(',', json_decode($product->for_whom)) }}" required>
+        <textarea id="for_whom" name="for_whom" required>{{ $product->for_whom }}</textarea>
         @if($errors->has('for_whom'))
             <span class="text-danger">{{ $errors->first('for_whom') }}</span>
         @endif
         <label for="appointment">призначення комплект:</label>
         <input type="text" id="appointment" name="appointment" value="{{ $product->appointment }}" required>
         @if($errors->has('appointment'))
-            <span class="text-danger">{{ $errors->first('appointment') }}</span>    
+            <span class="text-danger">{{ $errors->first('appointment') }}</span>
         @endif
         <label for="image">Зображення:</label>
         <input type="file" id="image" name="product_image">
