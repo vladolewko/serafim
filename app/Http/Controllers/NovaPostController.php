@@ -112,12 +112,14 @@ class NovaPostController extends Controller
             // Створюємо контрагента
             $counterparty = $this->novaPostService->createCounterparty($validated);
 
+
             if($payment == 'cash') {
                 // Створюємо ТТН
                 $ttn = $this->novaPostService->createTTN([
                     'settlement' => $data['settlement'],
                     'warehouse' => $data['warehouse'],
                     'counterparty_ref' => $counterparty['Ref'],
+                    'contact_person_ref' => $counterparty['ContactPersonRef'], // Додати це поле
                     'phone' => $validated['phone'],
                     'name' => $validated['name'],
                     'surname' => $validated['surname'],
