@@ -22,16 +22,18 @@ class NovaPostController extends Controller
         $settlements = $this->novaPostService->searchSettlement($search);
 
         if (empty($settlements)) {
-            return view('orders.create', [
-                'error' => 'Немає населених пунктів, що відповідають запиту',
+            return response()->json([
+                'success' => false,
+                'error' => 'Немає населених пунктів, що відповідають запиту'
             ]);
         }
 
         Session::put('nova_post_data', ['search' => $search]);
 
-        return view('site.orders.create', [
-            'addressData' => ['search' => $search],
+        return response()->json([
+            'success' => true,
             'settlements' => $settlements,
+            'addressData' => ['search' => $search]
         ]);
     }
 
@@ -46,15 +48,17 @@ class NovaPostController extends Controller
         $settlements = $this->novaPostService->searchSettlement($data['search']);
 
         if (empty($warehouses)) {
-            return view('orders.create', [
-                'error' => 'Немає відділень, що відповідають запиту',
+            return response()->json([
+                'success' => false,
+                'error' => 'Немає відділень, що відповідають запиту'
             ]);
         }
 
-        return view('site.orders.create', [
-            'addressData' => $data,
-            'settlements' => $settlements,
+        return response()->json([
+            'success' => true,
             'warehouses' => $warehouses,
+            'settlements' => $settlements,
+            'addressData' => $data
         ]);
     }
 
@@ -71,13 +75,15 @@ class NovaPostController extends Controller
         $settlementRef = $data['settlement'];
         $weight = session('cart')['product']->weight * session('cart')['quantity'];
         $total = (int)session('cart')['total'];
-        $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef,$weight, $total);
+        $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total);
 
-        return view('site.orders.create', [
+        return response()->json([
+            'success' => true,
+            'deliveryCost' => $deliveryCost,
+            'productCosts' => session('cart')['total'],
             'addressData' => $data,
             'settlements' => $settlements,
-            'warehouses' => $warehouses,
-            'deliveryCost' => $deliveryCost
+            'warehouses' => $warehouses
         ]);
     }
 
@@ -118,6 +124,7 @@ class NovaPostController extends Controller
                 ], $cart, $payment);
 
                 Session::forget('nova_post_data');
+                Session::forget('cart');
 
                 return response()->json([
                     'success' => true,
@@ -147,7 +154,6 @@ class NovaPostController extends Controller
                 ]);
             }
 
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -170,7 +176,7 @@ class NovaPostController extends Controller
     private function generateWayForPayData($data, $cart)
     {
         $orderReference = 'ORDER_' . time() . '_' . rand(1000, 9999);
-        $amount = $cart['total'] + 60;
+        $amount = $cart['total'] + 60; // Додаємо вартість доставки
         $merchantAccount = 'test_merch_n1'; // Тестовий акаунт
         $merchantSecret = 'flk3409refn54t54t*FNJRET'; // Тестовий секрет
 
