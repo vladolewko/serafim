@@ -105,10 +105,7 @@
                     </div>
                 </div>
         </div>
-    </div> -->
-
-
-
+    </div>
 
 
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,7 +141,10 @@
                             </div>
                             <ul class="list-disc text-slate-600 ml-6 text-sm sm:text-base space-y-1">
                                 <li>Доставка у відділення нової пошти</li>
-{{--                                <li>Доставка кур'єром нової пошти</li>--}}
+
+
+                                {{--<li>Доставка кур'єром нової пошти</li>--}}
+
                             </ul>
                         </div>
 
@@ -207,7 +207,10 @@
                     </div>
 
                     <!-- Order button -->
-                    <form id="orderForm" action="{{ route('orders.create') }}" method="post">
+
+
+                    <form id="orderForm" action="{{ route('orders.create') }}" method="post" data-product-id="{{ $product->id ?? '' }}">
+
                         @csrf
                         <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 px-6 py-3 rounded-lg text-black text-lg sm:text-xl lg:text-2xl font-medium transition-colors flex-1 sm:flex-none">
                             замовити
@@ -291,6 +294,7 @@
                     </div>
 
                     <div class="flex flex-wrap gap-2 text-sm">
+
                         @foreach ($product->for_whom as $tag)
                             <div class="border-2 border-blue-400 rounded-lg py-1 px-3 ">{{ $tag }}</div>
                         @endforeach
@@ -324,7 +328,9 @@
                     <div class="text-sm text-slate-600 space-y-2">
                         <p>Вага: <span class="text-black font-bold">{{ $product->weight }} кг</span></p>
                         <p>К-сть книг: <span class="text-black font-bold">{{ $product->books_quantity }} шт</span></p>
-{{--                        <p>Для кого: <span class="text-black font-bold"></span></p>--}}
+
+                        {{--<p>Для кого: <span class="text-black font-bold"></span></p>--}}
+
                         <p>Розміри: <span class="text-black font-bold">{{ $product->dimension }} см</span></p>
                         <p>Призначення: <span class="text-black font-bold">{{ $product->appointment }}</span></p>
                     </div>
@@ -400,8 +406,7 @@
         <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
     </div>
     <!-- Carousel knowledge pack -->
-
-    <div id="indicators-carousel" class="relative w-full mb-20" data-carousel="static" >
+<div id="indicators-carousel" class="relative w-full mb-20" data-carousel="static" >
         <!-- Carousel wrapper -->
 
         <div class="relative h-56 overflow-hidden rounded-lg md:h-[500px] w-full">
@@ -430,16 +435,34 @@
                                 </div>
                             </div>
                         @endforeach
+
                     </div>
+                        @endforeach
                 </div>
             @endforeach
             </div>
 
+            @endforeach
+
+        </div>
+
         <!-- Slider indicators -->
 
         <div class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full mx-auto">
-            <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
-            <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+            <!-- <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+            <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button> -->
+
+            @foreach ($productsChunks as $index => $perPage)
+                <button
+                    type="button"
+                    class="h-[1px] rounded-full slide_button {{ $index === 0 ? 'bg-gray-800' : 'bg-gray-400' }}"
+                    style="width: {{ 90 / count($productsChunks) }}%"
+                    aria-current="{{ $index === 0 ? 'true' : 'false' }}"
+                    aria-label="Slide {{ $index + 1 }}"
+                    data-carousel-slide-to="{{ $index }}"
+                ></button>
+            @endforeach
+
         </div>
         <!-- Slider controls -->
 
