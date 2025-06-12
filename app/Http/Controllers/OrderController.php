@@ -33,6 +33,7 @@ class OrderController extends Controller
         $quantity = $request->input('quantity');
          $product = $this->productService->getById($productId);
 
+//         dd($product);
          if ($product && $quantity && $quantity >0) {
              session()->put('cart', ['product' => $product, 'quantity' => $quantity, 'total' => $product->price * $quantity]);
              $cart = session()->get('cart');

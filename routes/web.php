@@ -8,7 +8,6 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\NovaPostController;
-use App\Http\Controllers\SenderSetupController;
 
 
 Route::get('/', [ProductController::class, 'getAll'])->name('home');
@@ -32,15 +31,12 @@ Route::middleware(AdminMiddleware::class)->group(function () {
     Route::get('/admin/product/{id}', [AdminProductController::class, 'edit'])->name('admin.products.edit');
 });
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
 
 // Роути для замовлень
 Route::prefix('orders')->group(function () {
     Route::post('/', [OrderController::class, 'create'])->name('orders.create');
 
-    // Route::post('/', [OrderController::class, 'store'])->name('orders.store');
+//     Route::post('/', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/setArea', [NovaPostController::class, 'setArea'])->name('orders.setArea');
     Route::post('/setDistrict', [NovaPostController::class, 'setDistrict'])->name('orders.setDistrict');
     Route::post('/setSettlement', [NovaPostController::class, 'setSettlement'])->name('orders.setSettlement');
@@ -50,17 +46,17 @@ Route::prefix('orders')->group(function () {
     Route::post('/createCounterparty', [NovaPostController::class, 'createCounterparty'])->name('orders.createCounterparty');
 });
 
-// Роути для Nova Post
-Route::prefix('nova-post')->group(function () {
-    Route::post('/calculate-shipping', [OrderController::class, 'calculateShipping']);
-    Route::get('/areas', [NovaPostController::class, 'getAreas']);
-    Route::get('/areas/{areaRef}/districts', [NovaPostController::class, 'getDistricts']);
-    Route::get('/settlements/{areaRef}', [NovaPostController::class, 'getSettlements']);
-    Route::get('/warehouses/{settlementRef}', [NovaPostController::class, 'getWarehouses']);
-    Route::post('/search-settlements', [NovaPostController::class, 'searchSettlements']);
-    Route::post('/update-areas', [NovaPostController::class, 'updateAreas']);
-});
-    Route::get('/districts', [NovaPostController::class, 'getDistricts']);
+//// Роути для Nova Post
+//Route::prefix('nova-post')->group(function () {
+//    Route::post('/calculate-shipping', [OrderController::class, 'calculateShipping']);
+//    Route::get('/areas', [NovaPostController::class, 'getAreas']);
+//    Route::get('/areas/{areaRef}/districts', [NovaPostController::class, 'getDistricts']);
+//    Route::get('/settlements/{areaRef}', [NovaPostController::class, 'getSettlements']);
+//    Route::get('/warehouses/{settlementRef}', [NovaPostController::class, 'getWarehouses']);
+//    Route::post('/search-settlements', [NovaPostController::class, 'searchSettlements']);
+//    Route::post('/update-areas', [NovaPostController::class, 'updateAreas']);
+//});
+//    Route::get('/districts', [NovaPostController::class, 'getDistricts']);
 
 
 
