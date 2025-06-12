@@ -37,6 +37,8 @@ class NovaPostService
 
     public function createCounterparty($data)
     {
+        Log::info('Creating counterparty with data', $data);
+
         $response = $this->makeRequest('CounterpartyGeneral', 'save', [
             'FirstName' => $data['name'],
             'MiddleName' => '',
@@ -47,24 +49,54 @@ class NovaPostService
             'CounterpartyProperty' => 'Recipient',
         ]);
 
+        Log::info('Counterparty creation response', $response);
+
         if (!isset($response['data'][0])) {
+            Log::error('Failed to create counterparty', $response);
             throw new \Exception('Помилка створення контрагента');
         }
 
-        $this->createContactPerson($response['data'][0]['Ref'], $data);
+        $counterpartyRef = $response['data'][0]['Ref'];
 
-        return $response['data'][0];
+        // Отримуємо референс контактної особи з відповіді створення контрагента
+        $contactPersonRef = $response['data'][0]['ContactPerson']['data'][0]['Ref'] ?? null;
+
+        if (!$contactPersonRef) {
+            // Якщо не отримали з відповіді, створюємо окремо
+            $contactResponse = $this->createContactPerson($counterpartyRef, $data);
+            $contactPersonRef = $contactResponse['data'][0]['Ref'] ?? null;
+        }
+
+        Log::info('Created counterparty', [
+            'ref' => $counterpartyRef,
+            'contact_person_ref' => $contactPersonRef
+        ]);
+
+        // Повертаємо обидва референси
+        return [
+                'Ref' => $counterpartyRef,
+                'ContactPersonRef' => $contactPersonRef,
+                // ... інші дані
+            ] + $response['data'][0];
     }
 
     public function createContactPerson($counterpartyRef, $data)
     {
-        return $this->makeRequest('ContactPersonGeneral', 'save', [
+        Log::info('Creating contact person', [
+            'counterparty_ref' => $counterpartyRef,
+            'data' => $data
+        ]);
+
+        $response = $this->makeRequest('ContactPersonGeneral', 'save', [
             'CounterpartyRef' => $counterpartyRef,
             'FirstName' => $data['name'],
             'MiddleName' => '',
             'LastName' => $data['surname'],
             'Phone' => $data['phone'],
         ]);
+
+        Log::info('Contact person response', $response);
+        return $response;
     }
 
     public function createTTN($data, $cart, $payment)
@@ -88,7 +120,11 @@ class NovaPostService
                 }
             }
 
-            $contactRecipient = $this->getContactPerson($data['counterparty_ref']);
+            $contactRecipient = $data['contact_person_ref'] ?? $this->getContactPerson($data['counterparty_ref']);
+            Log::info('Retrieved contact recipient', [
+                'counterparty_ref' => $data['counterparty_ref'],
+                'contact_recipient' => $contactRecipient
+            ]);
 
             if (!$contactRecipient) {
                 throw new \Exception('Не вдалося отримати контактну особу отримувача');
@@ -174,32 +210,51 @@ class NovaPostService
     public function setupSender($data)
     {
         try {
+            // Отримуємо або створюємо відправника
+            $senderRef = $this->createOrGetSender($data);
+            if (!$senderRef) {
+                throw new \Exception('Не вдалося створити/отримати відправника');
+            }
+
+            // ЗАВЖДИ оновлюємо всі дані в .env, навіть якщо відправник існував
+
+            // 1. Оновлюємо місто
             $cityRef = $this->setCitySender($data['city']);
             if (!$cityRef) {
                 throw new \Exception('Не вдалося знайти місто відправника');
             }
 
-            $senderRef = $this->createOrGetSender($data);
-            if (!$senderRef) {
-                throw new \Exception('Не вдалося створити/отримати відправника');
-            }
+            // 2. Оновлюємо адресу (відділення) для нового міста
             $senderSettlement = $this->searchSettlement($data['city']);
+            if (empty($senderSettlement)) {
+                throw new \Exception('Не вдалося знайти населений пункт');
+            }
 
             $senderAddress = $this->getSenderAddress($senderSettlement[0]['Ref']);
             if (!$senderAddress) {
                 throw new \Exception('Не вдалося отримати адресу відправника');
             }
 
+            // 3. Отримуємо контактну особу
             $contactSender = $this->getContactPerson($senderRef);
             if (!$contactSender) {
                 throw new \Exception('Не вдалося отримати контактну особу відправника');
             }
 
+            // 4. Оновлюємо ВСІ дані в .env
             $this->updateEnvFile('NOVA_POST_CITY_SENDER', $cityRef);
             $this->updateEnvFile('NOVA_POST_SENDER_REF', $senderRef);
             $this->updateEnvFile('NOVA_POST_SENDER_ADDRESS', $senderAddress);
             $this->updateEnvFile('NOVA_POST_CONTACT_SENDER', $contactSender);
             $this->updateEnvFile('NOVA_POST_SENDER_PHONE', $data['phone']);
+
+            Log::info('All sender data updated in .env', [
+                'city_ref' => $cityRef,
+                'sender_ref' => $senderRef,
+                'sender_address' => $senderAddress,
+                'contact_sender' => $contactSender,
+                'phone' => $data['phone']
+            ]);
 
             return true;
         } catch (\Exception $e) {
@@ -219,36 +274,56 @@ class NovaPostService
 
     private function createOrGetSender($data)
     {
-        $response = $this->makeRequest('Counterparty', 'getCounterparties', [
-            'CounterpartyProperty' => 'Sender'
-        ]);
+        try {
+            Log::info('Getting existing senders');
+            $response = $this->makeRequest('Counterparty', 'getCounterparties', [
+                'CounterpartyProperty' => 'Sender'
+            ]);
 
-        if (isset($response['data'][0])) {
-            return $response['data'][0]['Ref'];
-        }
+            if (isset($response['data'][0])) {
+                $senderRef = $response['data'][0]['Ref'];
+                Log::info('Found existing sender', ['ref' => $senderRef]);
+                return $senderRef;
+            }
 
-        $response = $this->makeRequest('Counterparty', 'save', [
-            'FirstName' => $data['name'],
-            'LastName' => $data['surname'],
-            'Phone' => $data['phone'],
-            'Email' => '',
-            'CounterpartyType' => 'PrivatePerson',
-            'CounterpartyProperty' => 'Sender'
-        ]);
+            // Створюємо нового відправника тільки якщо його немає
+            Log::info('Creating new sender');
+            $cityRef = $this->setCitySender($data['city']);
+            if (!$cityRef) {
+                throw new \Exception('Не вдалося знайти місто відправника');
+            }
 
-        $senderRef = $response['data'][0]['Ref'] ?? null;
-
-        if ($senderRef) {
-            $this->makeRequest('ContactPersonGeneral', 'save', [
-                'CounterpartyRef' => $senderRef,
+            $response = $this->makeRequest('Counterparty', 'save', [
+                'CityRef' => $cityRef,
                 'FirstName' => $data['name'],
-                'MiddleName' => '',
                 'LastName' => $data['surname'],
                 'Phone' => $data['phone'],
+                'Email' => '',
+                'CounterpartyType' => 'PrivatePerson',
+                'CounterpartyProperty' => 'Sender'
             ]);
-        }
 
-        return $senderRef;
+            $senderRef = $response['data'][0]['Ref'] ?? null;
+
+            if ($senderRef) {
+                $this->makeRequest('ContactPersonGeneral', 'save', [
+                    'CounterpartyRef' => $senderRef,
+                    'FirstName' => $data['name'],
+                    'MiddleName' => '',
+                    'LastName' => $data['surname'],
+                    'Phone' => $data['phone'],
+                ]);
+            }
+
+            return $senderRef;
+
+        } catch (\Exception $e) {
+            Log::error('Error in createOrGetSender', [
+                'message' => $e->getMessage(),
+                'data' => $data
+            ]);
+            throw $e;
+        }
     }
 
     private function getSenderAddress($cityRef)
