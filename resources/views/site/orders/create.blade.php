@@ -22,12 +22,14 @@
                 <div class="flex flex-col w-full lg:w-7/12 xl:w-6/12 space-y-6 lg:space-y-10">
 
                     <!-- Delivery Section -->
+
                     <!-- <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg" id="ttn-form">
                         <div class="w-11/12 mx-auto py-6">
                             <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Доставка</h2> -->
 
                             <!-- Окремі форми для вибору адреси -->
                             <!-- <div class="grid grid-cols-1 text-black mx-auto gap-3">
+
                                 @if(!isset($settlements))
                                     <form action="{{ route('orders.searchSettlement') }}" method="POST">
                                         @csrf
@@ -85,7 +87,8 @@
                                 @endif
                             </div>
                         </div>
-                    </div> -->
+
+                    </div>
 
                     <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg" id="ttn-form">
     <div class="w-11/12 mx-auto py-4 sm:py-6 md:py-8">
