@@ -428,37 +428,18 @@
 
     <!-- Knowledge Pack Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        @foreach($products as $product)
         <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
             <div class="bg-white flex flex-col items-center rounded-xl p-4">
                 <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
-                <p class="text-lg lg:text-2xl font-bold text-center mb-3">Комплект громадянина</p>
-                <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">650 грн</p>
-                <button class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                    Переглянути
+                <p class="text-lg lg:text-2xl font-bold text-center mb-3">{{$product->name}}</p>
+                <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">{{ (int)$product->price }} грн</p>
 
-                </button>
+                <a class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold" href="{{ route('product.show', $product->id) }}">перейти</a>
+
             </div>
         </div>
-        <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
-            <div class="bg-white flex flex-col items-center rounded-xl p-4">
-                <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
-                <p class="text-lg lg:text-2xl font-bold text-center mb-3">Комплект громадянина</p>
-                <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">650 грн</p>
-                <button class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                    Переглянути
-                </button>
-            </div>
-        </div>
-        <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5 sm:col-span-2 lg:col-span-1">
-            <div class="bg-white flex flex-col items-center rounded-xl p-4">
-                <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
-                <p class="text-lg lg:text-2xl font-bold text-center mb-3">Комплект громадянина</p>
-                <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">650 грн</p>
-                <button class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                    Переглянути
-                </button>
-            </div>
-        </div>
+        @endforeach
     </div>
 </div>
 
