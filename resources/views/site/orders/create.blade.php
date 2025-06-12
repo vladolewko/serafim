@@ -22,12 +22,12 @@
                 <div class="flex flex-col w-full lg:w-7/12 xl:w-6/12 space-y-6 lg:space-y-10">
 
                     <!-- Delivery Section -->
-                    <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg" id="ttn-form">
+                    <!-- <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg" id="ttn-form">
                         <div class="w-11/12 mx-auto py-6">
-                            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Доставка</h2>
+                            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Доставка</h2> -->
 
                             <!-- Окремі форми для вибору адреси -->
-                            <div class="grid grid-cols-1 text-black mx-auto gap-3">
+                            <!-- <div class="grid grid-cols-1 text-black mx-auto gap-3">
                                 @if(!isset($settlements))
                                     <form action="{{ route('orders.searchSettlement') }}" method="POST">
                                         @csrf
@@ -85,7 +85,88 @@
                                 @endif
                             </div>
                         </div>
+                    </div> -->
+
+                    <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg" id="ttn-form">
+    <div class="w-11/12 mx-auto py-4 sm:py-6 md:py-8">
+        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 sm:mb-4 md:mb-6 text-center sm:text-left">Доставка</h2>
+
+        <!-- Окремі форми для вибору адреси -->
+        <div class="grid grid-cols-1 text-black mx-auto gap-3 sm:gap-4">
+            @if(!isset($settlements))
+                <form action="{{ route('orders.searchSettlement') }}" method="POST">
+                    @csrf
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <input
+                            class="w-full sm:flex-1 rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200"
+                            type="text"
+                            name="search"
+                            placeholder="Введіть місто"
+                            value="{{ isset($addressData['search']) ? $addressData['search'] : '' }}"
+                            required>
+                        <button
+                            type="submit"
+                            class="w-full sm:w-auto bg-yellow-400 text-black px-4 sm:px-6 py-3 sm:py-4 rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition-colors duration-200 font-medium text-sm sm:text-base lg:text-lg whitespace-nowrap">
+                            Знайти
+                        </button>
                     </div>
+                </form>
+            @elseif(isset($settlements) && count($settlements) > 0)
+                <form action="{{ route('orders.chooseSettlement') }}" method="POST">
+                    @csrf
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <select
+                            class="w-full  sm:flex-1 rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200"
+                            name="settlement"
+                            required>
+                            <option value="" {{ !isset($addressData['settlement']) ? 'disabled selected' : '' }}>
+                                Місто
+                            </option>
+                            @foreach($settlements as $settlement)
+                                <option value="{{ $settlement['Ref'] }}"
+                                    {{ (isset($addressData['settlement']) && $addressData['settlement'] === $settlement['Ref']) ? 'selected' : '' }}>
+                                    {{ $settlement['Present'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button
+                            type="submit"
+                            class="w-full sm:w-auto bg-yellow-400 text-black px-4 sm:px-6 py-3 sm:py-4 rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition-colors duration-200 font-medium text-sm sm:text-base lg:text-lg whitespace-nowrap">
+                            Обрати
+                        </button>
+                    </div>
+                </form>
+            @endif
+
+            @if(isset($warehouses) && count($warehouses) > 0)
+                <form action="{{ route('orders.setWarehouse') }}" method="POST">
+                    @csrf
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <select
+                            name="warehouse"
+                            class="w-full sm:flex-1 md:max-w-none rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200"
+                            required>
+                            <option value="" {{ !isset($addressData['warehouse']) ? 'disabled selected' : '' }}>
+                                Відділення або поштомат
+                            </option>
+                            @foreach($warehouses as $warehouse)
+                                <option value="{{ $warehouse['Ref'] }}"
+                                    {{ (isset($addressData['warehouse']) && $addressData['warehouse'] === $warehouse['Ref']) ? 'selected' : '' }}>
+                                    {{ $warehouse['Description'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button
+                            type="submit"
+                            class="w-full sm:w-auto bg-yellow-400 text-black px-4 sm:px-6 py-3 sm:py-4 rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition-colors duration-200 font-medium text-sm sm:text-base lg:text-lg whitespace-nowrap">
+                            Обрати
+                        </button>
+                    </div>
+                </form>
+            @endif
+        </div>
+    </div>
+</div>
 
                     <!-- Головна форма замовлення (показується тільки після вибору відділення) -->
                     @if(isset($addressData['warehouse']))
