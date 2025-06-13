@@ -450,7 +450,7 @@
     <div class="flex">
         <div>
             <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span></p>
-            <p class="text-xl text-slate-600">Замовляй свій набір та будь захищеним знанями...</p>
+            <p class="text-xl text-slate-500">Замовляй свій набір та будь захищеним знанями...</p>
         </div>
         <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
     </div>

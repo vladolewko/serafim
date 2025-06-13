@@ -58,7 +58,7 @@ class NovaPostService
 
         $counterpartyRef = $response['data'][0]['Ref'];
 
-        // Отримуємо референс контактної особи з відповіді створення контрагента
+
         $contactPersonRef = $response['data'][0]['ContactPerson']['data'][0]['Ref'] ?? null;
 
         if (!$contactPersonRef) {
@@ -72,11 +72,11 @@ class NovaPostService
             'contact_person_ref' => $contactPersonRef
         ]);
 
-        // Повертаємо обидва референси
+
         return [
                 'Ref' => $counterpartyRef,
                 'ContactPersonRef' => $contactPersonRef,
-                // ... інші дані
+
             ] + $response['data'][0];
     }
 

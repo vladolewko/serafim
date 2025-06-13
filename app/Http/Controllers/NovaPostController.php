@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Services\NovaPostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -99,7 +100,6 @@ class NovaPostController extends Controller
             ]);
 
             $cart = session()->get('cart');
-
             $data = Session::get('nova_post_data', []);
 
             if (empty($data['settlement']) || empty($data['warehouse'])) {
@@ -109,49 +109,78 @@ class NovaPostController extends Controller
                 ]);
             }
 
-            // Створюємо контрагента
             $counterparty = $this->novaPostService->createCounterparty($validated);
 
 
-            if($payment == 'cash') {
-                // Створюємо ТТН
+            $settlementRef = $data['settlement'];
+            $weight = $cart['product']->weight * $cart['quantity'];
+            $total = (int)$cart['total'];
+            $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total);
+            $totalAmount = $total + $deliveryCost;
+
+            $orderReference = Order::generateOrderReference();
+
+            $order = Order::create([
+                'order_reference' => $orderReference,
+                'status' => 'pending',
+                'payment_type' => $payment,
+                'payment_status' => $payment === 'cash' ? 'pending' : 'pending',
+                'customer_name' => $validated['name'],
+                'customer_surname' => $validated['surname'],
+                'customer_phone' => $validated['phone'],
+                'customer_email' => $validated['email'],
+                'settlement_ref' => $data['settlement'],
+                'warehouse_ref' => $data['warehouse'],
+                'counterparty_ref' => $counterparty['Ref'],
+                'contact_person_ref' => $counterparty['ContactPersonRef'],
+                'cart_data' => $cart,
+                'product_total' => $total,
+                'delivery_cost' => $deliveryCost,
+                'total_amount' => $totalAmount
+            ]);
+
+            if ($payment == 'cash') {
+
                 $ttn = $this->novaPostService->createTTN([
                     'settlement' => $data['settlement'],
                     'warehouse' => $data['warehouse'],
                     'counterparty_ref' => $counterparty['Ref'],
-                    'contact_person_ref' => $counterparty['ContactPersonRef'], // Додати це поле
+
+                    'contact_person_ref' => $counterparty['ContactPersonRef'],
+
                     'phone' => $validated['phone'],
                     'name' => $validated['name'],
                     'surname' => $validated['surname'],
                 ], $cart, $payment);
+
+                $order->addTTNData(
+                    $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер',
+                    $ttn
+                );
 
                 Session::forget('nova_post_data');
                 Session::forget('cart');
 
                 return response()->json([
                     'success' => true,
-                    'ttn_number' => $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер',
+                    'ttn_number' => $order->ttn_number,
+                    'order_reference' => $order->order_reference,
                     'message' => 'ТТН успішно створено'
                 ], 200, [], JSON_UNESCAPED_UNICODE);
-            } elseif ($payment == 'card') {
-                // Зберігаємо дані замовлення в сесії для подальшого використання після оплати
-                Session::put('pending_order', [
-                    'settlement' => $data['settlement'],
-                    'warehouse' => $data['warehouse'],
-                    'counterparty_ref' => $counterparty['Ref'],
-                    'phone' => $validated['phone'],
-                    'name' => $validated['name'],
-                    'surname' => $validated['surname'],
-                    'email' => $request->input('email'),
-                    'cart' => $cart
-                ]);
 
-                // Генеруємо дані для WayForPay
-                $wayForPayData = $this->generateWayForPayData($validated, $cart);
+            } elseif ($payment == 'card') {
+                $wayForPayData = $this->generateWayForPayData($validated, $totalAmount, $orderReference);
+
+                $order->wayforpay_data = $wayForPayData;
+                $order->save();
+
+                Session::forget('nova_post_data');
+                Session::forget('cart');
 
                 return response()->json([
                     'success' => true,
                     'payment_type' => 'card',
+                    'order_reference' => $order->order_reference,
                     'wayforpay_data' => $wayForPayData
                 ]);
             }
@@ -163,7 +192,7 @@ class NovaPostController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error creating TTN in controller', [
+            Log::error('Error creating order in controller', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -175,36 +204,205 @@ class NovaPostController extends Controller
         }
     }
 
-    private function generateWayForPayData($data, $cart)
+    private function generateWayForPayData($data, $amount, $orderReference)
     {
-        $orderReference = 'ORDER_' . time() . '_' . rand(1000, 9999);
-        $amount = $cart['total'] + 60; // Додаємо вартість доставки
-        $merchantAccount = 'test_merch_n1'; // Тестовий акаунт
-        $merchantSecret = 'flk3409refn54t54t*FNJRET'; // Тестовий секрет
+        $amount = 5; // ТЕСТОВА СУМА
+        $merchantAccount = 'test_merch_n1';
+        $merchantSecret = 'flk3409refn54t54t*FNJRET';
+        $currency = 'UAH';
+        $orderDate = time();
+        $productName = 'Замовлення з інтернет-магазину';
 
-        // Створюємо підпис
-        $signatureString = $merchantAccount . ';' . $data['name'] . ';' . $orderReference . ';' . $amount . ';UAH;' . $data['email'];
+        $signatureString = $merchantAccount . ';' .
+            request()->getSchemeAndHttpHost() . ';' .
+            $orderReference . ';' .
+            $orderDate . ';' .
+            $amount . ';' .
+            $currency . ';' .
+            $productName . ';' .
+            1 . ';' .
+            $amount;
+
         $signature = hash_hmac('md5', $signatureString, $merchantSecret);
+
+        Log::info('WayForPay signature data', [
+            'order_reference' => $orderReference,
+            'string' => $signatureString,
+            'signature' => $signature
+        ]);
 
         return [
             'merchantAccount' => $merchantAccount,
             'merchantAuthType' => 'SimpleSignature',
-            'merchantDomainName' => request()->getHost(),
+            'merchantDomainName' => request()->getSchemeAndHttpHost(),
             'merchantSignature' => $signature,
             'orderReference' => $orderReference,
-            'orderDate' => time(),
+            'orderDate' => $orderDate,
             'amount' => $amount,
-            'currency' => 'UAH',
-            'productName' => ['Замовлення з інтернет-магазину'],
+            'currency' => $currency,
+            'productName' => [$productName],
             'productPrice' => [$amount],
             'productCount' => [1],
             'clientFirstName' => $data['name'],
             'clientLastName' => $data['surname'],
             'clientEmail' => $data['email'],
             'defaultPaymentSystem' => 'card',
-            'returnUrl' => route('payment.success'),
-            'serviceUrl' => route('payment.success')
+
+            'returnUrl' => 'http://localhost:8888/serafim/public/api/payment/success',
+//            'returnUrl' => '',
+            'serviceUrl' => 'http://localhost:8888/serafim/public/api/payment/callback'
         ];
+    }
+    public function paymentSuccessPage(Request $request)
+    {
+        try {
+            Log::info('=== PAYMENT SUCCESS PAGE START ===', [
+                'method' => $request->method(),
+                'path' => $request->path(),
+                'all_data' => $request->all(),
+                'referer' => $request->header('referer')
+            ]);
+
+            if ($request->has('debug')) {
+                return response()->json(['message' => 'Controller reached successfully']);
+            }
+
+            $orderReference = $request->input('orderReference');
+
+            if (!$orderReference) {
+                Log::warning('No order reference provided');
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Не вдалося знайти номер замовлення',
+                    'received_data' => $request->all()
+                ]);
+            }
+
+            $order = Order::findByReference($orderReference);
+
+            if (!$order) {
+                Log::warning('Order not found', ['order_reference' => $orderReference]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Замовлення не знайдено',
+                    'order_reference' => $orderReference
+                ]);
+            }
+
+            Log::info('Order found, processing payment result', [
+                'order_reference' => $orderReference,
+                'order_id' => $order->id
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Замовлення знайдено успішно',
+                'order_reference' => $orderReference,
+                'payment_data' => $request->all()
+            ]);
+
+
+        } catch (\Exception $e) {
+            Log::error('Payment success page error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
+
+    public function paymentFailedPage(Request $request)
+    {
+        $orderReference = $request->input('orderReference');
+
+        if ($orderReference) {
+            $order = Order::findByReference($orderReference);
+            if ($order) {
+                $order->updatePaymentStatus('failed');
+            }
+        }
+
+        return view('payment.failed', [
+            'error' => 'Платіж не був завершений або був відхилений',
+            'order_reference' => $orderReference
+        ]);
+    }
+
+    public function paymentCallback(Request $request)
+    {
+        Log::info('Payment callback received', $request->all());
+
+        try {
+            $orderReference = $request->input('orderReference');
+            $merchantSecret = 'flk3409refn54t54t*FNJRET';
+
+            // Правильна перевірка підпису для callback
+            $signatureString = $request->input('merchantAccount', '') . ';' .
+                $request->input('orderReference', '') . ';' .
+                $request->input('amount', '') . ';' .
+                $request->input('currency', 'UAH') . ';' .
+                $request->input('authCode', '') . ';' .
+                $request->input('cardPan', '') . ';' .
+                $request->input('transactionStatus', '') . ';' .
+                $request->input('reasonCode', '');
+
+            $expectedSignature = hash_hmac('md5', $signatureString, $merchantSecret);
+            $receivedSignature = $request->input('merchantSignature');
+
+            Log::info('Callback signature verification', [
+                'order_reference' => $orderReference,
+                'expected' => $expectedSignature,
+                'received' => $receivedSignature
+            ]);
+
+            if ($expectedSignature === $receivedSignature) {
+                $order = Order::findByReference($orderReference);
+                if ($order && $request->input('transactionStatus') === 'Approved') {
+                    $order->updatePaymentStatus('paid', $request->all());
+                    Log::info('Order payment status updated via callback', [
+                        'order_reference' => $orderReference
+                    ]);
+                }
+
+                return response()->json([
+                    'orderReference' => $orderReference,
+                    'status' => 'accept',
+                    'time' => time()
+                ]);
+            } else {
+                Log::error('Invalid callback signature', [
+                    'order_reference' => $orderReference,
+                    'expected' => $expectedSignature,
+                    'received' => $receivedSignature
+                ]);
+
+                return response()->json([
+                    'orderReference' => $orderReference,
+                    'status' => 'decline',
+                    'time' => time()
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Payment callback error', [
+                'message' => $e->getMessage(),
+                'request' => $request->all()
+            ]);
+
+            return response()->json([
+                'orderReference' => $request->input('orderReference', ''),
+                'status' => 'decline',
+                'time' => time()
+            ]);
+        }
     }
 
     public function checkStatus()

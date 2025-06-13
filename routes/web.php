@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Services\ProductService;
@@ -36,7 +37,6 @@ Route::middleware(AdminMiddleware::class)->group(function () {
 Route::prefix('orders')->group(function () {
     Route::post('/', [OrderController::class, 'create'])->name('orders.create');
 
-//     Route::post('/', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/setArea', [NovaPostController::class, 'setArea'])->name('orders.setArea');
     Route::post('/setDistrict', [NovaPostController::class, 'setDistrict'])->name('orders.setDistrict');
     Route::post('/setSettlement', [NovaPostController::class, 'setSettlement'])->name('orders.setSettlement');
@@ -46,20 +46,6 @@ Route::prefix('orders')->group(function () {
     Route::post('/createCounterparty', [NovaPostController::class, 'createCounterparty'])->name('orders.createCounterparty');
 });
 
-//// Роути для Nova Post
-//Route::prefix('nova-post')->group(function () {
-//    Route::post('/calculate-shipping', [OrderController::class, 'calculateShipping']);
-//    Route::get('/areas', [NovaPostController::class, 'getAreas']);
-//    Route::get('/areas/{areaRef}/districts', [NovaPostController::class, 'getDistricts']);
-//    Route::get('/settlements/{areaRef}', [NovaPostController::class, 'getSettlements']);
-//    Route::get('/warehouses/{settlementRef}', [NovaPostController::class, 'getWarehouses']);
-//    Route::post('/search-settlements', [NovaPostController::class, 'searchSettlements']);
-//    Route::post('/update-areas', [NovaPostController::class, 'updateAreas']);
-//});
-//    Route::get('/districts', [NovaPostController::class, 'getDistricts']);
-
-
-
 
 Route::get('setCitySender', [NovaPostController::class, 'setCitySender']);
 Route::get('setSenderRef', [NovaPostController::class, 'setSenderRef']);
@@ -67,11 +53,8 @@ Route::get('setSenderRef', [NovaPostController::class, 'setSenderRef']);
 Route::post('/setup-sender', [NovaPostController::class, 'setupSender'])->name('orders.setupSender');
 Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('orders.checkStatus');
 
-Route::get('/wayForPay', function () {
-    return view('orders.wayForPay');
-})->name('wayForPay');
+    Route::match(['GET', 'POST'], 'payment/success', [NovaPostController::class, 'paymentSuccessPage']);
+    Route::post('payment/callback', [NovaPostController::class, 'paymentCallback']);
+    Route::get('payment/failed', [NovaPostController::class, 'paymentFailedPage']);
 
 
-// У web.php
-Route::post('/payment/success', [OrderController::class, 'paymentSuccess'])->name('payment.success');
-Route::post('/payment/fail', [OrderController::class, 'paymentFail'])->name('payment.fail');
