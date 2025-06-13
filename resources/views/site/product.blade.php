@@ -4,111 +4,6 @@
 @section('content')
 
     <div class="w-4/6 mx-auto">
-        <!-- <div class="flex items-center gap-4 mt-8">
-        <a class="text-slate-600" href="{{ route('home') }}">головна</a>
-        <p class="text-yellow-400 text-2xl">замовлення</p>
-    </div>
-    <p class="text-5xl">Замовити комплект</p>
-
-    <div class="flex my-8 justify-between">
-        <div class="w-6/12">
-            <div class="bg-gray-200 w-full h-[548px] rounded-lg"></div>
-            <div class="border border-2 border-blue-400 rounded-lg py-2 flex mt-4 gap-2">
-                <div class="flex flex-col py-2 pl-5 w-6/12">
-                    <div class="flex gap-2">
-                        <img src="{{ asset('img/delivery.svg') }}" alt="delivery svg">
-                        <p class="text-xl">доставка</p>
-                    </div>
-                    <ul class="list-disc text-slate-600 ml-6">
-                        <li>Доставка у відділення нової пошти</li>
-                        <li>Доставка кур’єром нової пошти</li>
-                    </ul>
-                </div>
-                <img src="{{ asset('img/line_vertical_blue.svg') }}" alt="">
-                <div class="flex flex-col justify-center flex-2 py-2 pl-5">
-                    <div class="flex gap-2">
-                        <img src="{{ asset('img/card.svg') }}" alt="card svg">
-                        <p class="text-xl">оплата</p>
-                    </div>
-                    <ul class="list-disc text-slate-600 ml-6">
-                        <li>Накладений платіж</li>
-                        <li>Онлайн оплата на сайті</li>
-                        <li>Безготівковий переказ</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-5/12">
-
-            <p class="text-3xl">комплект громадянина</p>
-            <p class="text-green-400 pl-[1px]">в наявності</p>
-
-            <div class="w-[85%] my-3">
-                <p class="text-xl">Цей набір створено ветераном, який особисто пройшов через свавілля системи і переміг. У ньому — не суха теорія, а перевірені інструкції, які допомогли відстояти свої права в реальних судах.</p>
-            </div>
-
-            <p class="text-5xl"><span class="text-yellow-400 text-bold">600</span> грн</p>
-
-            <div class="flex mt-4 gap-5">
-                <div class="border border-2 border-yellow-400 rounded-lg gap-2 px-4 py-2 justify-between flex w-3/12 items-center">
-                    <img class="w-[15px] h-[15px]" src="{{ asset('img/minus.svg') }}" alt="">
-                    <p class="text-2xl">1</p>
-                    <img class="w-[15px] h-[15px]" src="{{ asset('img/plus.svg') }}" alt="">
-                </div>
-                <div class="">
-                    <button class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-3xl">
-                        замовити
-                    </button></div>
-                </div>
-
-              <div class="mt-8">
-                    <div class="flex gap-2">
-                        <img src="{{ asset('img/check.svg') }}" alt="check svg">
-                        <p>для кого цей комплект:</p>
-                    </div>
-
-                    <div class="flex gap-2 text-sm mt-3">
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">Військовослужбовці ЗСУ</div>
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">Військовослужбовці ТРО</div>
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">добровольці</div>
-                    </div>
-                </div>
-
-
-                <div class="mt-6">
-                    <div class="flex gap-2">
-                        <img src="{{ asset('img/check.svg') }}" alt="check svg">
-                        <p>що всередині:</p>
-                    </div>
-
-                    <div class="flex gap-2 text-sm mt-3 flex-wrap">
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2 w-8/12">Покрокові інструкції щодо оформлення статусу УБД, інвалідності, компенсацій.</div>
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">Як подати позов до державних структур та виграти справу.</div>
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">Шаблони документів</div>
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">Пояснення термінів</div>
-                        <div class="border border-2 border-blue-400 rounded-lg py-1 px-2">Посилання на актуальні закони</div>
-                    </div>
-                </div>
-
-                <div class="mt-10">
-                    <div class="flex gap-2">
-                        <img src="{{ asset('img/properties.svg') }}" alt="check svg">
-                        <p>характеристики</p>
-                    </div>
-                    <div class="mt-2 text-sm text-slate-600 flex flex-col gap-1">
-                        <p>Вага: <span class="text-black font-bold">2 кг</span></p>
-                        <p>К-сть книг: <span class="text-black font-bold">5 шт</span></p>
-                        <p>Для кого: <span class="text-black font-bold">для громадян</span></p>
-                        <p>Розміри: <span class="text-black font-bold">20 на 30 на 30 см</span></p>
-                        <p>Призначення: <span class="text-black font-bold">інформування щодо юридичного захисту </span></p>
-                    </div>
-                </div>
-        </div>
-    </div>
-
-
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb navigation -->
         <div class="flex items-center gap-4 mt-4 sm:mt-8">
             <a class="text-slate-600 hover:text-slate-800 transition-colors" href="{{ route('home') }}">головна</a>
@@ -362,48 +257,30 @@
                 <div class="w-8 h-8 bg-yellow-400 rounded transform rotate-90"></div>
             </div>
         </div>
-
+        @if($products->isNotEmpty())
         <!-- Knowledge Pack Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            @foreach($products as $product)
             <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
                 <div class="bg-white flex flex-col items-center rounded-xl p-4">
                     <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
-                    <p class="text-lg lg:text-2xl font-bold text-center mb-3">Комплект громадянина</p>
-                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">650 грн</p>
+                    <p class="text-lg lg:text-2xl font-bold text-center mb-3">{{ $product->name }}</p>
+                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">{{ (int)$product->price }} грн</p>
                     <button
                         class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
                         Переглянути
                     </button>
                 </div>
             </div>
-            <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
-                <div class="bg-white flex flex-col items-center rounded-xl p-4">
-                    <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
-                    <p class="text-lg lg:text-2xl font-bold text-center mb-3">Комплект громадянина</p>
-                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">650 грн</p>
-                    <button
-                        class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                        Переглянути
-                    </button>
-                </div>
-            </div>
-            <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5 sm:col-span-2 lg:col-span-1">
-                <div class="bg-white flex flex-col items-center rounded-xl p-4">
-                    <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
-                    <p class="text-lg lg:text-2xl font-bold text-center mb-3">Комплект громадянина</p>
-                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">650 грн</p>
-                    <button
-                        class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                        Переглянути
-                    </button>
-                </div>
-            </div>
+            @endforeach
         </div>
+        @endif
     </div>
 
 
 
     <!-- Knowledge Pack Selection Desktop -->
+    @if($productsChunks->isNotEmpty())
     <div class="hidden lg:block mx-auto my-72 section" id="knowledge_pack">
         <div class="flex">
             <div>
@@ -449,7 +326,7 @@
 
                         </div>
                     </div>
-                        @endforeach
+                @endforeach
 
             </div>
 
@@ -457,9 +334,6 @@
 
             <div
                 class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full mx-auto">
-                <!-- <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
-                <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button> -->
-
                 @foreach ($productsChunks as $index => $perPage)
                     <button
                         type="button"
@@ -493,9 +367,8 @@
             </span>
             </button>
         </div>
-
-
     </div>
+    @endif
 
 
 
