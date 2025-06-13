@@ -479,7 +479,7 @@
 
                             <p class="text-2xl/6 font-bold text-center">{{$product->name}}</p>
                             <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
-                            <a class="bg-yellow-400 px-8 m-3 rounded-lg text-black text-xl" href="{{ route('product.show', $product->id) }}">перейти</a>
+                            <a class="flex items-center bg-yellow-400 px-8 m-3 rounded-lg inline-block align-middle h-10 text-black text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg" href="{{ route('product.show', $product->id) }}">перейти</a>
 
                         </div>
                     </div>
