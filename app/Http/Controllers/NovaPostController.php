@@ -111,6 +111,7 @@ class NovaPostController extends Controller
 
             $counterparty = $this->novaPostService->createCounterparty($validated);
 
+
             $settlementRef = $data['settlement'];
             $weight = $cart['product']->weight * $cart['quantity'];
             $total = (int)$cart['total'];
@@ -139,11 +140,14 @@ class NovaPostController extends Controller
             ]);
 
             if ($payment == 'cash') {
+
                 $ttn = $this->novaPostService->createTTN([
                     'settlement' => $data['settlement'],
                     'warehouse' => $data['warehouse'],
                     'counterparty_ref' => $counterparty['Ref'],
+
                     'contact_person_ref' => $counterparty['ContactPersonRef'],
+
                     'phone' => $validated['phone'],
                     'name' => $validated['name'],
                     'surname' => $validated['surname'],
