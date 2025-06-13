@@ -1,20 +1,18 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оформлення замовлення</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+@extends('layouts.site')
+
+
+@section('content')
 <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="w-full">
         <!-- Navigation -->
         <nav class="mb-6">
             <ul class="flex flex-wrap text-lg sm:text-xl text-slate-600 items-center gap-2 sm:gap-4">
-                <li class="hover:text-slate-800 cursor-pointer"><a href="#" onclick="return false">головна</a></li>
-                <li class="hover:text-slate-800 cursor-pointer"><a href="#" onclick="return false">замовлення</a></li>
+                <li class="hover:text-slate-800 cursor-pointer">
+                    <a href="{{ route('home') }}" onclick="return false">головна</a>
+                </li>
+                <li class="hover:text-slate-800 cursor-pointer">
+                    <a href="{{ route('product.show', session('cart')['product']->id) }}">замовлення</a>
+                </li>
                 <li class="text-yellow-400 text-xl sm:text-2xl font-semibold">оформлення</li>
             </ul>
         </nav>
@@ -30,125 +28,157 @@
 
         <!-- Main Content -->
         <div class="flex flex-col lg:flex-row justify-between w-full gap-6 lg:gap-8">
-
             <!-- Left Column - Forms -->
             <div class="flex flex-col w-full lg:w-7/12 xl:w-6/12 space-y-6 lg:space-y-10">
-
                 <!-- Delivery Section -->
-                <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg" id="ttn-form">
+                <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg">
                     <div class="w-11/12 mx-auto py-4 sm:py-6 md:py-8">
-                        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 sm:mb-4 md:mb-6 text-center sm:text-left">Доставка</h2>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 sm:mb-4 md:mb-6 text-center sm:text-left">
+                            Доставка
+                        </h2>
 
-                        <!-- Search form -->
-                        <div class="grid grid-cols-1 text-black mx-auto gap-3 sm:gap-4" id="search-section">
-                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <!-- City Search -->
+                        <div class="mb-4">
+                            <div class="relative">
                                 <input
                                     id="city-search"
-                                    class="w-full sm:flex-1 rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200"
+                                    class="w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black"
                                     type="text"
-                                    placeholder="Введіть місто"
-                                    required>
-                                <button
-                                    id="search-btn"
-                                    type="button"
-                                    class="w-full sm:w-auto bg-yellow-400 text-black px-4 sm:px-6 py-3 sm:py-4 rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition-colors duration-200 font-medium text-sm sm:text-base lg:text-lg whitespace-nowrap">
-                                    Знайти
-                                </button>
+                                    placeholder="Введіть місто для пошуку..."
+                                    autocomplete="off">
+                                <div id="search-loader" class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Settlement selection -->
-                        <div class="grid grid-cols-1 text-black mx-auto gap-3 sm:gap-4 mt-4 hidden" id="settlement-section">
-                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <!-- Settlement Selection -->
+                        <div id="settlement-section" class="mb-4 hidden">
+                            <div class="relative">
                                 <select
                                     id="settlement-select"
-                                    class="w-full sm:flex-1 rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200"
-                                    required>
-                                    <option value="" disabled selected>Місто</option>
+                                    class="w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black appearance-none cursor-pointer"
+                                    disabled>
+                                    <option value="" selected>Оберіть місто...</option>
                                 </select>
-                                <button
-                                    id="choose-settlement-btn"
-                                    type="button"
-                                    class="w-full sm:w-auto bg-yellow-400 text-black px-4 sm:px-6 py-3 sm:py-4 rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition-colors duration-200 font-medium text-sm sm:text-base lg:text-lg whitespace-nowrap">
-                                    Обрати
-                                </button>
+                                <div id="settlement-loader" class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                                </div>
+                                <!-- Custom arrow -->
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Warehouse selection -->
-                        <div class="grid grid-cols-1 text-black mx-auto gap-3 sm:gap-4 mt-4 hidden" id="warehouse-section">
-                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <!-- Warehouse Selection -->
+                        <div id="warehouse-section" class="mb-4 hidden">
+                            <div class="relative">
                                 <select
                                     id="warehouse-select"
-                                    class="w-full sm:flex-1 md:max-w-none rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200"
-                                    required>
-                                    <option value="" disabled selected>Відділення або поштомат</option>
+                                    class="w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black appearance-none cursor-pointer"
+                                    disabled>
+                                    <option value="" selected>Оберіть відділення або поштомат...</option>
                                 </select>
-                                <button
-                                    id="set-warehouse-btn"
-                                    type="button"
-                                    class="w-full sm:w-auto bg-yellow-400 text-black px-4 sm:px-6 py-3 sm:py-4 rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition-colors duration-200 font-medium text-sm sm:text-base lg:text-lg whitespace-nowrap">
-                                    Обрати
-                                </button>
+                                <div id="warehouse-loader" class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                                </div>
+                                <!-- Custom arrow -->
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Loading indicator -->
-                        <div class="text-center mt-4 hidden" id="loading">
-                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                            <p class="mt-2 text-white">Завантаження...</p>
+                        <!-- Selected Address Display -->
+                        <div id="selected-address" class="hidden bg-green-100 text-green-800 p-3 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <div>
+                                    <div class="font-semibold">Обрана адреса:</div>
+                                    <div id="address-text" class="text-sm"></div>
+                                    <button id="change-address" class="text-blue-600 hover:text-blue-800 text-sm underline mt-1">
+                                        Змінити адресу
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main order form (hidden initially) -->
+                <!-- Main Order Form -->
                 <div id="order-form-section" class="hidden">
                     <form id="unified-order-form">
                         <!-- Contact Information -->
-                        <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg">
+                        <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg mb-6">
                             <div class="w-11/12 mx-auto py-6">
-                                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Контактні данні</h2>
+                                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Контактні дані</h2>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 text-black mx-auto gap-3">
                                     <input
                                         class="rounded-lg p-3 border-none placeholder-slate-600 text-sm sm:text-base focus:ring-2 focus:ring-yellow-400 outline-none"
-                                        placeholder="+380" name="phone" value="+380" type="tel" required>
+                                        placeholder="+380"
+                                        name="phone"
+                                        value="+380"
+                                        type="tel"
+                                        required>
                                     <input
                                         class="rounded-lg p-3 border-none placeholder-slate-600 text-sm sm:text-base focus:ring-2 focus:ring-yellow-400 outline-none"
-                                        placeholder="Електронна пошта" name="email" type="email" required>
+                                        placeholder="Електронна пошта"
+                                        name="email"
+                                        type="email"
+                                        required>
                                     <input
                                         class="rounded-lg p-3 border-none placeholder-slate-600 text-sm sm:text-base focus:ring-2 focus:ring-yellow-400 outline-none"
-                                        placeholder="Ім'я" name="name" type="text" required>
+                                        placeholder="Ім'я"
+                                        name="name"
+                                        type="text"
+                                        required>
                                     <input
                                         class="rounded-lg p-3 border-none placeholder-slate-600 text-sm sm:text-base focus:ring-2 focus:ring-yellow-400 outline-none"
-                                        placeholder="Прізвище" name="surname" type="text" required>
+                                        placeholder="Прізвище"
+                                        name="surname"
+                                        type="text"
+                                        required>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Payment -->
-                        <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg mt-6">
+                        <div class="bg-blue-400 text-white rounded-lg w-full shadow-lg">
                             <div class="w-11/12 mx-auto py-6">
                                 <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Оплата</h2>
                                 <div class="grid grid-cols-1 text-black mx-auto gap-3">
-                                    <div class="flex items-center gap-3 bg-white rounded-lg px-3 py-3 hover:bg-gray-50 transition-colors">
-                                        <input id="radio-3"
-                                               class="w-4 h-4 cursor-pointer text-yellow-400 bg-white border-yellow-400"
-                                               name="payment" type="radio" value="card" required>
-                                        <label class="cursor-pointer text-black text-sm sm:text-base font-medium flex-1"
-                                               for="radio-3">
+                                    <label class="flex items-center gap-3 bg-white rounded-lg px-3 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                                        <input
+                                            id="payment-card"
+                                            class="w-4 h-4 cursor-pointer text-yellow-400 bg-white border-yellow-400"
+                                            name="payment"
+                                            type="radio"
+                                            value="card"
+                                            required>
+                                        <span class="text-black text-sm sm:text-base font-medium flex-1">
                                             Карткою на сайті
-                                        </label>
-                                    </div>
+                                        </span>
+                                    </label>
 
-                                    <div class="flex items-center gap-3 bg-white rounded-lg px-3 py-3 hover:bg-gray-50 transition-colors">
-                                        <input id="radio-4"
-                                               class="w-4 h-4 cursor-pointer text-yellow-400 bg-white border-yellow-400"
-                                               name="payment" type="radio" value="cash" required>
-                                        <label class="cursor-pointer text-black text-sm sm:text-base font-medium flex-1"
-                                               for="radio-4">
+                                    <label class="flex items-center gap-3 bg-white rounded-lg px-3 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                                        <input
+                                            id="payment-cash"
+                                            class="w-4 h-4 cursor-pointer text-yellow-400 bg-white border-yellow-400"
+                                            name="payment"
+                                            type="radio"
+                                            value="cash"
+                                            required>
+                                        <span class="text-black text-sm sm:text-base font-medium flex-1">
                                             При отриманні
-                                        </label>
-                                    </div>
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -164,8 +194,12 @@
                     <!-- Order Details -->
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between items-center">
-                            <span class="text-slate-600 text-sm sm:text-base">{{ session('cart')['quantity'] }} товар(и) на суму</span>
-                            <span class="font-semibold text-sm sm:text-base">{{ session('cart')['total'] }} грн</span>
+                            <span class="text-slate-600 text-sm sm:text-base">
+                                {{ session('cart')['quantity'] }} товар(и) на суму
+                            </span>
+                            <span class="font-semibold text-sm sm:text-base">
+                                {{ session('cart')['total'] }} грн
+                            </span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-slate-600 text-sm sm:text-base">Вартість доставки</span>
@@ -179,12 +213,18 @@
                     <!-- Total -->
                     <div class="flex justify-between items-center mb-8">
                         <span class="text-lg sm:text-xl font-semibold">До сплати</span>
-                        <span class="font-bold text-xl sm:text-2xl lg:text-3xl" id="total-amount">{{ isset($deliveryCost) ? session('cart')['total'] + $deliveryCost : session('cart')['total']  }} грн</span>
+                        <span class="font-bold text-xl sm:text-2xl lg:text-3xl" id="total-amount">
+                            {{ isset($deliveryCost) ? session('cart')['total'] + $deliveryCost : session('cart')['total'] }} грн
+                        </span>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" form="unified-order-form" id="submit-btn"
-                            class="w-full bg-gray-400 text-xl sm:text-2xl lg:text-3xl text-white font-bold py-3 sm:py-4 rounded-lg text-center">
+                    <button
+                        type="submit"
+                        form="unified-order-form"
+                        id="submit-btn"
+                        disabled
+                        class="w-full bg-gray-400 text-xl sm:text-2xl lg:text-3xl text-white font-bold py-3 sm:py-4 rounded-lg text-center transition-all duration-200 disabled:cursor-not-allowed">
                         Оберіть адресу доставки
                     </button>
 
@@ -204,314 +244,512 @@
 </main>
 
 <script>
-    // Зберігаємо дані адреси
-    let addressData = {
-        search: '',
-        settlement: '',
-        warehouse: ''
-    };
+    class OrderFormManager {
+        constructor() {
+            this.addressData = {
+                search: '',
+                settlement: '',
+                warehouse: '',
+                settlementName: '',
+                warehouseName: ''
+            };
 
-    // Зберігаємо дані для селектів
-    let settlementsData = [];
-    let warehousesData = [];
+            this.settlementsData = [];
+            this.warehousesData = [];
+            this.searchTimeout = null;
 
-    // Функція для показу/приховування завантаження
-    function toggleLoading(show) {
-        const loading = document.getElementById('loading');
-        if (show) {
-            loading.classList.remove('hidden');
-        } else {
-            loading.classList.add('hidden');
-        }
-    }
-
-    // Функція для показу debug інформації
-    function showDebug(message, isError = true) {
-        const debugPanel = document.getElementById('debug-panel');
-        const debugMessage = document.getElementById('debug-message');
-
-        debugMessage.textContent = message;
-        debugPanel.classList.remove('hidden');
-
-        if (!isError) {
-            debugPanel.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4';
-        } else {
-            debugPanel.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+            this.initializeElements();
+            this.attachEventListeners();
+            this.checkCSRFToken();
         }
 
-        console.log('Debug:', message);
-    }
-
-    // Функція для реальних AJAX запитів
-    async function makeAjaxRequest(url, data) {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-        showDebug(`Відправляємо запит на: ${url}`, false);
-        showDebug(`CSRF Token: ${csrfToken ? 'знайдений' : 'НЕ ЗНАЙДЕНИЙ'}`, csrfToken ? false : true);
-        showDebug(`Дані запиту: ${JSON.stringify(data)}`, false);
-
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(data)
-        };
-
-        // Додаємо CSRF токен тільки якщо він є
-        if (csrfToken) {
-            requestOptions.headers['X-CSRF-TOKEN'] = csrfToken;
+        initializeElements() {
+            this.elements = {
+                citySearch: document.getElementById('city-search'),
+                settlementSelect: document.getElementById('settlement-select'),
+                warehouseSelect: document.getElementById('warehouse-select'),
+                settlementSection: document.getElementById('settlement-section'),
+                warehouseSection: document.getElementById('warehouse-section'),
+                orderFormSection: document.getElementById('order-form-section'),
+                selectedAddress: document.getElementById('selected-address'),
+                addressText: document.getElementById('address-text'),
+                changeAddressBtn: document.getElementById('change-address'),
+                submitBtn: document.getElementById('submit-btn'),
+                orderForm: document.getElementById('unified-order-form'),
+                deliveryCost: document.getElementById('delivery-cost'),
+                totalAmount: document.getElementById('total-amount'),
+                debugPanel: document.getElementById('debug-panel'),
+                debugMessage: document.getElementById('debug-message'),
+                searchLoader: document.getElementById('search-loader'),
+                settlementLoader: document.getElementById('settlement-loader'),
+                warehouseLoader: document.getElementById('warehouse-loader')
+            };
         }
 
-        try {
-            const response = await fetch(url, requestOptions);
+        attachEventListeners() {
+            // City search with debounce
+            this.elements.citySearch.addEventListener('input', (e) => {
+                clearTimeout(this.searchTimeout);
+                const value = e.target.value.trim();
 
-            showDebug(`Статус відповіді: ${response.status} ${response.statusText}`, false);
-
-            // Спробуємо отримати текст відповіді для відладки
-            const responseText = await response.text();
-            showDebug(`Текст відповіді: ${responseText.substring(0, 200)}...`, false);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}, response: ${responseText}`);
-            }
-
-            // Парсимо JSON
-            let jsonData;
-            try {
-                jsonData = JSON.parse(responseText);
-            } catch (parseError) {
-                throw new Error(`JSON parse error: ${parseError.message}, response: ${responseText}`);
-            }
-
-            showDebug(`Успішна відповідь: ${JSON.stringify(jsonData)}`, false);
-            return jsonData;
-
-        } catch (error) {
-            showDebug(`Помилка запиту: ${error.message}`, true);
-            throw error;
-        }
-    }
-
-    // Пошук населених пунктів
-    document.getElementById('search-btn').addEventListener('click', async function() {
-        const searchInput = document.getElementById('city-search');
-        const searchValue = searchInput.value.trim();
-
-        if (!searchValue) {
-            showDebug('Порожнє поле пошуку', true);
-            alert('Введіть назву міста');
-            return;
-        }
-
-        showDebug(`Початок пошуку для: "${searchValue}"`, false);
-        toggleLoading(true);
-
-        try {
-            const response = await makeAjaxRequest('{{ route('orders.searchSettlement') }}', { search: searchValue });
-
-            if (!response.success) {
-                showDebug(`Сервер повернув помилку: ${response.error || 'невідома помилка'}`, true);
-                alert(response.error || 'Помилка пошуку населених пунктів');
-                return;
-            }
-
-            addressData.search = searchValue;
-            settlementsData = response.settlements;
-
-            showDebug(`Знайдено населених пунктів: ${response.settlements ? response.settlements.length : 0}`, false);
-
-            // Заповнюємо селект населених пунктів
-            const settlementSelect = document.getElementById('settlement-select');
-            settlementSelect.innerHTML = '<option value="" disabled selected>Місто</option>';
-
-            if (response.settlements && response.settlements.length > 0) {
-                response.settlements.forEach(settlement => {
-                    const option = document.createElement('option');
-                    option.value = settlement.Ref;
-                    option.textContent = settlement.Present;
-                    settlementSelect.appendChild(option);
-                });
-
-                // Показуємо секцію вибору населеного пункту
-                document.getElementById('settlement-section').classList.remove('hidden');
-                showDebug('Секція вибору населеного пункту показана', false);
-            } else {
-                showDebug('Немає населених пунктів у відповіді', true);
-            }
-
-        } catch (error) {
-            showDebug(`Виняток під час пошуку: ${error.message}`, true);
-            alert('Помилка пошуку населених пунктів: ' + error.message);
-        } finally {
-            toggleLoading(false);
-        }
-    });
-
-    // Вибір населеного пункту
-    document.getElementById('choose-settlement-btn').addEventListener('click', async function() {
-        const settlementSelect = document.getElementById('settlement-select');
-        const settlementValue = settlementSelect.value;
-
-        if (!settlementValue) {
-            showDebug('Не обрано населений пункт', true);
-            alert('Оберіть населений пункт');
-            return;
-        }
-
-        showDebug(`Обрано населений пункт: ${settlementValue}`, false);
-        toggleLoading(true);
-
-        try {
-            const response = await makeAjaxRequest('{{ route('orders.chooseSettlement') }}', { settlement: settlementValue });
-
-            if (!response.success) {
-                showDebug(`Помилка отримання відділень: ${response.error || 'невідома помилка'}`, true);
-                alert(response.error || 'Помилка отримання відділень');
-                return;
-            }
-
-            addressData.settlement = settlementValue;
-            warehousesData = response.warehouses;
-
-            showDebug(`Знайдено відділень: ${response.warehouses ? response.warehouses.length : 0}`, false);
-
-            // Заповнюємо селект відділень
-            const warehouseSelect = document.getElementById('warehouse-select');
-            warehouseSelect.innerHTML = '<option value="" disabled selected>Відділення або поштомат</option>';
-
-            if (response.warehouses && response.warehouses.length > 0) {
-                response.warehouses.forEach(warehouse => {
-                    const option = document.createElement('option');
-                    option.value = warehouse.Ref;
-                    option.textContent = warehouse.Description;
-                    warehouseSelect.appendChild(option);
-                });
-
-                // Показуємо секцію вибору відділення
-                document.getElementById('warehouse-section').classList.remove('hidden');
-                showDebug('Секція вибору відділення показана', false);
-            }
-
-        } catch (error) {
-            showDebug(`Виняток під час отримання відділень: ${error.message}`, true);
-            alert('Помилка отримання відділень: ' + error.message);
-        } finally {
-            toggleLoading(false);
-        }
-    });
-
-    // Вибір відділення
-    document.getElementById('set-warehouse-btn').addEventListener('click', async function() {
-        const warehouseSelect = document.getElementById('warehouse-select');
-        const warehouseValue = warehouseSelect.value;
-
-        if (!warehouseValue) {
-            showDebug('Не обрано відділення', true);
-            alert('Оберіть відділення');
-            return;
-        }
-
-        showDebug(`Обрано відділення: ${warehouseValue}`, false);
-        toggleLoading(true);
-
-        try {
-            const response = await makeAjaxRequest('{{ route('orders.setWarehouse') }}', { warehouse: warehouseValue });
-
-            if (!response.success) {
-                showDebug('Помилка розрахунку вартості доставки', true);
-                alert('Помилка розрахунку вартості доставки');
-                return;
-            }
-
-            addressData.warehouse = warehouseValue;
-
-            // Оновлюємо вартість доставки
-            const deliveryCost = response.deliveryCost;
-            const productCosts = response.productCosts;
-            document.getElementById('delivery-cost').textContent = deliveryCost + ' грн';
-
-            // Оновлюємо загальну суму (1500 + вартість доставки)
-            const total = productCosts + deliveryCost;
-            document.getElementById('total-amount').textContent = total + ' грн';
-
-            // Показуємо форму замовлення
-            document.getElementById('order-form-section').classList.remove('hidden');
-
-            // Активуємо кнопку підтвердження
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.classList.remove('bg-gray-400');
-            submitBtn.classList.add('bg-blue-400', 'hover:bg-blue-500', 'active:bg-blue-600', 'transition-colors', 'focus:ring-4', 'focus:ring-blue-300', 'outline-none');
-            submitBtn.textContent = 'Підтвердити замовлення';
-
-            showDebug(`Вартість доставки: ${deliveryCost} грн, загальна сума: ${total} грн`, false);
-
-        } catch (error) {
-            showDebug(`Виняток під час розрахунку доставки: ${error.message}`, true);
-            alert('Помилка розрахунку вартості доставки: ' + error.message);
-        } finally {
-            toggleLoading(false);
-        }
-    });
-
-    // Обробка відправки замовлення
-    document.getElementById('unified-order-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        if (!addressData.warehouse) {
-            showDebug('Спроба відправки без вибору адреси', true);
-            alert('Спочатку оберіть адресу доставки');
-            return;
-        }
-
-        const formData = new FormData(this);
-        formData.append('settlement', addressData.settlement);
-        formData.append('warehouse', addressData.warehouse);
-
-        const paymentMethod = formData.get('payment');
-        showDebug(`Відправка замовлення з оплатою: ${paymentMethod}`, false);
-
-        toggleLoading(true);
-
-        try {
-            if (paymentMethod === 'card') {
-                await handleCardPayment(formData);
-            } else {
-                const response = await fetch('{{ route('orders.createCounterparty') }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showDebug(`Замовлення створено успішно. ТТН: ${data.ttn_number}`, false);
-                    alert('Успіх!\n' + data.message + '\nНомер ТТН: ' + data.ttn_number);
-                    // Перенаправлення на головну сторінку
-                    window.location.href = '{{ route('home') }}';
+                if (value.length >= 2) {
+                    this.searchTimeout = setTimeout(() => {
+                        this.searchSettlements(value);
+                    }, 500);
                 } else {
-                    showDebug(`Помилка створення замовлення: ${data.message}`, true);
-                    alert('Помилка: ' + data.message);
+                    this.hideSettlementSection();
+                }
+            });
+
+            // Settlement selection
+            this.elements.settlementSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    this.chooseSettlement(e.target.value);
+                }
+            });
+
+            // Warehouse selection
+            this.elements.warehouseSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    this.setWarehouse(e.target.value);
+                }
+            });
+
+            // Change address button
+            this.elements.changeAddressBtn.addEventListener('click', () => {
+                this.resetAddressSelection();
+            });
+
+            // Form submission
+            this.elements.orderForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.submitOrder();
+            });
+
+            // Phone input formatting
+            const phoneInput = this.elements.orderForm.querySelector('input[name="phone"]');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', (e) => {
+                    this.formatPhoneNumber(e.target);
+                });
+            }
+        }
+
+        formatPhoneNumber(input) {
+            let value = input.value.replace(/\D/g, '');
+
+            if (!value.startsWith('380')) {
+                if (value.startsWith('0')) {
+                    value = '380' + value.substring(1);
+                } else if (value.length > 0 && !value.startsWith('380')) {
+                    value = '380' + value;
                 }
             }
-        } catch (error) {
-            showDebug(`Виняток під час створення замовлення: ${error.message}`, true);
-            alert('Виникла помилка при створенні замовлення: ' + error.message);
-        } finally {
-            toggleLoading(false);
-        }
-    });
 
-    async function handleCardPayment(formData) {
-        try {
-            const response = await fetch('{{ route('orders.createCounterparty') }}', {
+            // Limit to Ukrainian phone number length
+            if (value.length > 12) {
+                value = value.substring(0, 12);
+            }
+
+            // Format as +380 XX XXX XX XX
+            let formatted = '+380';
+            if (value.length > 3) {
+                formatted = '+380 ' + value.substring(3, 5);
+            }
+            if (value.length > 5) {
+                formatted += ' ' + value.substring(5, 8);
+            }
+            if (value.length > 8) {
+                formatted += ' ' + value.substring(8, 10);
+            }
+            if (value.length > 10) {
+                formatted += ' ' + value.substring(10, 12);
+            }
+
+            input.value = formatted;
+        }
+
+        checkCSRFToken() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                this.showDebug('УВАГА: CSRF токен не знайдено в мета-тегах!', true);
+            }
+        }
+
+        showDebug(message, isError = false) {
+            this.elements.debugMessage.textContent = message;
+            this.elements.debugPanel.classList.remove('hidden');
+
+            if (isError) {
+                this.elements.debugPanel.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+            } else {
+                this.elements.debugPanel.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4';
+            }
+
+            console.log(`Debug (${isError ? 'Error' : 'Info'}):`, message);
+
+            // Auto-hide debug messages after 5 seconds
+            setTimeout(() => {
+                this.elements.debugPanel.classList.add('hidden');
+            }, 5000);
+        }
+
+        showLoader(type, show = true) {
+            const loader = this.elements[`${type}Loader`];
+            if (loader) {
+                loader.classList.toggle('hidden', !show);
+            }
+        }
+
+        async makeRequest(url, data) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(data)
+            };
+
+            if (csrfToken) {
+                options.headers['X-CSRF-TOKEN'] = csrfToken;
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const text = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                }
+
+                return JSON.parse(text);
+            } catch (error) {
+                this.showDebug(`Помилка запиту: ${error.message}`, true);
+                throw error;
+            }
+        }
+
+        async searchSettlements(searchValue) {
+            if (!searchValue.trim()) return;
+
+            this.showLoader('search');
+            this.showDebug(`Пошук населених пунктів: "${searchValue}"`);
+
+            try {
+                // Replace with your actual route - removing Laravel Blade syntax for demo
+                const url = '{{ route('orders.searchSettlement') }}'; // Replace with actual URL
+                const response = await this.makeRequest(url, {
+                    search: searchValue
+                });
+
+                if (!response.success) {
+                    throw new Error(response.error || 'Помилка пошуку');
+                }
+
+                this.addressData.search = searchValue;
+                this.settlementsData = response.settlements || [];
+
+                this.populateSettlementSelect();
+                this.showSettlementSection();
+
+                this.showDebug(`Знайдено ${this.settlementsData.length} населених пунктів`);
+
+            } catch (error) {
+                this.showDebug(`Помилка пошуку: ${error.message}`, true);
+            } finally {
+                this.showLoader('search', false);
+            }
+        }
+
+        populateSettlementSelect() {
+            const select = this.elements.settlementSelect;
+            select.innerHTML = '<option value="">Оберіть місто...</option>';
+
+            this.settlementsData.forEach(settlement => {
+                const option = document.createElement('option');
+                option.value = settlement.Ref;
+                option.textContent = settlement.Present;
+                select.appendChild(option);
+            });
+
+            select.disabled = false;
+        }
+
+        showSettlementSection() {
+            this.elements.settlementSection.classList.remove('hidden');
+            this.hideWarehouseSection();
+        }
+
+        hideSettlementSection() {
+            this.elements.settlementSection.classList.add('hidden');
+            this.elements.settlementSelect.disabled = true;
+            this.hideWarehouseSection();
+        }
+
+        async chooseSettlement(settlementRef) {
+            this.showLoader('settlement');
+            this.showDebug(`Обрано населений пункт: ${settlementRef}`);
+
+            try {
+                const url = '{{ route('orders.chooseSettlement') }}';
+                const response = await this.makeRequest(url, {
+                    settlement: settlementRef
+                });
+
+                if (!response.success) {
+                    throw new Error(response.error || 'Помилка отримання відділень');
+                }
+
+                this.addressData.settlement = settlementRef;
+                this.addressData.settlementName = this.elements.settlementSelect.selectedOptions[0]?.textContent || '';
+                this.warehousesData = response.warehouses || [];
+
+                this.populateWarehouseSelect();
+                this.showWarehouseSection();
+
+                this.showDebug(`Знайдено ${this.warehousesData.length} відділень`);
+
+            } catch (error) {
+                this.showDebug(`Помилка отримання відділень: ${error.message}`, true);
+            } finally {
+                this.showLoader('settlement', false);
+            }
+        }
+
+        populateWarehouseSelect() {
+            const select = this.elements.warehouseSelect;
+            select.innerHTML = '<option value="">Оберіть відділення або поштомат...</option>';
+
+            this.warehousesData.forEach(warehouse => {
+                const option = document.createElement('option');
+                option.value = warehouse.Ref;
+                option.textContent = warehouse.Description;
+                select.appendChild(option);
+            });
+
+            select.disabled = false;
+        }
+
+        showWarehouseSection() {
+            this.elements.warehouseSection.classList.remove('hidden');
+        }
+
+        hideWarehouseSection() {
+            this.elements.warehouseSection.classList.add('hidden');
+            this.elements.warehouseSelect.disabled = true;
+            this.hideOrderForm();
+        }
+
+        async setWarehouse(warehouseRef) {
+            this.showLoader('warehouse');
+            this.showDebug(`Обрано відділення: ${warehouseRef}`);
+
+            try {
+                const url = '{{ route('orders.setWarehouse') }}'; // Replace with actual URL
+                const response = await this.makeRequest(url, {
+                    warehouse: warehouseRef
+                });
+
+                if (!response.success) {
+                    throw new Error('Помилка розрахунку вартості доставки');
+                }
+
+                this.addressData.warehouse = warehouseRef;
+                this.addressData.warehouseName = this.elements.warehouseSelect.selectedOptions[0]?.textContent || '';
+
+                this.updateDeliveryInfo(response);
+                this.showAddressConfirmation();
+                this.showOrderForm();
+                this.activateSubmitButton();
+
+                this.showDebug(`Вартість доставки: ${response.deliveryCost} грн`);
+
+            } catch (error) {
+                this.showDebug(`Помилка розрахунку доставки: ${error.message}`, true);
+            } finally {
+                this.showLoader('warehouse', false);
+            }
+        }
+
+        updateDeliveryInfo(response) {
+            const deliveryCost = response.deliveryCost || 0;
+            const productCosts = response.productCosts || 0;
+            const total = productCosts + deliveryCost;
+
+            this.elements.deliveryCost.textContent = `${deliveryCost} грн`;
+            this.elements.totalAmount.textContent = `${total} грн`;
+        }
+
+        showAddressConfirmation() {
+            const addressText = `${this.addressData.settlementName}, ${this.addressData.warehouseName}`;
+            this.elements.addressText.textContent = addressText;
+            this.elements.selectedAddress.classList.remove('hidden');
+        }
+
+        showOrderForm() {
+            this.elements.orderFormSection.classList.remove('hidden');
+        }
+
+        hideOrderForm() {
+            this.elements.orderFormSection.classList.add('hidden');
+            this.deactivateSubmitButton();
+        }
+
+        activateSubmitButton() {
+            const btn = this.elements.submitBtn;
+            btn.disabled = false;
+            btn.classList.remove('bg-gray-400');
+            btn.classList.add('bg-blue-400', 'hover:bg-blue-500', 'active:bg-blue-600', 'transition-colors', 'focus:ring-4', 'focus:ring-blue-300');
+            btn.textContent = 'Підтвердити замовлення';
+        }
+
+        deactivateSubmitButton() {
+            const btn = this.elements.submitBtn;
+            btn.disabled = true;
+            btn.classList.remove('bg-blue-400', 'hover:bg-blue-500', 'active:bg-blue-600', 'transition-colors', 'focus:ring-4', 'focus:ring-blue-300');
+            btn.classList.add('bg-gray-400');
+            btn.textContent = 'Оберіть адресу доставки';
+        }
+
+        resetAddressSelection() {
+            // Reset address data
+            this.addressData = {
+                search: '',
+                settlement: '',
+                warehouse: '',
+                settlementName: '',
+                warehouseName: ''
+            };
+
+            // Reset form elements
+            this.elements.citySearch.value = '';
+            this.elements.settlementSelect.innerHTML = '<option value="">Оберіть місто...</option>';
+            this.elements.warehouseSelect.innerHTML = '<option value="">Оберіть відділення або поштомат...</option>';
+
+            // Hide sections
+            this.hideSettlementSection();
+            this.hideWarehouseSection();
+            this.hideOrderForm();
+            this.elements.selectedAddress.classList.add('hidden');
+
+            // Reset delivery info - you may need to adjust the default total
+            this.elements.deliveryCost.textContent = '- грн';
+            // Replace with actual cart total from session or variable
+            this.elements.totalAmount.textContent = '0 грн'; // Replace with actual value
+
+            // Focus on search
+            this.elements.citySearch.focus();
+        }
+
+        validateForm() {
+            const form = this.elements.orderForm;
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+
+            // Validate phone number
+            const phoneInput = form.querySelector('input[name="phone"]');
+            if (phoneInput) {
+                const phoneValue = phoneInput.value.replace(/\D/g, '');
+                if (phoneValue.length !== 12 || !phoneValue.startsWith('380')) {
+                    phoneInput.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    phoneInput.classList.remove('border-red-500');
+                }
+            }
+
+            // Validate email
+            const emailInput = form.querySelector('input[name="email"]');
+            if (emailInput) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailInput.value)) {
+                    emailInput.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    emailInput.classList.remove('border-red-500');
+                }
+            }
+
+            return isValid;
+        }
+
+        async submitOrder() {
+            if (!this.addressData.warehouse) {
+                this.showDebug('Спроба відправки без вибору адреси', true);
+                alert('Спочатку оберіть адресу доставки');
+                return;
+            }
+
+            if (!this.validateForm()) {
+                this.showDebug('Форма містить помилки', true);
+                alert('Будь ласка, заповніть всі поля правильно');
+                return;
+            }
+
+            // Disable submit button to prevent double submission
+            this.elements.submitBtn.disabled = true;
+            this.elements.submitBtn.textContent = 'Обробка...';
+
+            const formData = new FormData(this.elements.orderForm);
+            formData.append('settlement', this.addressData.settlement);
+            formData.append('warehouse', this.addressData.warehouse);
+
+            const paymentMethod = formData.get('payment');
+
+            try {
+                if (paymentMethod === 'card') {
+                    await this.handleCardPayment(formData);
+                } else {
+                    await this.handleCashPayment(formData);
+                }
+            } catch (error) {
+                this.showDebug(`Помилка створення замовлення: ${error.message}`, true);
+                alert('Виникла помилка при створенні замовлення: ' + error.message);
+            } finally {
+                // Re-enable submit button
+                this.activateSubmitButton();
+            }
+        }
+
+        async handleCashPayment(formData) {
+            const url = '{{ route('orders.createCounterparty') }}'; // Replace with actual URL
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showDebug(`Замовлення створено успішно. ТТН: ${data.ttn_number}`);
+                alert('Успіх!\n' + data.message + '\nНомер ТТН: ' + data.ttn_number);
+                window.location.href = '{{ route('home') }}'; // Replace with actual home route
+            } else {
+                throw new Error(data.message);
+            }
+        }
+
+        async handleCardPayment(formData) {
+            const url = '{{ route('orders.createCounterparty') }}'; // Replace with actual URL
+            const response = await fetch(url, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -524,62 +762,87 @@
             const data = await response.json();
 
             if (data.success && data.payment_type === 'card') {
-                showDebug('Підготовка до оплати карткою', false);
+                this.createWayForPayForm(data.wayforpay_data);
+            } else {
+                throw new Error(data.message || 'Помилка підготовки оплати');
+            }
+        }
 
-                // Створюємо форму WayForPay
-                const wayForPayForm = document.createElement('form');
-                wayForPayForm.method = 'POST';
-                wayForPayForm.action = 'https://secure.wayforpay.com/pay';
-                wayForPayForm.acceptCharset = 'utf-8';
-                wayForPayForm.style.display = 'none';
+        createWayForPayForm(wayForPayData) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://secure.wayforpay.com/pay';
+            form.acceptCharset = 'utf-8';
+            form.style.display = 'none';
 
-                const wayForPayData = data.wayforpay_data;
-
-                if (!wayForPayData.merchantAccount) {
-                    showDebug('Відсутній merchantAccount у відповіді', true);
-                    alert('Помилка конфігурації платіжної системи');
-                    return;
-                }
-
-                for (const [key, value] of Object.entries(wayForPayData)) {
-                    if (Array.isArray(value)) {
-                        value.forEach((item, index) => {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = key + '[]';
-                            input.value = item;
-                            wayForPayForm.appendChild(input);
-                        });
-                    } else {
+            for (const [key, value] of Object.entries(wayForPayData)) {
+                if (Array.isArray(value)) {
+                    value.forEach((item, index) => {
                         const input = document.createElement('input');
                         input.type = 'hidden';
-                        input.name = key;
-                        input.value = value;
-                        wayForPayForm.appendChild(input);
-                    }
+                        input.name = `${key}[]`;
+                        input.value = item;
+                        form.appendChild(input);
+                    });
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    form.appendChild(input);
                 }
-
-                document.body.appendChild(wayForPayForm);
-                wayForPayForm.submit();
-            } else {
-                showDebug(`Помилка підготовки оплати: ${data.message || 'невідома помилка'}`, true);
-                alert('Помилка підготовки оплати: ' + (data.message || 'Невідома помилка'));
             }
-        } catch (error) {
-            showDebug(`Виняток під час підготовки оплати: ${error.message}`, true);
-            alert('Помилка підготовки оплати: ' + error.message);
+
+            document.body.appendChild(form);
+
+            this.showDebug('Перенаправлення на платіжну систему...');
+
+            // Submit form to WayForPay
+            form.submit();
+
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(form);
+            }, 1000);
+        }
+
+        // Helper method to get cart total (you might need to adjust this)
+        getCartTotal() {
+            // This should return the cart total from your backend or session
+            // For now, returning 0 as placeholder
+            return 0;
+        }
+
+        // Method to handle errors gracefully
+        handleError(error, context = '') {
+            console.error(`Error in ${context}:`, error);
+            this.showDebug(`${context}: ${error.message}`, true);
+
+            // You can add additional error reporting here
+            // For example, sending error logs to your backend
         }
     }
 
-    // Початкова перевірка на наявність CSRF токену
+    // Initialize the form manager when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (!csrfToken) {
-            showDebug('УВАГА: CSRF токен не знайдено в мета-тегах! Це може бути причиною помилок.', true);
-        } else {
-            showDebug('CSRF токен знайдено успішно', false);
+        try {
+            window.orderFormManager = new OrderFormManager();
+        } catch (error) {
+            console.error('Failed to initialize OrderFormManager:', error);
+
+            // Show a user-friendly error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+            errorDiv.innerHTML = `
+            <strong class="font-bold">Помилка ініціалізації:</strong>
+            <span class="block sm:inline">Сторінка не може працювати правильно. Будь ласка, оновіть сторінку.</span>
+        `;
+
+            const main = document.querySelector('main');
+            if (main) {
+                main.insertBefore(errorDiv, main.firstChild);
+            }
         }
     });
 </script>
-</body>
-</html>
+@endsection

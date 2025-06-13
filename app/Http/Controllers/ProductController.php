@@ -35,7 +35,7 @@ class ProductController extends Controller
         $product = $this->productService->getById($id);
 
         $products = Product::whereNot('id', $id)->get();
-
+//dd($products);
         return view('site.product', [
             'productsChunks' => $products->chunk(3),
             'products' => $products,
