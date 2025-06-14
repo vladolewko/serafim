@@ -18,10 +18,19 @@ class ProductController extends Controller
     public function getAll()
     {
         $products = $this->productService->getAll();
+        $applyings = Product::getApplyingOptions();
+
+        $productsForApplying = $products->groupBy('applying.value')
+            ->map(fn($group) => $group->first());
+
+//        dd($productsForApplying);
+
 
         return view('site.index', [
             'productsChunks' => $products->chunk(3),
-            'products' => $products
+            'products' => $products,
+            'applyings' => $applyings,
+            'productsForApplying' => $productsForApplying
         ]);
     }
     /**
@@ -35,11 +44,11 @@ class ProductController extends Controller
         $product = $this->productService->getById($id);
 
         $products = Product::whereNot('id', $id)->get();
-//dd($products);
+        //dd($products);
         return view('site.product', [
             'productsChunks' => $products->chunk(3),
             'products' => $products,
-            'product' => $product
+            'product' => $product,
         ]);
     }
 }

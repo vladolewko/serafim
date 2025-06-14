@@ -75,7 +75,7 @@ radios.forEach((radio) => {
 
             // Зміна тексту залежно від вибраної опції
             switch (radio.value) {
-                case "1":
+                case "citizen":
                     top7.textContent =
                         "ТОП-7 Переваг знання законів та прав людини";
                     description.textContent =
@@ -95,7 +95,7 @@ radios.forEach((radio) => {
                     result_desc.textContent =
                         "Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.";
                     break;
-                case "2":
+                case "military":
                     top7.textContent =
                         "ТОП-7 переваг знання Конституції України, Статутів ЗСУ, норм міжнародного гуманітарного права та законів про соціальні гарантії військовослужбовців";
                     description.textContent =
@@ -118,7 +118,7 @@ radios.forEach((radio) => {
                     result_desc.textContent =
                         "ти — захищений і обізнаний військовослужбовець, що впевнено відстоює свої права та професійно виконує обов’язки.";
                     break;
-                case "3":
+                case "policeman":
                     top7.textContent =
                         "ТОП-7 переваг підготовленого поліцейського";
                     description.textContent =
@@ -141,7 +141,7 @@ radios.forEach((radio) => {
                     result_desc.textContent =
                         "Результат: ти — захищений і обізнаний поліцейський, що впевнено відстоює свої права та професійно виконує обов’язки.";
                     break;
-                case "4":
+                case "lawyer":
                     top7.textContent =
                         "ТОП-7 Переваг знання законів та прав людини";
                     description.textContent =

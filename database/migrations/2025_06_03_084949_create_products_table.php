@@ -22,6 +22,7 @@ return new class extends Migration
             $table->json('content'); // Вміст комплекту +
             $table->json('for_whom'); // Для кого призначено комплект +
             $table->string('appointment'); // призначення комплекту +
+            $table->enum('applying',  \App\Enums\ProductApplyingEnum::values())->default('citizen');
             $table->timestamps();
         });
     }

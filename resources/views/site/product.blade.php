@@ -310,7 +310,7 @@
                                             @if($product->getMedia('product_images')->isNotEmpty())
                                                 <img class="w-full h-full"
                                                      src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                                     alt="{{ $product->title }}">
+                                                     alt="{{ $product->name }}">
 
                                             @endif
                                         </div>
