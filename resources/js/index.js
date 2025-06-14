@@ -42,8 +42,18 @@ const argument6 = document.getElementById("argument-6");
 const argument7 = document.getElementById("argument-7");
 const result = document.getElementById("result");
 const result_desc = document.getElementById("result_desc");
+const price = document.getElementById("price");
 
 radios.forEach((radio) => {
+    if (radio.value === "citizen") {
+        radio.checked = true;
+
+        radio.closest("div").classList.add("bg-yellow-400");
+        radio.nextElementSibling.classList.remove("text-white");
+
+        console.log("lala");
+    }
+
     radio.addEventListener("change", () => {
         const parentDiv = radio.closest("div");
         const label = radio.nextElementSibling;
@@ -75,7 +85,7 @@ radios.forEach((radio) => {
 
             // Зміна тексту залежно від вибраної опції
             switch (radio.value) {
-                case "1":
+                case "citizen":
                     top7.textContent =
                         "ТОП-7 Переваг знання законів та прав людини";
                     description.textContent =
@@ -94,8 +104,9 @@ radios.forEach((radio) => {
                     result.textContent = "Результат: ";
                     result_desc.textContent =
                         "Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.";
+                    price.textContent = "600";
                     break;
-                case "2":
+                case "military":
                     top7.textContent =
                         "ТОП-7 переваг знання Конституції України, Статутів ЗСУ, норм міжнародного гуманітарного права та законів про соціальні гарантії військовослужбовців";
                     description.textContent =
@@ -117,8 +128,9 @@ radios.forEach((radio) => {
                     result.textContent = "Результат: ";
                     result_desc.textContent =
                         "ти — захищений і обізнаний військовослужбовець, що впевнено відстоює свої права та професійно виконує обов’язки.";
+                    price.textContent = "700";
                     break;
-                case "3":
+                case "policeman":
                     top7.textContent =
                         "ТОП-7 переваг підготовленого поліцейського";
                     description.textContent =
@@ -140,8 +152,9 @@ radios.forEach((radio) => {
                     result.textContent = "Результат: ";
                     result_desc.textContent =
                         "Результат: ти — захищений і обізнаний поліцейський, що впевнено відстоює свої права та професійно виконує обов’язки.";
+                    price.textContent = "800";
                     break;
-                case "4":
+                case "lawyer":
                     top7.textContent =
                         "ТОП-7 Переваг знання законів та прав людини";
                     description.textContent =
@@ -160,6 +173,7 @@ radios.forEach((radio) => {
                     result.textContent = "Результат: ";
                     result_desc.textContent =
                         "Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.";
+                    price.textContent = "900";
                     break;
             }
         }

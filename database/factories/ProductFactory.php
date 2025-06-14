@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ProductApplyingEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,6 +27,7 @@ class ProductFactory extends Factory
             'content' => json_encode(['some content', 'more content', 'even more content']),
             'for_whom' => json_encode(['tag1', 'tag2', 'tag3']),
             'appointment' => $this->faker->word(),
+            'applying' => $this->faker->randomElement(ProductApplyingEnum::cases()),
         ];
     }
 }

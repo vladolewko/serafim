@@ -200,7 +200,7 @@
                                name="content"
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
-                               placeholder="Опишіть вміст комплекту">
+                               placeholder="наприклад елемент1|елемент2|елемент3|">
                     </div>
 
                     <!-- Для кого призначено -->
@@ -214,7 +214,7 @@
                                name="for_whom"
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
-                               placeholder="наприклад: дітей 5-8 років">
+                               placeholder="наприклад призначення1|призначення2|призначення3|">
                     </div>
 
                     <!-- Призначення комплекту -->
@@ -229,6 +229,22 @@
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
                                placeholder="наприклад: навчання, розвиток">
+                    </div>
+                    <!-- категорія -->
+                    <div class="lg:col-span-2">
+                        <label for="applying" class="block text-sm font-semibold text-gray-700 mb-2">
+                            категорія
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <select  id="applying"
+                                 name="applying"
+                                 required
+                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400">
+                            <option value="">Виберіть категорію</option>
+                            @foreach($applyings as $name => $applying)
+                                <option value="{{ $name }}">{{ $applying }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <!-- Зображення -->

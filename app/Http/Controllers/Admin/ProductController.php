@@ -30,7 +30,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.products.create');
+        $applyings = Product::getApplyingOptions();
+
+        return view('admin.products.create', compact('applyings'));
     }
 
     /**
@@ -60,10 +62,12 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        $applyings = Product::getApplyingOptions();
+//        dd($applyings);
         $product = $this->productService->getById($id);
         $product->content = implode('|', $product->content);
         $product->for_whom = implode('|', $product->for_whom);
-        return view('admin.products.edit', compact('product'));
+        return view('admin.products.edit', compact('product', 'applyings'));
     }
 
     /**

@@ -128,29 +128,23 @@
 
     <div class="w-full lg:w-[50.25%]">
         <div class="flex gap-1 justify-start mt-0 lg:mt-8 flex-wrap">
-            <div class="flex items-center gap-2 bg-yellow-400 rounded-lg px-2 py-2 radio-div">
-                <input id="checkbox-1" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="1" checked>
-                <label class="cursor-pointer text-black text-sm lg:text-base" for="checkbox-1">Громадянину</label>
-            </div>
+            @foreach($applyings as $key => $value)
+<!-- {{--            $key -  'citizen', 'military', 'policeman', 'lawyer'--}}
+{{--            $value - 'громадянин','військовий','поліцейський','юрист'--}} -->
+
             <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
-                <input id="checkbox-2" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="2">
-                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-2">Військовослужбовцю</label>
+                <input id="checkbox-{{ $key }}" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="{{ $key }}">
+                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-{{ $key }}">{{ $value }}</label>
             </div>
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
-                <input id="checkbox-3" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="3">
-                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-3">Поліцейському</label>
-            </div>
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
-                <input id="checkbox-4" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="4">
-                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-4">Юристу</label>
-            </div>
+            @endforeach
+
         </div>
 
         <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px] lg:flex-1 rounded-lg mt-6 lg:mt-8"></div>
 
         <div class="flex flex-col sm:flex-row justify-between lg:justify-end mt-6 lg:my-5 items-center gap-4 lg:gap-5 pt-12">
             <div class="text-black text-2xl lg:text-4xl">
-                <span class="text-yellow-400">600 </span>грн
+                <span class="text-yellow-400" id="price">600 </span>грн
             </div>
             <button class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
                 замовити

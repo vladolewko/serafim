@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ProductApplyingEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -32,6 +34,8 @@ class UpdateProductRequest extends FormRequest
             'content' => 'required|string|max:1000',
             'for_whom' => 'required|string|max:1000',
             'appointment' => 'required|string|max:255',
+            'applying' => ['required', Rule::enum(ProductApplyingEnum::class)],
+
         ];
     }
 }
