@@ -490,7 +490,7 @@
                         <div class="bg-white flex flex-col items-center rounded-xl ">
                             <!-- posible img -->
 
-                            <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center">
+                            <div class="h-[212px] w-[212px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                 @if($product->getMedia('product_images')->isNotEmpty())
                                     <img src="{{ $product->getFirstMediaUrl('product_images') }}" alt="{{ $product->title }}">
                                 @endif
