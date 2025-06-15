@@ -60,7 +60,7 @@ radios.forEach((radio) => {
         const initialImageUrl = radio.dataset.imageUrl;
 
         if (price) price.textContent = initialPrice;
-        if (productHref) productHref.href = "/product/" + initialProductId;
+        if (productHref) productHref.href = "product/" + initialProductId;
         if (productImage) productImage.src = initialImageUrl;
 
         console.log("Citizen selected by default");
@@ -104,7 +104,7 @@ radios.forEach((radio) => {
 
             // Оновлення href для посилання
             if (productHref) {
-                productHref.href = "/product/" + productId;
+                productHref.href = "product/" + productId;
             }
 
             // Оновлення картинки
