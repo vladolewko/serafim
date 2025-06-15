@@ -128,29 +128,52 @@
 
     <div class="w-full lg:w-[50.25%]">
         <div class="flex gap-1 justify-start mt-0 lg:mt-8 flex-wrap">
-            @foreach($applyings as $key => $value)
+            @php
+                // Створюємо масиви для цін, ID та картинок
+                $prices = [];
+                $productIds = [];
+                $productImages = [];
 
-<!-- {{--            $key -  'citizen', 'military', 'policeman', 'lawyer'--}}
-{{--            $value - 'громадянин','військовий','поліцейський','юрист'--}} -->
+                foreach($productsForApplying as $product) {
+                    $applyingKey = $product->applying instanceof \BackedEnum ? $product->applying->value : $product->applying;
+                    $prices[$applyingKey] = $product->price;
+                    $productIds[$applyingKey] = $product->id;
 
-            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
-                <input id="checkbox-{{ $key }}" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="{{ $key }}">
-                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-{{ $key }}">{{ $value }}</label>
-
+                    // Отримуємо URL першої картинки
+                    $productImages[$applyingKey] = $product->getFirstMediaUrl('product_images') ?: '/images/default-product.jpg';
+                }
+            @endphp
+                @foreach($applyings as $key => $value)
+                    <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
+                        <input id="checkbox-{{ $key }}"
+                               class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white"
+                               name="options"
+                               type="radio"
+                               value="{{ $key }}"
+                               data-price="{{ $prices[$key] ?? 0 }}"
+                               data-product-id="{{ $productIds[$key] ?? 0 }}"
+                               data-image-url="{{ $productImages[$key] ?? '/images/default-product.jpg' }}"
+                               data-href="{{ route('product.show', $productIds[$key] ?? 1) }}">
+                        <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-{{ $key }}">{{ $value }}</label>
+                    </div>
+                @endforeach
             </div>
-            @endforeach
 
+        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px] lg:flex-1 rounded-lg mt-6 lg:mt-8">
+            <img id="productImage"
+                 src="/images/default-product.jpg"
+                 alt="Product Image"
+                 class="w-full h-full object-cover rounded-lg">
         </div>
-
-        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px] lg:flex-1 rounded-lg mt-6 lg:mt-8"></div>
 
         <div class="flex flex-col sm:flex-row justify-between lg:justify-end mt-6 lg:my-5 items-center gap-4 lg:gap-5 pt-12">
             <div class="text-black text-2xl lg:text-4xl">
                 <span class="text-yellow-400" id="price">600 </span>грн
             </div>
-            <button class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                замовити
-            </button>
+{{--            <button class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">--}}
+{{--                замовити--}}
+{{--            </button>--}}
+            <a href="" id="productHref" class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">замовити</a>
         </div>
     </div>
 </div>
