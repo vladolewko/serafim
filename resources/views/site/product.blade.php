@@ -80,7 +80,7 @@
 
                 <!-- Price -->
                 <div class="mb-6">
-                    <p class="text-4xl sm:text-5xl font-bold">
+                    <p class="text-4xl sm:text-5xl font-bold text-center sm:text-left">
                         <span class="text-yellow-400">{{ (int)$product->price }}</span> грн
                     </p>
                 </div>
@@ -106,7 +106,7 @@
                     <!-- Order button -->
 
 
-                    <form id="orderForm" action="{{ route('orders.create') }}" method="post"
+                    <form class="flex justify-end" id="orderForm" action="{{ route('orders.create') }}" method="post"
                           data-product-id="{{ $product->id ?? '' }}">
 
                         @csrf
@@ -281,7 +281,7 @@
 
     <!-- Knowledge Pack Selection Desktop -->
     @if($productsChunks->isNotEmpty())
-    <div class="hidden lg:block mx-auto my-72 section" id="knowledge_pack">
+    <div class="hidden lg:block mx-auto my-72 section lg:w-5/6 xl:w-4/6" id="knowledge_pack">
         <div class="flex">
             <div>
                 <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span></p>
@@ -317,8 +317,7 @@
 
                                         <p class="text-2xl/6 font-bold text-center">{{$product->name}}</p>
                                         <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
-                                        <a class="bg-yellow-400 px-8 m-3 rounded-lg text-black text-xl"
-                                           href="{{ route('product.show', $product->id) }}">перейти</a>
+                                        <a class="flex items-center bg-yellow-400 px-8 m-3 rounded-lg inline-block align-middle h-10 text-black text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg" href="{{ route('product.show', $product->id) }}">перейти</a>
 
                                     </div>
                                 </div>

@@ -129,12 +129,14 @@
     <div class="w-full lg:w-[50.25%]">
         <div class="flex gap-1 justify-start mt-0 lg:mt-8 flex-wrap">
             @foreach($applyings as $key => $value)
-{{--            $key -  'citizen', 'military', 'policeman', 'lawyer'--}}
-{{--            $value - 'громадянин','військовий','поліцейський','юрист'--}}
 
-            <div class="flex items-center gap-2 bg-yellow-400 rounded-lg px-2 py-2 radio-div">
-                <input id="checkbox-{{ $key }}" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="{{ $key }}" checked>
-                <label class="cursor-pointer text-black text-sm lg:text-base" for="checkbox-{{ $key }}">{{ $value }}</label>
+<!-- {{--            $key -  'citizen', 'military', 'policeman', 'lawyer'--}}
+{{--            $value - 'громадянин','військовий','поліцейський','юрист'--}} -->
+
+            <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
+                <input id="checkbox-{{ $key }}" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="{{ $key }}">
+                <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-{{ $key }}">{{ $value }}</label>
+
             </div>
             @endforeach
 
@@ -144,7 +146,7 @@
 
         <div class="flex flex-col sm:flex-row justify-between lg:justify-end mt-6 lg:my-5 items-center gap-4 lg:gap-5 pt-12">
             <div class="text-black text-2xl lg:text-4xl">
-                <span class="text-yellow-400">600 </span>грн
+                <span class="text-yellow-400" id="price">600 </span>грн
             </div>
             <button class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
                 замовити
@@ -444,7 +446,7 @@
     <div class="flex">
         <div>
             <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span></p>
-            <p class="text-xl text-slate-600">Замовляй свій набір та будь захищеним знанями...</p>
+            <p class="text-xl text-slate-500">Замовляй свій набір та будь захищеним знанями...</p>
         </div>
         <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
     </div>
@@ -473,7 +475,7 @@
 
                             <p class="text-2xl/6 font-bold text-center">{{$product->name}}</p>
                             <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
-                            <a class="bg-yellow-400 px-8 m-3 rounded-lg text-black text-xl" href="{{ route('product.show', $product->id) }}">перейти</a>
+                            <a class="flex items-center bg-yellow-400 px-8 m-3 rounded-lg inline-block align-middle h-10 text-black text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg" href="{{ route('product.show', $product->id) }}">перейти</a>
 
                         </div>
                     </div>
@@ -706,6 +708,17 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- @foreach ($products as $product)
+    <p>{{ $product->name }}</p>
+    <form action="{{ route('orders.create', $product->id) }}" method="GET">
+        <input type="text" name="quantity" placeholder="Кількість" required>
+        <button type="submit">Замовити</button>
+    </form>
+@endforeach -->
+
 
 
 <script src="https://cdn.tailwindcss.com"></script>
