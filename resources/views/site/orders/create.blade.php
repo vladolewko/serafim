@@ -17,12 +17,6 @@
             </ul>
         </nav>
 
-        <!-- Debug Panel -->
-        <div id="debug-panel" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 hidden">
-            <strong class="font-bold">Debug Info:</strong>
-            <span class="block sm:inline" id="debug-message"></span>
-        </div>
-
         <!-- Page Title -->
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8 lg:mb-16">Оформлення замовлення</h1>
 
@@ -369,29 +363,154 @@
             input.value = formatted;
         }
 
+        showSuccessMessage(message) {
+            this.showToast(message, 'success');
+        }
+
+        showErrorMessage(message) {
+            this.showToast(message, 'error');
+        }
+
+        showInfoMessage(message) {
+            this.showToast(message, 'info');
+        }
+
+        showToast(message, type = 'info') {
+            // Створюємо toast повідомлення
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+
+            const colors = {
+                success: 'bg-green-500 text-white',
+                error: 'bg-red-500 text-white',
+                info: 'bg-blue-500 text-white',
+                warning: 'bg-yellow-500 text-black'
+            };
+
+            toast.classList.add(...colors[type].split(' '));
+
+            const icon = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ',
+                warning: '⚠'
+            };
+
+            toast.innerHTML = `
+        <div class="flex items-center gap-3">
+            <span class="text-lg font-bold">${icon[type]}</span>
+            <span>${message}</span>
+            <button class="ml-2 text-xl font-bold opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+    `;
+
+            document.body.appendChild(toast);
+
+            // Анімація появи
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            // Автоматичне приховування через 5 секунд
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        showSuccessToastWithRedirect(title, message, redirectUrl, delay = 3000) {
+            const toast = document.createElement('div');
+            toast.className = `fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50`;
+
+            toast.innerHTML = `
+        <div class="bg-white rounded-lg p-6 max-w-md mx-4 text-center">
+            <div class="text-green-500 text-6xl mb-4">✓</div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
+            <p class="text-gray-600 mb-4">${message}</p>
+            <div class="text-sm text-gray-500">
+                Перенаправлення через <span id="countdown">${delay/1000}</span> секунд...
+            </div>
+        </div>
+    `;
+
+            document.body.appendChild(toast);
+
+            // Зворотний відлік
+            let seconds = delay / 1000;
+            const countdownEl = toast.querySelector('#countdown');
+            const interval = setInterval(() => {
+                seconds--;
+                countdownEl.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            // Перенаправлення
+            setTimeout(() => {
+                window.location.href = redirectUrl;
+            }, delay);
+        }
+
+// 2. Покращений метод checkCSRFToken
         checkCSRFToken() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]');
             if (!csrfToken) {
-                this.showDebug('УВАГА: CSRF токен не знайдено в мета-тегах!', true);
+                this.showErrorMessage('Помилка безпеки. Будь ласка, оновіть сторінку.');
+                return false;
             }
+            return true;
         }
 
-        showDebug(message, isError = false) {
-            this.elements.debugMessage.textContent = message;
-            this.elements.debugPanel.classList.remove('hidden');
-
-            if (isError) {
-                this.elements.debugPanel.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
-            } else {
-                this.elements.debugPanel.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4';
+// 3. Покращений makeRequest з кращою обробкою помилок
+        async makeRequest(url, data) {
+            if (!this.checkCSRFToken()) {
+                throw new Error('CSRF токен відсутній');
             }
 
-            console.log(`Debug (${isError ? 'Error' : 'Info'}):`, message);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            // Auto-hide debug messages after 5 seconds
-            setTimeout(() => {
-                this.elements.debugPanel.classList.add('hidden');
-            }, 5000);
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data)
+            };
+
+            try {
+                const response = await fetch(url, options);
+
+                if (!response.ok) {
+                    // Спробуємо отримати повідомлення про помилку з відповіді
+                    let errorMessage = 'Виникла помилка на сервері';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.message || errorData.error || errorMessage;
+                    } catch (e) {
+                        // Якщо не можемо парсити JSON, використовуємо стандартне повідомлення
+                        if (response.status === 404) errorMessage = 'Сервіс тимчасово недоступний';
+                        else if (response.status === 500) errorMessage = 'Внутрішня помилка сервера';
+                        else if (response.status === 422) errorMessage = 'Некоректні дані';
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                if (error instanceof TypeError && error.message.includes('fetch')) {
+                    throw new Error('Проблеми з підключенням до інтернету');
+                }
+                throw error;
+            }
         }
 
         showLoader(type, show = true) {
@@ -401,65 +520,37 @@
             }
         }
 
-        async makeRequest(url, data) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify(data)
-            };
-
-            if (csrfToken) {
-                options.headers['X-CSRF-TOKEN'] = csrfToken;
-            }
-
-            try {
-                const response = await fetch(url, options);
-                const text = await response.text();
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${text}`);
-                }
-
-                return JSON.parse(text);
-            } catch (error) {
-                this.showDebug(`Помилка запиту: ${error.message}`, true);
-                throw error;
-            }
-        }
 
         async searchSettlements(searchValue) {
             if (!searchValue.trim()) return;
 
             this.showLoader('search');
-            this.showDebug(`Пошук населених пунктів: "${searchValue}"`);
 
             try {
-                // Replace with your actual route - removing Laravel Blade syntax for demo
-                const url = '{{ route('orders.searchSettlement') }}'; // Replace with actual URL
+                const url = '{{ route('orders.searchSettlement') }}'; // Замініть на актуальний URL
                 const response = await this.makeRequest(url, {
                     search: searchValue
                 });
 
                 if (!response.success) {
-                    throw new Error(response.error || 'Помилка пошуку');
+                    throw new Error(response.error || 'Не вдалося знайти населені пункти');
                 }
 
                 this.addressData.search = searchValue;
                 this.settlementsData = response.settlements || [];
 
+                if (this.settlementsData.length === 0) {
+                    this.showInfoMessage('Населені пункти не знайдено. Спробуйте інший запит.');
+                    this.hideSettlementSection();
+                    return;
+                }
+
                 this.populateSettlementSelect();
                 this.showSettlementSection();
 
-                this.showDebug(`Знайдено ${this.settlementsData.length} населених пунктів`);
-
             } catch (error) {
-                this.showDebug(`Помилка пошуку: ${error.message}`, true);
+                this.showErrorMessage(error.message);
+                this.hideSettlementSection();
             } finally {
                 this.showLoader('search', false);
             }
@@ -492,29 +583,33 @@
 
         async chooseSettlement(settlementRef) {
             this.showLoader('settlement');
-            this.showDebug(`Обрано населений пункт: ${settlementRef}`);
 
             try {
-                const url = '{{ route('orders.chooseSettlement') }}';
+                const url = '{{ route('orders.chooseSettlement') }}'; // Замініть на актуальний URL
                 const response = await this.makeRequest(url, {
                     settlement: settlementRef
                 });
 
                 if (!response.success) {
-                    throw new Error(response.error || 'Помилка отримання відділень');
+                    throw new Error(response.error || 'Не вдалося завантажити відділення');
                 }
 
                 this.addressData.settlement = settlementRef;
                 this.addressData.settlementName = this.elements.settlementSelect.selectedOptions[0]?.textContent || '';
                 this.warehousesData = response.warehouses || [];
 
+                if (this.warehousesData.length === 0) {
+                    this.showInfoMessage('У цьому місті немає доступних відділень');
+                    this.hideWarehouseSection();
+                    return;
+                }
+
                 this.populateWarehouseSelect();
                 this.showWarehouseSection();
 
-                this.showDebug(`Знайдено ${this.warehousesData.length} відділень`);
-
             } catch (error) {
-                this.showDebug(`Помилка отримання відділень: ${error.message}`, true);
+                this.showErrorMessage(error.message);
+                this.hideWarehouseSection();
             } finally {
                 this.showLoader('settlement', false);
             }
@@ -546,16 +641,15 @@
 
         async setWarehouse(warehouseRef) {
             this.showLoader('warehouse');
-            this.showDebug(`Обрано відділення: ${warehouseRef}`);
 
             try {
-                const url = '{{ route('orders.setWarehouse') }}'; // Replace with actual URL
+                const url = '{{ route('orders.setWarehouse') }}'; // Замініть на актуальний URL
                 const response = await this.makeRequest(url, {
                     warehouse: warehouseRef
                 });
 
                 if (!response.success) {
-                    throw new Error('Помилка розрахунку вартості доставки');
+                    throw new Error('Не вдалося розрахувати вартість доставки');
                 }
 
                 this.addressData.warehouse = warehouseRef;
@@ -566,10 +660,11 @@
                 this.showOrderForm();
                 this.activateSubmitButton();
 
-                this.showDebug(`Вартість доставки: ${response.deliveryCost} грн`);
+                this.showSuccessMessage('Адресу доставки обрано успішно');
 
             } catch (error) {
-                this.showDebug(`Помилка розрахунку доставки: ${error.message}`, true);
+                this.showErrorMessage(error.message);
+                this.hideOrderForm();
             } finally {
                 this.showLoader('warehouse', false);
             }
@@ -649,38 +744,48 @@
             const form = this.elements.orderForm;
             const requiredFields = form.querySelectorAll('[required]');
             let isValid = true;
+            let errorMessages = [];
 
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
-                    field.classList.add('border-red-500');
+                    field.classList.add('border-red-500', 'border-2');
                     isValid = false;
+
+                    const fieldName = field.placeholder || field.name;
+                    errorMessages.push(`Поле "${fieldName}" обов'язкове для заповнення`);
                 } else {
-                    field.classList.remove('border-red-500');
+                    field.classList.remove('border-red-500', 'border-2');
                 }
             });
 
-            // Validate phone number
+            // Валідація телефону
             const phoneInput = form.querySelector('input[name="phone"]');
             if (phoneInput) {
                 const phoneValue = phoneInput.value.replace(/\D/g, '');
                 if (phoneValue.length !== 12 || !phoneValue.startsWith('380')) {
-                    phoneInput.classList.add('border-red-500');
+                    phoneInput.classList.add('border-red-500', 'border-2');
                     isValid = false;
+                    errorMessages.push('Некоректний номер телефону. Введіть український номер');
                 } else {
-                    phoneInput.classList.remove('border-red-500');
+                    phoneInput.classList.remove('border-red-500', 'border-2');
                 }
             }
 
-            // Validate email
+            // Валідація email
             const emailInput = form.querySelector('input[name="email"]');
             if (emailInput) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(emailInput.value)) {
-                    emailInput.classList.add('border-red-500');
+                    emailInput.classList.add('border-red-500', 'border-2');
                     isValid = false;
+                    errorMessages.push('Введіть коректну електронну адресу');
                 } else {
-                    emailInput.classList.remove('border-red-500');
+                    emailInput.classList.remove('border-red-500', 'border-2');
                 }
+            }
+
+            if (!isValid && errorMessages.length > 0) {
+                this.showErrorMessage(errorMessages[0]); // Показуємо першу помилку
             }
 
             return isValid;
@@ -688,20 +793,17 @@
 
         async submitOrder() {
             if (!this.addressData.warehouse) {
-                this.showDebug('Спроба відправки без вибору адреси', true);
-                alert('Спочатку оберіть адресу доставки');
+                this.showErrorMessage('Оберіть адресу доставки перед оформленням замовлення');
                 return;
             }
 
             if (!this.validateForm()) {
-                this.showDebug('Форма містить помилки', true);
-                alert('Будь ласка, заповніть всі поля правильно');
-                return;
+                return; // Помилки вже показані в validateForm
             }
 
-            // Disable submit button to prevent double submission
+            // Деактивуємо кнопку та показуємо процес
             this.elements.submitBtn.disabled = true;
-            this.elements.submitBtn.textContent = 'Обробка...';
+            this.elements.submitBtn.textContent = 'Створення замовлення...';
 
             const formData = new FormData(this.elements.orderForm);
             formData.append('settlement', this.addressData.settlement);
@@ -716,34 +818,42 @@
                     await this.handleCashPayment(formData);
                 }
             } catch (error) {
-                this.showDebug(`Помилка створення замовлення: ${error.message}`, true);
-                alert('Виникла помилка при створенні замовлення: ' + error.message);
+                this.showErrorMessage(error.message || 'Виникла помилка при створенні замовлення');
             } finally {
-                // Re-enable submit button
                 this.activateSubmitButton();
             }
         }
 
         async handleCashPayment(formData) {
-            const url = '{{ route('orders.createCounterparty') }}'; // Replace with actual URL
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+            const url = '{{ route('orders.createCounterparty') }}'; // Замініть на актуальний URL
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.showSuccessToastWithRedirect(
+                        'Замовлення успішно створено!',
+                        `ТТН: ${data.ttn_number}`,
+                        '{{ route('home') }}' // Замініть на актуальний маршрут
+                    );
+                } else {
+                    throw new Error(data.message || 'Помилка створення замовлення');
                 }
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                this.showDebug(`Замовлення створено успішно. ТТН: ${data.ttn_number}`);
-                alert('Успіх!\n' + data.message + '\nНомер ТТН: ' + data.ttn_number);
-                window.location.href = '{{ route('home') }}'; // Replace with actual home route
-            } else {
-                throw new Error(data.message);
+            } catch (error) {
+                if (error instanceof TypeError) {
+                    throw new Error('Проблеми з підключенням. Перевірте інтернет');
+                }
+                throw error;
             }
         }
 
@@ -795,7 +905,7 @@
 
             document.body.appendChild(form);
 
-            this.showDebug('Перенаправлення на платіжну систему...');
+            this.showInfoMessage('Перенаправлення на платіжну систему...');
 
             // Submit form to WayForPay
             form.submit();
@@ -822,6 +932,8 @@
             // For example, sending error logs to your backend
         }
     }
+
+
 
     // Initialize the form manager when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
