@@ -129,12 +129,14 @@
     <div class="w-full lg:w-[50.25%]">
         <div class="flex gap-1 justify-start mt-0 lg:mt-8 flex-wrap">
             @foreach($applyings as $key => $value)
+
 <!-- {{--            $key -  'citizen', 'military', 'policeman', 'lawyer'--}}
 {{--            $value - 'громадянин','військовий','поліцейський','юрист'--}} -->
 
             <div class="flex items-center gap-2 bg-blue-400 rounded-lg px-2 py-2 radio-div">
                 <input id="checkbox-{{ $key }}" class="w-4 h-4 cursor-pointer rounded-md text-blue-400 bg-white" name="options" type="radio" value="{{ $key }}">
                 <label class="cursor-pointer text-white text-sm lg:text-base" for="checkbox-{{ $key }}">{{ $value }}</label>
+
             </div>
             @endforeach
 
