@@ -1,5 +1,5 @@
 import "flowbite/dist/flowbite.min.js";
-import 'flowbite';
+import "flowbite";
 
 function smoothScrollToElement(targetId, offset = 80) {
     const targetElement = document.getElementById(targetId);
@@ -63,8 +63,6 @@ radios.forEach((radio) => {
         if (price) price.textContent = initialPrice;
         if (productHref) productHref.href = "product/" + initialProductId;
         if (productImage) productImage.src = initialImageUrl;
-
-        console.log("Citizen selected by default");
     }
 
     radio.addEventListener("change", () => {
@@ -116,17 +114,35 @@ radios.forEach((radio) => {
             // Зміна тексту залежно від вибраної опції
             switch (radio.value) {
                 case "citizen":
-                    if (top7) top7.textContent = "ТОП-7 Переваг знання законів та прав людини";
-                    if (description) description.textContent = "Знання Конституції України, законів, прав людини та міжнародного права — це не просто освіченість. Це влада, безпека та свобода у щоденному житті. Ось ключові переваги:";
-                    if (argument1) argument1.textContent = "Правовий захист у будь-якій ситуації";
-                    if (argument2) argument2.textContent = "Гарантована свобода та недоторканність";
-                    if (argument3) argument3.textContent = "Можливість законного самозахисту";
-                    if (argument4) argument4.textContent = "Контроль над державою, а не навпаки";
-                    if (argument5) argument5.textContent = "Неможливість маніпуляцій";
-                    if (argument6) argument6.textContent = "Готовність до міжнародного захисту";
-                    if (argument7) argument7.textContent = "Повага і впевненість";
+                    if (top7)
+                        top7.textContent =
+                            "ТОП-7 Переваг знання законів та прав людини";
+                    if (description)
+                        description.textContent =
+                            "Знання Конституції України, законів, прав людини та міжнародного права — це не просто освіченість. Це влада, безпека та свобода у щоденному житті. Ось ключові переваги:";
+                    if (argument1)
+                        argument1.textContent =
+                            "Правовий захист у будь-якій ситуації";
+                    if (argument2)
+                        argument2.textContent =
+                            "Гарантована свобода та недоторканність";
+                    if (argument3)
+                        argument3.textContent =
+                            "Можливість законного самозахисту";
+                    if (argument4)
+                        argument4.textContent =
+                            "Контроль над державою, а не навпаки";
+                    if (argument5)
+                        argument5.textContent = "Неможливість маніпуляцій";
+                    if (argument6)
+                        argument6.textContent =
+                            "Готовність до міжнародного захисту";
+                    if (argument7)
+                        argument7.textContent = "Повага і впевненість";
                     if (result) result.textContent = "Результат: ";
-                    if (result_desc) result_desc.textContent = "Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.";
+                    if (result_desc)
+                        result_desc.textContent =
+                            "Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.";
                     break;
                 case "military":
                     top7.textContent =

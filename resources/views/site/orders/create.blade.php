@@ -778,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script> -->
 
 
-@vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js', 'resources/js/order.js'])
+<!-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js', 'resources/js/order.js']) -->
 
 <script>
     // Передаємо маршрути з Laravel у JavaScript
@@ -790,7 +790,6 @@ document.addEventListener('DOMContentLoaded', function() {
         home: '{{ route('home') }}'
     };
 </script>
-<<<<<<< HEAD
 
 
 {{-- Ініціалізуємо клас після завантаження DOM --}}
