@@ -1,71 +1,5 @@
-<!-- <div>
-    <!-- I have not failed. I've just found 10,000 ways that won't work. - Thomas Edison -->
-    <!-- <p>admin products</p>
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-        <a href="{{ route('admin.novaPostSetup') }}">Nova Poshta Setup</a>
-
-
-     <a href="{{ route('admin.logout') }}">Log Out</a>
-     <a href="{{ route('admin.products.create') }}">Create New Product</a>
-
-     <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Edit</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($products as $product)
-                <tr>
-                    <td>{{ $product->id }}</td>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->price }}</td>
-                    <td></td>
-                    <td>
-                        <a href="{{ route('admin.products.edit', $product->id) }}">Edit</a>
-                    </td>
-
-                </tr>
-            @endforeach
-        </tbody>
-     </table>
-</div> -->
-
-
-
-
-
-
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>Serafim</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
-
-    <!-- Styles / Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
-    @endif
-</head>
+@extends('layouts.admin')
+@section('content')
 <div class="min-h-screen bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- I have not failed. I've just found 10,000 ways that won't work. - Thomas Edison -->
@@ -262,3 +196,5 @@
         </div>
     </div>
 </div>
+
+@endsection

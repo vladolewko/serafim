@@ -1,61 +1,5 @@
-<!-- <div> @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        <label for="name">Назва:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="description">Опис:</label>
-        <input type="text" id="description" name="description" required>
-        <label for="price">ціна:</label>
-        <input type="text" id="price" name="price" required>
-        <label for="books_quantity">Кількість книг:</label>
-        <input type="number" id="books_quantity" name="books_quantity" required>
-        <label for="weight">вага:</label>
-        <input type="number" id="weight" name="weight" required>
-        <label for="dimension">розмір:</label>
-        <input type="text" id="dimension" name="dimension" required>
-        <label for="content">Вміст:</label>
-        <input type="text" id="content" name="content" required>
-        <label for="for_whom">Для кого призначено:</label>
-        <input type="text" id="for_whom" name="for_whom" required>
-        <label for="appointment">призначення комплект:</label>
-        <input type="text" id="appointment" name="appointment" required>
-        <label for="image">Зображення:</label>
-        <input type="file" id="image" name="product_image" required>
-
-        <button type="submit">Create Product</button>
-    </form>
-</div> -->
-
-
-
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>Serafim</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
-
-
-    <!-- Styles / Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
-    @endif
-</head>
+@extends('layouts.admin')
+@section('content')
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="max-w-4xl mx-auto px-4">
         <!-- Success Alert -->
@@ -341,6 +285,7 @@
         });
     </script>
 </div>
+@endsection
 
 
 

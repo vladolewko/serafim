@@ -247,9 +247,7 @@ class NovaPostController extends Controller
             'clientLastName' => $data['surname'],
             'clientEmail' => $data['email'],
             'defaultPaymentSystem' => 'card',
-
             'returnUrl' => 'http://localhost:8888/serafim/public/api/payment/success',
-//            'returnUrl' => '',
             'serviceUrl' => 'http://localhost:8888/serafim/public/api/payment/callback'
         ];
     }

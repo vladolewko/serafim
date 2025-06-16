@@ -1,5 +1,4 @@
-</div>
-</main>
+
 <footer class="w-full bg-blue-400 py-6 xl:py-10">
     <div class="flex flex-col xl:flex-row w-11/12 lg:w-5/6 xl:w-4/6 xl:justify-between items-center xl:items-start mx-auto gap-8 xl:gap-0">
         <!-- Логотип та соцмережі -->
@@ -67,8 +66,3 @@
     <hr class="w-10/12 sm:w-8/12 xl:w-7/12 mx-auto">
 </footer>
 
-
-
-
-</body>
-</html>
