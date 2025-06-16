@@ -1,7 +1,6 @@
 @extends('layouts.site')
-
+<script src="{{ asset('js/index.js') }}"></script>
 @include('components.header')
-
 
 @section('content')
     <div class="w-full">
