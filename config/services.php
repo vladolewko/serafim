@@ -34,5 +34,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'wayforpay' => [
+        'merchant_account' => env('WAYFORPAY_MERCHANT_ACCOUNT'),
+        'secret_key' => env('WAYFORPAY_SECRET_KEY'),
+        'url' => env('WAYFORPAY_DOMAIN'),
+    ],
 
 ];

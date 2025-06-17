@@ -86,12 +86,13 @@ class Order extends Model
     /**
      * Додає дані ТТН
      */
-    public function addTTNData(string $ttnNumber, array $ttnResponse): void
+    public function addTTNData($ttnNumber, $ttnData)
     {
-        $this->ttn_number = $ttnNumber;
-        $this->ttn_response = $ttnResponse;
-        $this->status = 'processing';
-        $this->save();
+        $this->update([
+            'ttn_number' => $ttnNumber,
+            'ttn_data' => json_encode($ttnData),
+            'status' => 'shipped'
+        ]);
     }
 
     /**

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Services\NovaPostService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class NovaPostController extends Controller
 {
@@ -17,118 +19,287 @@ class NovaPostController extends Controller
         $this->novaPostService = $novaPostService;
     }
 
+    /**
+     * Валідація пошуку населених пунктів
+     */
     public function searchSettlement(Request $request)
     {
-        $search = $request->input('search');
-        $settlements = $this->novaPostService->searchSettlement($search);
+        try {
+            $validated = $request->validate([
+                'search' => [
+                    'required',
+                    'string',
+                    'min:2',
+                    'max:100',
+                    'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'
+                ]
+            ], [
+                'search.required' => 'Введіть назву населеного пункту',
+                'search.min' => 'Назва повинна містити мінімум 2 символи',
+                'search.max' => 'Назва занадто довга (максимум 100 символів)',
+                'search.regex' => 'Назва може містити лише українські букви, пробіли, дефіси та апострофи'
+            ]);
 
-        if (empty($settlements)) {
+            $search = trim($validated['search']);
+            $settlements = $this->novaPostService->searchSettlement($search);
+
+            if (empty($settlements)) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Населені пункти з такою назвою не знайдено. Спробуйте ввести частину назви або перевірте правильність написання.',
+                    'suggestions' => 'Спробуйте ввести: "Київ", "Львів", "Одеса" або частину назви вашого міста'
+                ]);
+            }
+
+            Session::put('nova_post_data', ['search' => $search]);
+
+            return response()->json([
+                'success' => true,
+                'settlements' => $settlements,
+                'addressData' => ['search' => $search],
+                'count' => count($settlements)
+            ]);
+
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'Немає населених пунктів, що відповідають запиту'
+                'error' => $e->validator->errors()->first(),
+                'validation_errors' => $e->validator->errors()->all()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Settlement search error', [
+                'message' => $e->getMessage(),
+                'search' => $request->input('search'),
+                'trace' => $e->getTraceAsString()
             ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Сталася помилка при пошуку населених пунктів. Спробуйте пізніше.'
+            ], 500);
         }
-
-        Session::put('nova_post_data', ['search' => $search]);
-
-        return response()->json([
-            'success' => true,
-            'settlements' => $settlements,
-            'addressData' => ['search' => $search]
-        ]);
     }
 
+    /**
+     * Валідація вибору населеного пункту
+     */
     public function chooseSettlement(Request $request)
     {
-        $settlementRef = $request->input('settlement');
-        $data = Session::get('nova_post_data', []);
-        $data['settlement'] = $settlementRef;
-        Session::put('nova_post_data', $data);
+        try {
+            $validated = $request->validate([
+                'settlement' => [
+                    'required',
+                    'string',
+                    'size:36' // UUID format
+                ]
+            ], [
+                'settlement.required' => 'Оберіть населений пункт зі списку',
+                'settlement.size' => 'Некоректний ідентифікатор населеного пункту'
+            ]);
 
-        $warehouses = $this->novaPostService->getWarehouses($settlementRef);
-        $settlements = $this->novaPostService->searchSettlement($data['search']);
+            $settlementRef = $validated['settlement'];
+            $data = Session::get('nova_post_data', []);
 
-        if (empty($warehouses)) {
+            if (empty($data['search'])) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Спочатку виконайте пошук населеного пункту'
+                ], 400);
+            }
+
+            $data['settlement'] = $settlementRef;
+            Session::put('nova_post_data', $data);
+
+            $warehouses = $this->novaPostService->getWarehouses($settlementRef);
+            $settlements = $this->novaPostService->searchSettlement($data['search']);
+
+            if (empty($warehouses)) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'У обраному населеному пункті немає доступних відділень Нової Пошти',
+                    'suggestion' => 'Спробуйте обрати сусіднє місто або зв\'яжіться з підтримкою'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'warehouses' => $warehouses,
+                'settlements' => $settlements,
+                'addressData' => $data,
+                'warehouses_count' => count($warehouses)
+            ]);
+
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'Немає відділень, що відповідають запиту'
+                'error' => $e->validator->errors()->first(),
+                'validation_errors' => $e->validator->errors()->all()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Settlement choose error', [
+                'message' => $e->getMessage(),
+                'settlement' => $request->input('settlement'),
+                'trace' => $e->getTraceAsString()
             ]);
-        }
 
-        return response()->json([
-            'success' => true,
-            'warehouses' => $warehouses,
-            'settlements' => $settlements,
-            'addressData' => $data
-        ]);
+            return response()->json([
+                'success' => false,
+                'error' => 'Помилка при завантаженні відділень. Спробуйте оновити сторінку.'
+            ], 500);
+        }
     }
 
+    /**
+     * Валідація вибору відділення
+     */
     public function setWarehouse(Request $request)
     {
-        $warehouseRef = $request->input('warehouse');
-        $data = Session::get('nova_post_data', []);
-        $data['warehouse'] = $warehouseRef;
-        Session::put('nova_post_data', $data);
+        try {
+            $validated = $request->validate([
+                'warehouse' => [
+                    'required',
+                    'string',
+                    'size:36' // UUID format
+                ]
+            ], [
+                'warehouse.required' => 'Оберіть відділення або поштомат',
+                'warehouse.size' => 'Некоректний ідентифікатор відділення'
+            ]);
 
-        $settlements = $this->novaPostService->searchSettlement($data['search']);
-        $warehouses = $this->novaPostService->getWarehouses($data['settlement']);
+            $warehouseRef = $validated['warehouse'];
+            $data = Session::get('nova_post_data', []);
 
-        $settlementRef = $data['settlement'];
-        $weight = session('cart')['product']->weight * session('cart')['quantity'];
-        $total = (int)session('cart')['total'];
-        $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total);
+            // Перевірка чи є всі необхідні дані в сесії
+            if (empty($data['settlement']) || empty($data['search'])) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Втрачено дані про населений пункт. Почніть процес заново.'
+                ], 400);
+            }
 
-        return response()->json([
-            'success' => true,
-            'deliveryCost' => $deliveryCost,
-            'productCosts' => session('cart')['total'],
-            'addressData' => $data,
-            'settlements' => $settlements,
-            'warehouses' => $warehouses
-        ]);
+            // Перевірка чи є товари в корзині
+            $cart = session('cart');
+            if (empty($cart) || empty($cart['product']) || empty($cart['quantity'])) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Корзина порожня. Додайте товари перед оформленням замовлення.',
+                    'redirect' => route('home')
+                ], 400);
+            }
+
+            $data['warehouse'] = $warehouseRef;
+            Session::put('nova_post_data', $data);
+
+            $settlements = $this->novaPostService->searchSettlement($data['search']);
+            $warehouses = $this->novaPostService->getWarehouses($data['settlement']);
+
+            $settlementRef = $data['settlement'];
+            $weight = $cart['product']->weight * $cart['quantity'];
+            $total = (int)$cart['total'];
+
+            // Валідація параметрів для розрахунку доставки
+            if ($weight <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Некоректна вага товару. Зв\'яжіться з підтримкою.'
+                ], 400);
+            }
+
+            if ($total <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Некоректна вартість товару. Зв\'яжіться з підтримкою.'
+                ], 400);
+            }
+
+            $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total);
+
+            if ($deliveryCost === false || $deliveryCost < 0) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Не вдалося розрахувати вартість доставки. Спробуйте обрати інше відділення.'
+                ], 400);
+            }
+
+            return response()->json([
+                'success' => true,
+                'deliveryCost' => $deliveryCost,
+                'productCosts' => $cart['total'],
+                'totalAmount' => $cart['total'] + $deliveryCost,
+                'addressData' => $data,
+                'settlements' => $settlements,
+                'warehouses' => $warehouses
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->validator->errors()->first(),
+                'validation_errors' => $e->validator->errors()->all()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Warehouse set error', [
+                'message' => $e->getMessage(),
+                'warehouse' => $request->input('warehouse'),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Помилка при розрахунку доставки. Спробуйте ще раз.'
+            ], 500);
+        }
     }
 
     public function createCounterparty(Request $request)
     {
         try {
-            $payment = $request->input('payment');
             $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'surname' => 'required|string|max:255',
-                'phone' => 'required|string|max:25',
-                'email' => 'required|string|max:255'
+                'name' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
+                'surname' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
+                'phone' => ['required', 'string', 'regex:/^\+380\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/'],
+                'email' => ['required', 'email', 'max:255'],
+                'payment' => ['required', 'in:cash,card']
             ]);
 
             $cart = session()->get('cart');
             $data = Session::get('nova_post_data', []);
 
-            if (empty($data['settlement']) || empty($data['warehouse'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Не обрано населений пункт або відділення'
-                ]);
+            if (empty($cart)) {
+                return response()->json(['success' => false, 'message' => 'Корзина порожня'], 400);
             }
 
-            $counterparty = $this->novaPostService->createCounterparty($validated);
+            if (empty($data['settlement']) || empty($data['warehouse'])) {
+                return response()->json(['success' => false, 'message' => 'Не обрано адресу доставки'], 400);
+            }
 
+            $phoneForApi = preg_replace('/[^\d]/', '', $validated['phone']);
 
-            $settlementRef = $data['settlement'];
+            $counterparty = $this->novaPostService->createCounterparty([
+                'name' => trim($validated['name']),
+                'surname' => trim($validated['surname']),
+                'phone' => $phoneForApi,
+                'email' => strtolower(trim($validated['email']))
+            ]);
+
+            if (!$counterparty || empty($counterparty['Ref'])) {
+                return response()->json(['success' => false, 'message' => 'Не вдалося створити контрагента'], 400);
+            }
+
             $weight = $cart['product']->weight * $cart['quantity'];
             $total = (int)$cart['total'];
-            $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total);
+            $deliveryCost = 0;
             $totalAmount = $total + $deliveryCost;
 
-            $orderReference = Order::generateOrderReference();
-
             $order = Order::create([
-                'order_reference' => $orderReference,
+                'order_reference' => Order::generateOrderReference(),
                 'status' => 'pending',
-                'payment_type' => $payment,
-                'payment_status' => $payment === 'cash' ? 'pending' : 'pending',
-                'customer_name' => $validated['name'],
-                'customer_surname' => $validated['surname'],
+                'payment_type' => $validated['payment'],
+                'payment_status' => 'pending',
+                'customer_name' => trim($validated['name']),
+                'customer_surname' => trim($validated['surname']),
                 'customer_phone' => $validated['phone'],
-                'customer_email' => $validated['email'],
+                'customer_email' => strtolower(trim($validated['email'])),
                 'settlement_ref' => $data['settlement'],
                 'warehouse_ref' => $data['warehouse'],
                 'counterparty_ref' => $counterparty['Ref'],
@@ -139,302 +310,256 @@ class NovaPostController extends Controller
                 'total_amount' => $totalAmount
             ]);
 
-            if ($payment == 'cash') {
-
+            if ($validated['payment'] == 'cash') {
                 $ttn = $this->novaPostService->createTTN([
                     'settlement' => $data['settlement'],
                     'warehouse' => $data['warehouse'],
                     'counterparty_ref' => $counterparty['Ref'],
-
                     'contact_person_ref' => $counterparty['ContactPersonRef'],
+                    'phone' => $phoneForApi,
+                    'name' => trim($validated['name']),
+                    'surname' => trim($validated['surname']),
+                ], $cart, 'cash');
 
-                    'phone' => $validated['phone'],
-                    'name' => $validated['name'],
-                    'surname' => $validated['surname'],
-                ], $cart, $payment);
+                if (!$ttn || (isset($ttn['success']) && !$ttn['success'])) {
+                    $order->delete();
+                    return response()->json(['success' => false, 'message' => 'Не вдалося створити ТТН'], 400);
+                }
 
-                $order->addTTNData(
-                    $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер',
-                    $ttn
-                );
+                $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
+                $order->addTTNData($ttnNumber, $ttn);
 
-                Session::forget('nova_post_data');
-                Session::forget('cart');
+                Session::forget(['nova_post_data', 'cart']);
 
                 return response()->json([
                     'success' => true,
                     'ttn_number' => $order->ttn_number,
-                    'order_reference' => $order->order_reference,
                     'message' => 'ТТН успішно створено'
-                ], 200, [], JSON_UNESCAPED_UNICODE);
+                ]);
+            }
 
-            } elseif ($payment == 'card') {
-                $wayForPayData = $this->generateWayForPayData($validated, $totalAmount, $orderReference);
-
-                $order->wayforpay_data = $wayForPayData;
-                $order->save();
-
-                Session::forget('nova_post_data');
-                Session::forget('cart');
-
+            if ($validated['payment'] == 'card') {
                 return response()->json([
                     'success' => true,
                     'payment_type' => 'card',
-                    'order_reference' => $order->order_reference,
-                    'wayforpay_data' => $wayForPayData
+                    'wayforpay_data' => $this->prepareWayForPayData($order)
                 ]);
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Помилка валідації: ' . implode(', ', $e->validator->errors()->all())
-            ]);
+                'message' => 'Помилка валідації: ' . $e->validator->errors()->first()
+            ], 422);
 
         } catch (\Exception $e) {
-            Log::error('Error creating order in controller', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+            Log::error('Order creation error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
-    }
-
-    private function generateWayForPayData($data, $amount, $orderReference)
-    {
-        $amount = 5; // ТЕСТОВА СУМА
-        $merchantAccount = 'test_merch_n1';
-        $merchantSecret = 'flk3409refn54t54t*FNJRET';
-        $currency = 'UAH';
-        $orderDate = time();
-        $productName = 'Замовлення з інтернет-магазину';
-
-        $signatureString = $merchantAccount . ';' .
-            request()->getSchemeAndHttpHost() . ';' .
-            $orderReference . ';' .
-            $orderDate . ';' .
-            $amount . ';' .
-            $currency . ';' .
-            $productName . ';' .
-            1 . ';' .
-            $amount;
-
-        $signature = hash_hmac('md5', $signatureString, $merchantSecret);
-
-        Log::info('WayForPay signature data', [
-            'order_reference' => $orderReference,
-            'string' => $signatureString,
-            'signature' => $signature
-        ]);
-
-        return [
-            'merchantAccount' => $merchantAccount,
-            'merchantAuthType' => 'SimpleSignature',
-            'merchantDomainName' => request()->getSchemeAndHttpHost(),
-            'merchantSignature' => $signature,
-            'orderReference' => $orderReference,
-            'orderDate' => $orderDate,
-            'amount' => $amount,
-            'currency' => $currency,
-            'productName' => [$productName],
-            'productPrice' => [$amount],
-            'productCount' => [1],
-            'clientFirstName' => $data['name'],
-            'clientLastName' => $data['surname'],
-            'clientEmail' => $data['email'],
-            'defaultPaymentSystem' => 'card',
-            'returnUrl' => 'http://localhost:8888/serafim/public/api/payment/success',
-            'serviceUrl' => 'http://localhost:8888/serafim/public/api/payment/callback'
-        ];
-    }
-    public function paymentSuccessPage(Request $request)
-    {
-        try {
-            Log::info('=== PAYMENT SUCCESS PAGE START ===', [
-                'method' => $request->method(),
-                'path' => $request->path(),
-                'all_data' => $request->all(),
-                'referer' => $request->header('referer')
-            ]);
-
-            if ($request->has('debug')) {
-                return response()->json(['message' => 'Controller reached successfully']);
-            }
-
-            $orderReference = $request->input('orderReference');
-
-            if (!$orderReference) {
-                Log::warning('No order reference provided');
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Не вдалося знайти номер замовлення',
-                    'received_data' => $request->all()
-                ]);
-            }
-
-            $order = Order::findByReference($orderReference);
-
-            if (!$order) {
-                Log::warning('Order not found', ['order_reference' => $orderReference]);
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Замовлення не знайдено',
-                    'order_reference' => $orderReference
-                ]);
-            }
-
-            Log::info('Order found, processing payment result', [
-                'order_reference' => $orderReference,
-                'order_id' => $order->id
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Замовлення знайдено успішно',
-                'order_reference' => $orderReference,
-                'payment_data' => $request->all()
-            ]);
-
-
-        } catch (\Exception $e) {
-            Log::error('Payment success page error', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
-            ]);
-
-            return response()->json([
-                'error' => true,
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'message' => 'Сталася помилка при створенні замовлення'
             ], 500);
         }
     }
 
-    public function paymentFailedPage(Request $request)
+    private function prepareWayForPayData($order)
     {
-        $orderReference = $request->input('orderReference');
+        $merchantAccount = config('services.wayforpay.merchant_account');
+        $merchantSecretKey = config('services.wayforpay.secret_key');
+        $merchantDomainName = 'www.market.u';
 
-        if ($orderReference) {
-            $order = Order::findByReference($orderReference);
-            if ($order) {
-                $order->updatePaymentStatus('failed');
-            }
+        if (!$merchantAccount || !$merchantSecretKey) {
+            throw new \Exception('WayForPay не налаштований');
         }
 
-        return view('payment.failed', [
-            'error' => 'Платіж не був завершений або був відхилений',
-            'order_reference' => $orderReference
+        $orderReference = $order->order_reference;
+        $amount = number_format($order->total_amount, 2, '.', '');
+        $currency = 'UAH';
+        $orderDate = time();
+
+        $product = $order->cart_data['product'];
+        $productName = [is_array($product) ? $product['name'] : $product->name];
+        $productPrice = [number_format($order->product_total, 2, '.', '')];
+        $productCount = [$order->cart_data['quantity']];
+
+        $signString = implode(';', [
+            $merchantAccount,
+            $merchantDomainName,
+            $orderReference,
+            $orderDate,
+            $amount,
+            $currency,
+            implode(';', $productName),
+            implode(';', $productCount),
+            implode(';', $productPrice)
         ]);
+
+        $merchantSignature = hash_hmac('md5', $signString, $merchantSecretKey);
+
+        return [
+            'merchantAccount' => $merchantAccount,
+            'merchantDomainName' => $merchantDomainName,
+            'orderReference' => $orderReference,
+            'orderDate' => $orderDate,
+            'amount' => $amount,
+            'currency' => $currency,
+            'productName' => $productName,
+            'productCount' => $productCount,
+            'productPrice' => $productPrice,
+            'clientFirstName' => $order->customer_name,
+            'clientLastName' => $order->customer_surname,
+            'clientEmail' => $order->customer_email,
+            'clientPhone' => preg_replace('/[^\d]/', '', $order->customer_phone),
+            'language' => 'UA',
+            'serviceUrl' => $merchantDomainName . '/api/orders/payment/callback',
+            'merchantSignature' => $merchantSignature
+        ];
     }
 
     public function paymentCallback(Request $request)
     {
-        Log::info('Payment callback received', $request->all());
-
         try {
-            $orderReference = $request->input('orderReference');
-            $merchantSecret = 'flk3409refn54t54t*FNJRET';
+            $data = $request->all();
 
-            // Правильна перевірка підпису для callback
-            $signatureString = $request->input('merchantAccount', '') . ';' .
-                $request->input('orderReference', '') . ';' .
-                $request->input('amount', '') . ';' .
-                $request->input('currency', 'UAH') . ';' .
-                $request->input('authCode', '') . ';' .
-                $request->input('cardPan', '') . ';' .
-                $request->input('transactionStatus', '') . ';' .
-                $request->input('reasonCode', '');
+            if (!$this->verifySignature($data)) {
+                return response('Invalid signature', 400);
+            }
 
-            $expectedSignature = hash_hmac('md5', $signatureString, $merchantSecret);
-            $receivedSignature = $request->input('merchantSignature');
+            $order = Order::where('order_reference', $data['orderReference'])->first();
+            if (!$order) {
+                return response('Order not found', 404);
+            }
 
-            Log::info('Callback signature verification', [
-                'order_reference' => $orderReference,
-                'expected' => $expectedSignature,
-                'received' => $receivedSignature
-            ]);
+            if ($data['transactionStatus'] === 'Approved') {
+                $order->update([
+                    'payment_status' => 'paid',
+                    'status' => 'paid'
+                ]);
 
-            if ($expectedSignature === $receivedSignature) {
-                $order = Order::findByReference($orderReference);
-                if ($order && $request->input('transactionStatus') === 'Approved') {
-                    $order->updatePaymentStatus('paid', $request->all());
-                    Log::info('Order payment status updated via callback', [
-                        'order_reference' => $orderReference
-                    ]);
+                $this->createTTNAfterPayment($order);
+            }
+
+            return response('OK');
+
+        } catch (\Exception $e) {
+            Log::error('Payment callback error: ' . $e->getMessage());
+            return response('Error', 500);
+        }
+    }
+
+    private function createTTNAfterPayment($order)
+    {
+        try {
+            if ($order->ttn_number) {
+                return;
+            }
+
+            $requiredFields = [
+                'settlement_ref' => $order->settlement_ref,
+                'warehouse_ref' => $order->warehouse_ref,
+                'counterparty_ref' => $order->counterparty_ref,
+                'contact_person_ref' => $order->contact_person_ref,
+            ];
+
+            foreach ($requiredFields as $field => $value) {
+                if (empty($value)) {
+                    throw new \Exception("Відсутнє обов'язкове поле: {$field}");
                 }
+            }
 
-                return response()->json([
-                    'orderReference' => $orderReference,
-                    'status' => 'accept',
-                    'time' => time()
-                ]);
-            } else {
-                Log::error('Invalid callback signature', [
-                    'order_reference' => $orderReference,
-                    'expected' => $expectedSignature,
-                    'received' => $receivedSignature
-                ]);
+            $ttnData = [
+                'settlement' => $order->settlement_ref,
+                'warehouse' => $order->warehouse_ref,
+                'counterparty_ref' => $order->counterparty_ref,
+                'contact_person_ref' => $order->contact_person_ref,
+                'phone' => preg_replace('/[^\d]/', '', $order->customer_phone),
+                'name' => $order->customer_name,
+                'surname' => $order->customer_surname,
+            ];
 
-                return response()->json([
-                    'orderReference' => $orderReference,
-                    'status' => 'decline',
-                    'time' => time()
-                ]);
+            $ttnResult = $this->novaPostService->createTTN($ttnData, $order->cart_data, 'card');
+
+            if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] === true)) {
+                $ttnNumber = $ttnResult['IntDocNumber'] ?? $ttnResult['Number'] ?? null;
+
+                if ($ttnNumber) {
+                    $order->addTTNData($ttnNumber, $ttnResult);
+                }
             }
 
         } catch (\Exception $e) {
-            Log::error('Payment callback error', [
-                'message' => $e->getMessage(),
-                'request' => $request->all()
+            Log::error('TTN creation error: ' . $e->getMessage() . ' Order: ' . $order->order_reference);
+        }
+    }
+
+    private function verifySignature($data)
+    {
+        $merchantSecretKey = config('services.wayforpay.secret_key');
+
+        $signString = implode(';', [
+            $data['merchantAccount'] ?? '',
+            $data['orderReference'] ?? '',
+            $data['amount'] ?? '',
+            $data['currency'] ?? '',
+            $data['authCode'] ?? '',
+            $data['cardPan'] ?? '',
+            $data['transactionStatus'] ?? '',
+            $data['reasonCode'] ?? ''
+        ]);
+
+        $expectedSignature = hash_hmac('md5', $signString, $merchantSecretKey);
+        return $expectedSignature === ($data['merchantSignature'] ?? '');
+    }
+
+    public function setupSender(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
+                'surname' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
+                'phone' => ['required', 'string', 'regex:/^380\d{9}$/'],
+                'city' => ['required', 'string', 'min:2', 'max:100']
             ]);
 
+            $result = $this->novaPostService->setupSender($validated);
+
             return response()->json([
-                'orderReference' => $request->input('orderReference', ''),
-                'status' => 'decline',
-                'time' => time()
+                'success' => $result,
+                'message' => $result ? 'Відправник налаштований успішно' : 'Помилка налаштування відправника'
             ]);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Помилка валідації: ' . $e->validator->errors()->first()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Sender setup error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Помилка при налаштуванні відправника'
+            ], 500);
         }
     }
 
     public function checkStatus()
     {
-        $senderStatus = $this->novaPostService->checkSenderSetup();
-        $apiTest = $this->novaPostService->testApiKey();
+        try {
+            $senderStatus = $this->novaPostService->checkSenderSetup();
+            $apiTest = $this->novaPostService->testApiKey();
 
-        return response()->json([
-            'api_key' => $apiTest,
-            'sender_setup' => $senderStatus
-        ]);
-    }
-
-    public function testApi()
-    {
-        $result = $this->novaPostService->testApiKey();
-
-        return response()->json($result);
-    }
-
-    public function setupSender(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
-            'phone' => 'required|string|max:25',
-            'city' => 'required|string|max:255',
-        ]);
-
-        $result = $this->novaPostService->setupSender($validated);
-
-        return response()->json([
-            'success' => $result,
-            'message' => $result ? 'Відправник налаштований успішно' : 'Помилка налаштування відправника'
-        ]);
+            return response()->json([
+                'api_key' => $apiTest,
+                'sender_setup' => $senderStatus,
+                'status' => 'ok'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Status check error: ' . $e->getMessage());
+            return response()->json([
+                'api_key' => false,
+                'sender_setup' => false,
+                'status' => 'error',
+                'message' => 'Помилка перевірки статусу сервісу'
+            ], 500);
+        }
     }
 }
