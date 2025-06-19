@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique(); // Назва комплекту +
             $table->text('description')->nullable(); // Опис комплекту +
-            $table->decimal('price', 10, 2); // Ціна комплекту +
+            $table->integer('price'); // Ціна комплекту +
             $table->integer('books_quantity'); // Кількість книг у комплекті +
             $table->decimal('weight', 8, 2); // Вага комплекту +
             $table->string('dimension'); // Розміри комплекту +
