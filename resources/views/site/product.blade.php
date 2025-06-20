@@ -83,7 +83,7 @@
                         <!-- Price -->
                         <div class="mb-6">
                             <p class="text-4xl sm:text-5xl font-bold text-center sm:text-left">
-                                <span class="text-yellow-400">{{ (int)$product->price }}</span> грн
+                                <span class="text-yellow-400">{{ $product->price }}</span> грн
                             </p>
                         </div>
 
@@ -268,9 +268,14 @@
                         @foreach($products as $product)
                             <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
                                 <div class="bg-white flex flex-col items-center rounded-xl p-4">
-                                    <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4"></div>
+                                    <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4 overflow-hidden">
+                                        @if($product->getMedia('product_images')->isNotEmpty())
+                                            <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('product_images') }}"
+                                                 alt="{{ $product->title }}">
+                                        @endif
+                                    </div>
                                     <p class="text-lg lg:text-2xl font-bold text-center mb-3">{{ $product->name }}</p>
-                                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">{{ (int)$product->price }}
+                                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">{{ $product->price }}
                                         грн</p>
                                     <button
                                         class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
@@ -309,16 +314,13 @@
                                             <div
                                                 class="lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
 
-                                                <div class="bg-white flex flex-col items-center rounded-xl ">
+                                                <div class="bg-white flex flex-col items-center rounded-xl">
                                                     <!-- posible img -->
-
                                                     <div
-                                                        class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center">
+                                                        class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
                                                         @if($product->getMedia('product_images')->isNotEmpty())
-                                                            <img class="w-full h-full"
-                                                                 src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                                                 alt="{{ $product->name }}">
-
+                                                            <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('product_images') }}"
+                                                                 alt="{{ $product->title }}">
                                                         @endif
                                                     </div>
 
