@@ -1,22 +1,26 @@
 @extends('layouts.site')
 
+@section('header')
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Navigation -->
+        <nav class="mb-6">
+            <ul class="flex flex-wrap text-lg sm:text-xl text-slate-600 items-center gap-2 sm:gap-4">
+                <li class="hover:text-slate-800 cursor-pointer">
+                    <a href="{{ route('home') }}">головна</a>
+                </li>
+                <li class="hover:text-slate-800 cursor-pointer">
+                    <a href="{{ route('product.show', session('cart')['product']->id) }}">замовлення</a>
+                </li>
+                <li class="text-yellow-400 text-xl sm:text-2xl font-semibold">оформлення</li>
+            </ul>
+        </nav>
+    </div>
+@endsection
 
 @section('content')
 
     <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="w-full">
-            <!-- Navigation -->
-            <nav class="mb-6">
-                <ul class="flex flex-wrap text-lg sm:text-xl text-slate-600 items-center gap-2 sm:gap-4">
-                    <li class="hover:text-slate-800 cursor-pointer">
-                        <a href="{{ route('home') }}">головна</a>
-                    </li>
-                    <li class="hover:text-slate-800 cursor-pointer">
-                        <a href="{{ route('product.show', session('cart')['product']->id) }}">замовлення</a>
-                    </li>
-                    <li class="text-yellow-400 text-xl sm:text-2xl font-semibold">оформлення</li>
-                </ul>
-            </nav>
 
             <!-- Page Title -->
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8 lg:mb-16">Оформлення замовлення</h1>
