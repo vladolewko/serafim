@@ -101,7 +101,7 @@
                                             autocomplete="off"
                                             readonly>
                                         <div id="settlement-loader"
-                                             class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                             class="absolute right-10 top-1/2 transform -translate-y-1/2 hidden">
                                             <div
                                                 class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                                         </div>
@@ -140,7 +140,7 @@
                                             readonly
                                             disabled>
                                         <div id="warehouse-loader"
-                                             class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                             class="absolute right-10 top-1/2 transform -translate-y-1/2 hidden">
                                             <div
                                                 class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                                         </div>
@@ -1211,56 +1211,6 @@
             <span class="block sm:inline">Сторінка не може працювати правильно. Будь ласка, оновіть сторінку.</span>
         `;
 
-// <<<<<<< HEAD
-//         const main = document.querySelector('main');
-//         main?.insertBefore(errorDiv, main.firstChild);
-//     }
-// });
-// </script> -->
-
-
-// <!-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js', 'resources/js/order.js']) -->
-
-// <script>
-//     // Передаємо маршрути з Laravel у JavaScript
-//     const routes = {
-//         searchSettlement: '{{ route('orders.searchSettlement') }}',
-//         chooseSettlement: '{{ route('orders.chooseSettlement') }}',
-//         setWarehouse: '{{ route('orders.setWarehouse') }}',
-//         createCounterparty: '{{ route('orders.createCounterparty') }}',
-//         home: '{{ route('home') }}'
-//     };
-// </script>
-
-
-// {{-- Ініціалізуємо клас після завантаження DOM --}}
-// <script>
-//     document.addEventListener('DOMContentLoaded', function() {
-//         // Додаткова перевірка чи завантажився клас
-//         if (typeof OrderFormManager === 'undefined') {
-//             console.error('OrderFormManager class not loaded!');
-//             alert('Помилка завантаження скрипту. Перевірте підключення до інтернету та оновіть сторінку.');
-//             return;
-//         }
-
-//         try {
-//             window.orderFormManager = new OrderFormManager(routes);
-//             console.log('OrderFormManager initialized successfully');
-//         } catch (error) {
-//             console.error('Failed to initialize OrderFormManager:', error);
-
-//             const errorDiv = document.createElement('div');
-//             errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
-//             errorDiv.innerHTML = `
-//                 <strong class="font-bold">Помилка ініціалізації:</strong>
-//                 <span class="block sm:inline">Сторінка не може працювати правильно. Будь ласка, оновіть сторінку.</span>
-//             `;
-
-//             const main = document.querySelector('main');
-//             main?.insertBefore(errorDiv, main.firstChild);
-//         }
-//     });
-// </script>
 
 
 
@@ -1270,3 +1220,64 @@
         });
     </script>
 @endsection
+
+
+
+
+
+<!--
+
+// <<<<<<< HEAD
+//         const main = document.querySelector('main');
+//         main?.insertBefore(errorDiv, main.firstChild);
+//     }
+// });
+// </script> -->
+
+
+ <!-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js', 'resources/js/order.js']) -->
+
+
+
+<!-- <script>
+    // Передаємо маршрути з Laravel у JavaScript
+    const routes = {
+        searchSettlement: '{{ route('orders.searchSettlement') }}',
+        chooseSettlement: '{{ route('orders.chooseSettlement') }}',
+        setWarehouse: '{{ route('orders.setWarehouse') }}',
+        createCounterparty: '{{ route('orders.createCounterparty') }}',
+        home: '{{ route('home') }}'
+    };
+</script>
+
+
+{{-- Ініціалізуємо клас після завантаження DOM --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Додаткова перевірка чи завантажився клас
+        if (typeof OrderFormManager === 'undefined') {
+            console.error('OrderFormManager class not loaded!');
+            alert('Помилка завантаження скрипту. Перевірте підключення до інтернету та оновіть сторінку.');
+            return;
+        }
+
+        try {
+            window.orderFormManager = new OrderFormManager(routes);
+            console.log('OrderFormManager initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize OrderFormManager:', error);
+
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+            errorDiv.innerHTML = `
+                <strong class="font-bold">Помилка ініціалізації:</strong>
+                <span class="block sm:inline">Сторінка не може працювати правильно. Будь ласка, оновіть сторінку.</span>
+            `;
+
+            const main = document.querySelector('main');
+            main?.insertBefore(errorDiv, main.firstChild);
+        }
+    });
+</script>
+
+-->

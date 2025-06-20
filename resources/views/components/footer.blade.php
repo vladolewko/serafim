@@ -24,12 +24,15 @@
             <!-- Сайт -->
             <div class="w-full sm:w-1/3 lg:w-1/3 text-white flex flex-col gap-1">
                 <p class="text-yellow-400 text-lg sm:text-xl lg:text-2xl decoration-yellow-400 decoration-4 lg:decoration-8 underline-offset-2 lg:underline-offset-4 mb-2 lg:mb-3"><u>са</u>йт</p>
-                <p class="text-sm lg:text-base">Що таке комплект знань</p>
-                <p class="text-sm lg:text-base">Обрати комплект знань</p>
-                <p class="text-sm lg:text-base">Юрист онлайн</p>
-                <p class="text-sm lg:text-base">Про автора</p>
-                <p class="text-sm lg:text-base">Соцмережі</p>
-                <p class="text-sm lg:text-base">Безкоштовно</p>
+                <p class="text-sm lg:text-base footer-link cursor-pointer" data-target="wt_knowledge_pack">Що таке комплект знань</p>
+                <p class="text-sm lg:text-base footer-link cursor-pointer hidden lg:block" data-target="knowledge_pack">Обрати комплект знань</p>
+
+                <p class="text-sm lg:text-base footer-link cursor-pointer lg:hidden" data-target="knowledge_pack_mobile">Обрати комплект знань</p>
+
+                <p class="text-sm lg:text-base footer-link cursor-pointer">Юрист онлайн</p>
+                <p class="text-sm lg:text-base footer-link cursor-pointer" data-target="about_author">Про автора</p>
+                <p class="text-sm lg:text-base footer-link cursor-pointer" data-target="social">Соцмережі</p>
+                <p class="text-sm lg:text-base footer-link cursor-pointer" data-target="for_free">Безкоштовно</p>
             </div>
 
             <!-- Комплекти -->

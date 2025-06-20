@@ -7,7 +7,7 @@
             <div class="w-4/6 mx-auto">
                 <!-- Breadcrumb navigation -->
                 <div class="flex items-center gap-4 mt-4 sm:mt-8">
-                    <a class="text-slate-600 hover:text-slate-800 transition-colors"
+                    <a class="text-lg sm:text-xl text-slate-600 hover:text-slate-800 transition-colors"
                        href="{{ route('home') }}">головна</a>
                     <p class="text-yellow-400 text-xl sm:text-2xl font-medium">замовлення</p>
                 </div>
@@ -342,7 +342,7 @@
                         <!-- Slider indicators -->
 
                         <div
-                            class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full mx-auto">
+                            class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full justify-center">
                             @foreach ($productsChunks as $index => $perPage)
                                 <button
                                     type="button"

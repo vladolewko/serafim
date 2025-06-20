@@ -9,7 +9,8 @@
     background-image: none; /* Прибираємо SVG-зображення */
 }
 
-select {
+#settlement-input {
+    -webkit-appearance: none;
     appearance: none;
     background-image: none;
 }
