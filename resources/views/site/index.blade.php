@@ -18,7 +18,12 @@
                             </p>
                             <div class="flex flex-col sm:flex-row gap-4 sm:gap-0">
                                 <button
-                                    class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
+                                    class="hidden lg:block bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold knowledgePackBtn" data-target="knowledge_pack">
+                                    комплект знань
+                                </button>
+                                <!-- mobile button -->
+                                <button
+                                    class="lg:hidden bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold knowledgePackBtn" data-target="knowledge_pack_mobile">
                                     комплект знань
                                 </button>
                                 <p class="text-black text-lg lg:text-xl underline underline-offset-4 decoration-yellow-400 self-center sm:mx-4">
@@ -488,7 +493,7 @@
 
 
             <!-- Knowledge Pack Selection Mobile -->
-            <div class="lg:hidden w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto my-16 lg:my-72" id="knowledge_pack">
+            <div class="lg:hidden w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto my-16 lg:my-72" id="knowledge_pack_mobile">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-8">
                     <div>
                         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold">
@@ -580,7 +585,7 @@
                     <!-- Slider indicators -->
 
                     <div
-                        class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full mx-auto">
+                        class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full justify-center">
                         <!-- <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
                         <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button> -->
 
@@ -668,7 +673,7 @@
             <div
                 class="w-full px-4 sm:px-6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60 flex flex-col xl:flex-row justify-between gap-8 lg:gap-0">
                 <!-- Ліва частина -->
-                <div class="w-full lg:w-5/6 lg:mx-auto xl:w-[51.5%]">
+                <div class="w-full lg:w-5/6 lg:mx-auto xl:w-3/5">
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
                         Навіщо я створив <span class="text-yellow-400">"serafim.info"?</span>
                     </p>
@@ -700,7 +705,7 @@
                 </div>
 
                 <!-- Права частина -->
-                <div class="w-full xl:w-3/5 flex flex-col justify-end items-center space-y-6">
+                <div class="w-full xl:w-2/5 flex flex-col justify-end items-center space-y-6">
                     <p class="text-lg sm:text-xl text-slate-600 text-center mb-4">Я особисто пройшов через:</p>
                     <div class="w-full sm:w-10/12 lg:w-9/12">
                         <div

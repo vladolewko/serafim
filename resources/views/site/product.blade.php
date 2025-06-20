@@ -265,7 +265,7 @@
                         </div>
                         <!-- Slider indicators -->
                         <div
-                            class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full mx-auto">
+                            class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full justify-center">
                             @foreach ($productsChunks as $index => $perPage)
                                 <button
                                     type="button"
