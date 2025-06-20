@@ -1,16 +1,18 @@
 @extends('layouts.site')
 
+@section('header')
+    <div class="w-4/6 mx-auto">
 
+    <!-- Breadcrumb navigation -->
+    <div class="flex items-center gap-4 mt-4 sm:mt-8">
+        <a class="text-slate-600 hover:text-slate-800 transition-colors"
+           href="{{ route('home') }}">головна</a>
+        <p class="text-yellow-400 text-xl sm:text-2xl font-medium">замовлення</p>
+    </div>
+    </div>
+@endsection
 @section('content')
-    <div class="w-full">
-        <main>
             <div class="w-4/6 mx-auto">
-                <!-- Breadcrumb navigation -->
-                <div class="flex items-center gap-4 mt-4 sm:mt-8">
-                    <a class="text-slate-600 hover:text-slate-800 transition-colors"
-                       href="{{ route('home') }}">головна</a>
-                    <p class="text-yellow-400 text-xl sm:text-2xl font-medium">замовлення</p>
-                </div>
 
                 <!-- Main title -->
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-6 sm:mb-8">Замовити комплект</h1>
@@ -122,74 +124,6 @@
                             </form>
                         </div>
 
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                const decreaseBtn = document.getElementById('decreaseBtn');
-                                const increaseBtn = document.getElementById('increaseBtn');
-                                const quantityDisplay = document.getElementById('quantityDisplay');
-                                const orderForm = document.getElementById('orderForm');
-
-                                let quantity = 1;
-                                const minQuantity = 1;
-                                const maxQuantity = 999;
-
-                                function updateQuantity(newQuantity) {
-                                    quantity = Math.max(minQuantity, Math.min(maxQuantity, newQuantity));
-                                    quantityDisplay.textContent = quantity;
-
-                                    // Оновлюємо стан кнопок
-                                    decreaseBtn.disabled = quantity <= minQuantity;
-                                    increaseBtn.disabled = quantity >= maxQuantity;
-
-                                    // Додаємо візуальні стилі для заблокованих кнопок
-                                    if (quantity <= minQuantity) {
-                                        decreaseBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                                    } else {
-                                        decreaseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                                    }
-
-                                    if (quantity >= maxQuantity) {
-                                        increaseBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                                    } else {
-                                        increaseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                                    }
-                                }
-
-                                decreaseBtn.addEventListener('click', function () {
-                                    if (quantity > minQuantity) {
-                                        updateQuantity(quantity - 1);
-                                    }
-                                });
-
-                                increaseBtn.addEventListener('click', function () {
-                                    if (quantity < maxQuantity) {
-                                        updateQuantity(quantity + 1);
-                                    }
-                                });
-
-                                // Обробляємо відправку форми
-                                orderForm.addEventListener('submit', function (e) {
-                                    // Створюємо тимчасові приховані поля
-                                    const quantityInput = document.createElement('input');
-                                    quantityInput.type = 'hidden';
-                                    quantityInput.name = 'quantity';
-                                    quantityInput.value = quantity;
-
-                                    const productIdInput = document.createElement('input');
-                                    productIdInput.type = 'hidden';
-                                    productIdInput.name = 'productId';
-                                    productIdInput.value = '{{ $product->id }}';
-
-                                    // Додаємо поля до форми
-                                    this.appendChild(quantityInput);
-                                    this.appendChild(productIdInput);
-                                });
-
-                                // Ініціалізуємо стан кнопок
-                                updateQuantity(quantity);
-                            });
-                        </script>
-
                         <!-- Target audience -->
                         <div class="mb-6">
                             <div class="flex items-center gap-2 mb-3">
@@ -232,11 +166,7 @@
 
                             <div class="text-sm text-slate-600 space-y-2">
                                 <p>Вага: <span class="text-black font-bold">{{ $product->weight }} кг</span></p>
-                                <p>К-сть книг: <span
-                                        class="text-black font-bold">{{ $product->books_quantity }} шт</span></p>
-
-                                {{--<p>Для кого: <span class="text-black font-bold"></span></p>--}}
-
+                                <p>К-сть книг: <span class="text-black font-bold">{{ $product->books_quantity }} шт</span></p>
                                 <p>Розміри: <span class="text-black font-bold">{{ $product->dimension }} см</span></p>
                                 <p>Призначення: <span class="text-black font-bold">{{ $product->appointment }}</span>
                                 </p>
@@ -245,7 +175,6 @@
                     </div>
                 </div>
             </div>
-
 
             <!-- Knowledge Pack Selection Mobile -->
             <div class="lg:hidden w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto my-16 lg:my-72" id="knowledge_pack">
@@ -288,7 +217,6 @@
                 @endif
             </div>
 
-
             <!-- Knowledge Pack Selection Desktop -->
             @if($productsChunks->isNotEmpty())
                 <div class="hidden lg:block mx-auto my-72 section lg:w-5/6 xl:w-4/6" id="knowledge_pack">
@@ -328,19 +256,14 @@
                                                     <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
                                                     <a class="flex items-center bg-yellow-400 px-8 m-3 rounded-lg inline-block align-middle h-10 text-black text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                                        href="{{ route('product.show', $product->id) }}">перейти</a>
-
                                                 </div>
                                             </div>
                                         @endforeach
-
                                     </div>
                                 </div>
                             @endforeach
-
                         </div>
-
                         <!-- Slider indicators -->
-
                         <div
                             class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full mx-auto">
                             @foreach ($productsChunks as $index => $perPage)
@@ -356,7 +279,6 @@
 
                         </div>
                         <!-- Slider controls -->
-
                         <button type="button"
                                 class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
                                 data-carousel-prev>
@@ -378,12 +300,75 @@
                     </div>
                 </div>
         @endif
-    </main>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const decreaseBtn = document.getElementById('decreaseBtn');
+            const increaseBtn = document.getElementById('increaseBtn');
+            const quantityDisplay = document.getElementById('quantityDisplay');
+            const orderForm = document.getElementById('orderForm');
+
+            let quantity = 1;
+            const minQuantity = 1;
+            const maxQuantity = 999;
+
+            function updateQuantity(newQuantity) {
+                quantity = Math.max(minQuantity, Math.min(maxQuantity, newQuantity));
+                quantityDisplay.textContent = quantity;
+
+                // Оновлюємо стан кнопок
+                decreaseBtn.disabled = quantity <= minQuantity;
+                increaseBtn.disabled = quantity >= maxQuantity;
+
+                // Додаємо візуальні стилі для заблокованих кнопок
+                if (quantity <= minQuantity) {
+                    decreaseBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    decreaseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                if (quantity >= maxQuantity) {
+                    increaseBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    increaseBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+
+            decreaseBtn.addEventListener('click', function () {
+                if (quantity > minQuantity) {
+                    updateQuantity(quantity - 1);
+                }
+            });
+
+            increaseBtn.addEventListener('click', function () {
+                if (quantity < maxQuantity) {
+                    updateQuantity(quantity + 1);
+                }
+            });
+
+            // Обробляємо відправку форми
+            orderForm.addEventListener('submit', function (e) {
+                // Створюємо тимчасові приховані поля
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'hidden';
+                quantityInput.name = 'quantity';
+                quantityInput.value = quantity;
+
+                const productIdInput = document.createElement('input');
+                productIdInput.type = 'hidden';
+                productIdInput.name = 'productId';
+                productIdInput.value = '{{ $product->id }}';
+
+                // Додаємо поля до форми
+                this.appendChild(quantityInput);
+                this.appendChild(productIdInput);
+            });
+
+            // Ініціалізуємо стан кнопок
+            updateQuantity(quantity);
+        });
+    </script>
+@endsection
+@section('footer')
     @include('components.footer')
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
 @endsection

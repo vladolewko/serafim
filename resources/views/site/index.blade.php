@@ -1,10 +1,11 @@
 @extends('layouts.site')
-<script src="{{ asset('js/index.js') }}"></script>
-@include('components.header')
+{{--<script src="{{ asset('js/index.js') }}"></script>--}}
+@section('header')
+    @include('components.header')
+@endsection
 
 @section('content')
-    <div class="w-full">
-        <main>
+
             <div class="bg-blue-400 text-white w-full">
                 <div class="w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto">
                     <div class="flex flex-col lg:flex-row items-center py-8 lg:py-16">
@@ -453,7 +454,6 @@
                         </div>
                     </div>
                     <!-- Slider indicators -->
-
                     <div
                         class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-[-20px] w-full justify-center">
                         <button type="button" class="w-[30%] h-[1px] rounded-full  slide_button" aria-current="true"
@@ -818,8 +818,6 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
 
     <script>
 
@@ -1070,8 +1068,9 @@
 
     </script>
 
+@endsection
+@section('footer')
     @include('components.footer')
-
 @endsection
 
 

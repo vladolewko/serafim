@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Styles / Scripts -->
     @vite([
     'resources/css/app.css',
@@ -21,13 +20,15 @@
       'resources/js/index.js'
       ])
 </head>
-<body class="overflow-x-hidden">
-<div class="w-full">
-    <main>
-        @yield('content')
-    </main>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+<body class="overflow-x-hidden w-full">
+
+@yield('header')
+<main>
+@yield('content')
+</main>
+
+@yield('footer')
+
 </body>
 </html>
 
