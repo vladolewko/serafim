@@ -15,13 +15,15 @@
                 @include('components.introduction-mobile')
             @endif -->
 
-
-            <div class="hidden sm:block"> @include('components.introduction')</div>
             <div class="sm:hidden"> @include('components.introduction-mobile') </div>
+            <div class="hidden sm:block"> @include('components.introduction')</div>
 
-            </div>
+            <!-- </div> -->
             <!-- Why Important Section -->
-            <div
+             @include('components.whyimportant')
+
+
+            <!-- <div
                 class="flex flex-col lg:flex-row my-16 lg:my-52 w-full px-4 sm:px-6 xl:w-4/6 lg:w-5/6 lg:mx-auto gap-8 lg:justify-between">
                 <div class="w-full lg:w-5/12">
                     <div class="mb-6 lg:mb-8 flex-1">
@@ -31,14 +33,14 @@
                         <p class="text-slate-600 text-base lg:text-lg mt-2">
                             Ніхто не подбає про твої права краще за тебе самого...
                         </p>
-                    </div>
+                    </div>-->
 
 
                     <!-- Change text -->
-                    <div class="border border-blue-400 rounded-lg p-4 lg:p-6">
-                        <div class="flex items-center gap-3 mb-6 lg:mb-10">
+                    <!-- <div class="border border-blue-400 rounded-lg p-4 lg:p-6">
+                        <div class="flex items-center gap-3 mb-6 lg:mb-10"> -->
                             <!-- <div class="w-8 h-8 bg-blue-100 rounded flex-shrink-0"></div> -->
-                            <img src="{{ asset('img/law_knowledge.svg') }}" alt="law_knowledge img">
+                            <!-- <img src="{{ asset('img/law_knowledge.svg') }}" alt="law_knowledge img">
                             <p class="text-slate-600 font-bold text-sm lg:text-base" id="top7">
                                 ТОП-7 Переваг знання законів та прав людини
                             </p>
@@ -53,9 +55,9 @@
                         </ul>
 
                         <div class="space-y-3 mb-6">
-                            <div class="flex gap-3 items-start">
+                            <div class="flex gap-3 items-start"> -->
                                 <!-- <div class="w-5 h-5 bg-green-500 rounded-full flex-shrink-0 mt-0.5"></div> -->
-                                <img src="{{ asset('img/check.svg') }}" alt="check img">
+                               <!-- <img src="{{ asset('img/check.svg') }}" alt="check img">
                                 <span class="text-slate-600 text-sm lg:text-base" id="argument-1">Правовий захист у будь-якій ситуації</span>
                             </div>
                             <div class="flex gap-3 items-start">
@@ -91,9 +93,9 @@
                     </div>
 
                     <div class="border border-blue-400 rounded-lg mt-6 lg:mt-10 p-4">
-                        <div class="flex gap-3 lg:gap-5 items-center justify-center">
+                        <div class="flex gap-3 lg:gap-5 items-center justify-center"> -->
                             <!-- <div class="w-8 h-8 bg-orange-200 rounded flex-shrink-0"></div> -->
-                            <img src="{{ asset('img/result.svg') }}" alt="result img">
+                            <!--<img src="{{ asset('img/result.svg') }}" alt="result img">
                             <div class="text-slate-600 text-sm lg:text-base leading-relaxed">
                                 <span class="font-bold" id="result">Результат: </span>
                                 <span id="result_desc">Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.</span>
@@ -152,10 +154,32 @@
                            class="bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">замовити</a>
                     </div>
                 </div>
-            </div>
+            </div> -->
+
+
+
+
+
+
+
 
             <!-- Knowledge Pack Section -->
-            <div
+            @include('components.knowledgepack')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- <div
                 class="flex flex-col lg:flex-row w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 lg:mx-auto lg:justify-between my-16 lg:my-72 gap-8"
                 id="wt_knowledge_pack">
                 <div class="w-full lg:w-5/12">
@@ -181,77 +205,77 @@
                 <div class="w-full lg:w-5/12 flex flex-col justify-center gap-8 lg:gap-10">
                     <div class="flex justify-center items-center">
                         <div
-                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-1">
+                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-1"> -->
                             <!-- <div class="w-8 h-8 lg:w-10 lg:h-10 bg-blue-200 rounded"></div> -->
-                            <img class="h-[42px] w-[42px]" src="{{ asset('img/constitution.svg') }}"
+                            <!-- <img class="h-[42px] w-[42px]" src="{{ asset('img/constitution.svg') }}"
                                  alt="constitution img">
                             <p class="text-center text-xs text-slate-600">Конституція</p>
-                        </div>
+                        </div> -->
                         <!-- <div class="w-4 h-0.5 bg-gray-300 mx-1"></div> -->
-                        <img class="ml-[-6px] h-[20px] self-center bg-white z-10"
+                     <!--   <img class="ml-[-6px] h-[20px] self-center bg-white z-10"
                              src="{{ asset('img/arrow_right.svg') }}" alt="arrow_right img">
                         <div
-                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-1">
+                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-1"> -->
                             <!-- <div class="w-8 h-8 lg:w-10 lg:h-10 bg-blue-200 rounded"></div> -->
-                            <img class="h-[42px] w-[42px]" src="{{ asset('img/statutes.svg') }}" alt="statutes img">
+                            <!-- <img class="h-[42px] w-[42px]" src="{{ asset('img/statutes.svg') }}" alt="statutes img">
                             <p class="text-center text-xs text-slate-600">Статути</p>
-                        </div>
+                        </div> -->
                         <!-- <div class="w-4 h-0.5 bg-gray-300 mx-1"></div> -->
-                        <img class="ml-[-6px] h-[20px] self-center bg-white z-10"
+                       <!-- <img class="ml-[-6px] h-[20px] self-center bg-white z-10"
                              src="{{ asset('img/arrow_right.svg') }}" alt="arrow_right img">
                         <div
-                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-1">
+                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-1"> -->
                             <!-- <div class="w-8 h-8 lg:w-10 lg:h-10 bg-blue-200 rounded"></div> -->
-                            <img class="h-[42px] w-[42px]" src="{{ asset('img/codes.svg') }}" alt="codes img">
+                           <!-- <img class="h-[42px] w-[42px]" src="{{ asset('img/codes.svg') }}" alt="codes img">
                             <p class="text-center text-xs text-slate-600">Кодекси</p>
                         </div>
                     </div>
 
                     <div class="flex lg:justify-start justify-center items-center">
                         <div
-                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-2">
+                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-2"> -->
                             <!-- <div class="w-8 h-8 lg:w-10 lg:h-10 bg-blue-200 rounded"></div> -->
-                            <img class="h-[42px] w-[42px]" src="{{ asset('img/templates.svg') }}" alt="templates img">
+                           <!-- <img class="h-[42px] w-[42px]" src="{{ asset('img/templates.svg') }}" alt="templates img">
                             <p class="text-center text-xs text-slate-600">Шаблони</p>
-                        </div>
+                        </div> -->
                         <!-- <div class="w-4 h-0.5 bg-gray-300 mx-1"></div> -->
-                        <img class="mr-[-6px] h-[20px] self-center bg-white z-10"
+                      <!--  <img class="mr-[-6px] h-[20px] self-center bg-white z-10"
                              src="{{ asset('img/arrow_left.svg') }}" alt="arrow_left img">
                         <div
-                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-2">
+                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-2"> -->
                             <!-- <div class="w-8 h-8 lg:w-10 lg:h-10 bg-blue-200 rounded"></div> -->
-                            <img class="h-[42px] w-[42px]" src="{{ asset('img/memos.svg') }}" alt="">
+                            <!-- <img class="h-[42px] w-[42px]" src="{{ asset('img/memos.svg') }}" alt="">
                             <p class="text-center text-xs text-slate-600">Памятки</p>
-                        </div>
+                        </div>-->
                         <!-- <div class="w-4 h-0.5 bg-gray-300 mx-1"></div> -->
-                        <img class="mr-[-6px] h-[20px] self-center bg-white z-10"
+                        <!-- <img class="mr-[-6px] h-[20px] self-center bg-white z-10"
                              src="{{ asset('img/arrow_left.svg') }}" alt="arrow_left img">
                         <div
-                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-2">
+                            class="border border-blue-400 rounded-lg flex flex-col items-center p-3 h-20 w-20 lg:h-24 lg:w-24 gap-2"> -->
                             <!-- <div class="w-8 h-8 lg:w-10 lg:h-10 bg-blue-200 rounded"></div> -->
-                            <img class="h-[42px] w-[42px]" src="{{ asset('img/algorithms.svg') }}" alt="">
+                           <!-- <img class="h-[42px] w-[42px]" src="{{ asset('img/algorithms.svg') }}" alt="">
                             <p class="text-center text-xs text-slate-600">Алгоритми</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- How to Submit Section Mobile -->
-            <div class="lg:hidden w-full px-4 sm:px-6 lg:w-11/12 xl:w-4/6 lg:mx-auto my-16 lg:my-72">
+            <!-- <div class="lg:hidden w-full px-4 sm:px-6 lg:w-11/12 xl:w-4/6 lg:mx-auto my-16 lg:my-72">
                 <div class="mb-6 lg:mb-10">
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
                         Кожен українець <span class="text-yellow-400">повинен розуміти</span>, як подавати
                     </p>
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold">Скаргу, клопотання, заяву, рапорт, позов</p>
                     <p class="text-lg lg:text-xl text-slate-600 mt-2">І комплект знань закриє це питання...</p>
-                </div>
+                </div> -->
 
                 <!-- Mobile/Tablet Carousel Simplified -->
-                <div class="bg-white rounded-lg p-4 lg:p-8">
+                <!-- <div class="bg-white rounded-lg p-4 lg:p-8">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-                        <div class="flex flex-col items-center text-center space-y-3">
+                        <div class="flex flex-col items-center text-center space-y-3"> -->
                             <!-- <div class="w-16 h-16 lg:w-20 lg:h-20 bg-blue-200 rounded-lg"></div> -->
-                            <img class="w-20 h-20" src="{{ asset('img/command.png') }}" alt="command img">
+                            <!--<img class="w-20 h-20" src="{{ asset('img/command.png') }}" alt="command img">
                             <p class="underline font-semibold text-sm lg:text-base">командування</p>
                             <p class="text-xs lg:text-sm text-gray-600">
                                 Першим кроком рекомендується звернутися зі скаргою до свого безпосереднього командира
@@ -291,27 +315,55 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
+
+
+
+
+
+
+
+
 
             <!-- How to Submit Section Desktop -->
-            <div class="hidden lg:block w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 lg:mx-auto my-16 lg:my-72">
+            <div class="hidden lg:block">
+                @include('components.howtosubmit')
+            </div>
+
+            <!-- How to Submit Section Mobile -->
+            <div class="lg:hidden">
+                @include('components.howtosubmit-mobile')
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- <div class="hidden lg:block w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 lg:mx-auto my-16 lg:my-72">
                 <div class="mb-10">
                     <p class="text-2xl xl:text-4xl font-bold">Кожен українець <span class="text-yellow-400">повинен розуміти</span>,
                         як подавати</p>
                     <p class="text-2xl xl:text-4xl font-bold">Скаргу, клопотання, заяву, рапорт, позов</p>
                     <p class="text-xl text-slate-600">І комплект знань закриє це питання...</p>
-                </div>
+                </div> -->
 
                 <!-- Carousel -->
 
 
-                <div id="indicators-carousel" class="relative w-full" data-carousel="static">
+                <!-- <div id="indicators-carousel" class="relative w-full" data-carousel="static"> -->
                     <!-- Carousel wrapper -->
 
-                    <div class="relative h-56 overflow-hidden rounded-lg md:h-[450px] xl:h-96">
+                    <!-- <div class="relative h-56 overflow-hidden rounded-lg md:h-[450px] xl:h-96"> -->
                         <!-- Item 1 -->
 
-                        <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                        <!--  <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                             <div class="flex gap-2 my-16 justify-center">
                                 <div class="flex flex-col items-center w-1/5 gap-1">
                                     <img src="{{ asset('img/command.png') }}" alt="command img">
@@ -344,10 +396,10 @@
                                         можна звертатися до ВСП</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- Item 2 -->
 
-                        <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                       <!-- <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                             <div class="flex gap-2 my-16 justify-center">
                                 <div class="flex flex-col items-center w-1/5 gap-1">
                                     <img src="{{ asset('img/command.png') }}" alt="command img">
@@ -380,10 +432,10 @@
                                         можна звертатися до ВСП</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- Item 3 -->
 
-                        <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                      <!--  <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                             <div class="flex gap-2 my-16 justify-center">
                                 <div class="flex flex-col items-center w-1/5 gap-1">
                                     <img src="{{ asset('img/command.png') }}" alt="command img">
@@ -417,9 +469,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Slider indicators -->
-                    <div
+                   <!-- <div
                         class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-[-20px] w-full justify-center">
                         <button type="button" class="w-[30%] h-[1px] rounded-full  slide_button" aria-current="true"
                                 aria-label="Slide 1" data-carousel-slide-to="0"></button>
@@ -427,10 +479,10 @@
                                 aria-label="Slide 2" data-carousel-slide-to="1"></button>
                         <button type="button" class="w-[30%] h-[1px] rounded-full  slide_button" aria-current="false"
                                 aria-label="Slide 3" data-carousel-slide-to="2"></button>
-                    </div>
+                    </div> -->
                     <!-- Slider controls -->
 
-                    <button type="button"
+                   <!-- <button type="button"
                             class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
                             data-carousel-prev>
             <span class="inline-flex items-center justify-center">
@@ -449,11 +501,11 @@
             </span>
                     </button>
                 </div>
-            </div>
+            </div> -->
 
 
             <!-- Knowledge Pack Selection Mobile -->
-            <div class="lg:hidden w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto my-16 lg:my-72" id="knowledge_pack_mobile">
+            <!-- <div class="lg:hidden w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto my-16 lg:my-72" id="knowledge_pack_mobile">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-8">
                     <div>
                         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold">
@@ -466,10 +518,10 @@
                     <div class="hidden lg:block ml-6">
                         <div class="w-8 h-8 bg-yellow-400 rounded transform rotate-90"></div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Knowledge Pack Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                     @foreach($products as $product)
                         <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
                             <div class="bg-white flex flex-col items-center rounded-xl p-4">
@@ -490,11 +542,22 @@
                         </div>
                     @endforeach
                 </div>
+            </div> -->
+
+
+            <!-- Choose Knowledge Pack Selection Desktop -->
+            <div class="lg:hidden">
+                @include('components.chooseknoweledge-mobile')
             </div>
 
 
-            <!-- Knowledge Pack Selection Desktop -->
-            <div class="hidden lg:block lg:w-5/6 xl:w-4/6 mx-auto my-72 section" id="knowledge_pack">
+            <div class="hidden lg:block">
+                @include('components.chooseknoweledge')
+            </div>
+
+
+
+            <!-- <div class="hidden lg:block lg:w-5/6 xl:w-4/6 mx-auto my-72 section" id="knowledge_pack">
                 <div class="flex">
                     <div>
                         <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span>
@@ -502,15 +565,15 @@
                         <p class="text-xl text-slate-500">Замовляй свій набір та будь захищеним знанями...</p>
                     </div>
                     <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
-                </div>
+                </div> -->
                 <!-- Carousel knowledge pack -->
 
-                <div id="indicators-carousel" class="relative w-full mb-20" data-carousel="static">
+                <!--<div id="indicators-carousel" class="relative w-full mb-20" data-carousel="static">-->
                     <!-- Carousel wrapper -->
 
-                    <div class="relative h-56 overflow-hidden rounded-lg md:h-[500px] w-full">
+                    <!-- <div class="relative h-56 overflow-hidden rounded-lg md:h-[500px] w-full"> -->
                         <!-- Item 1 -->
-                        @foreach ($productsChunks as $perPage)
+                        <!-- @foreach ($productsChunks as $perPage)
 
                             <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
                                 <div class="flex lg:gap-10 xl:gap-20 mt-10 justify-center ">
@@ -518,10 +581,10 @@
                                         <div
                                             class="lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
 
-                                            <div class="bg-white flex flex-col items-center rounded-xl ">
+                                            <div class="bg-white flex flex-col items-center rounded-xl "> -->
                                                 <!-- posible img -->
 
-                                                <div
+                                              <!--  <div
                                                     class="h-[212px] w-[212px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                                     @if($product->getMedia('product_images')->isNotEmpty())
                                                         <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('product_images') }}"
@@ -541,15 +604,15 @@
                             </div>
                         @endforeach
 
-                    </div>
+                    </div> -->
                     <!-- Slider indicators -->
 
-                    <div
-                        class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full justify-center">
+                    <!-- <div
+                        class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full justify-center"> -->
                         <!-- <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
                         <button type="button" class="w-[45%] h-[1px] rounded-full  slide_button" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button> -->
 
-                        @foreach ($productsChunks as $index => $perPage)
+                        <!-- @foreach ($productsChunks as $index => $perPage)
                             <button
                                 type="button"
                                 class="h-[1px] rounded-full slide_button {{ $index === 0 ? 'bg-gray-800' : 'bg-gray-400' }}"
@@ -560,10 +623,10 @@
                             ></button>
                         @endforeach
 
-                    </div>
+                    </div> -->
                     <!-- Slider controls -->
 
-                    <button type="button"
+                   <!-- <button type="button"
                             class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
                             data-carousel-prev>
             <span class="inline-flex items-center justify-center">
@@ -584,11 +647,20 @@
                 </div>
 
 
-            </div>
+            </div> -->
 
 
             <!-- About Author Section -->
-            <div class="w-full bg-blue-400 py-12 lg:py-20 text-white" id="about_author">
+            <div class="lg:hidden">
+                @include('components.aboutauthor-mobile')
+            </div>
+
+            <div class="hidden lg:block">
+                @include('components.aboutauthor')
+            </div>
+
+
+            <!-- <div class="w-full bg-blue-400 py-12 lg:py-20 text-white" id="about_author">
                 <div class="w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto">
                     <div class="flex flex-col lg:flex-row gap-8 lg:justify-between">
                         <div class="w-full lg:w-5/12 flex justify-center xl:justify-start items-center">
@@ -627,13 +699,21 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Why Created Section -->
-            <div
-                class="w-full px-4 sm:px-6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60 flex flex-col xl:flex-row justify-between gap-8 lg:gap-0">
+            <div class="lg:hidden">
+                @include('components.whycreated-mobile')
+            </div>
+
+            <div class="hidden lg:block">
+                @include('components.whycreated')
+            </div>
+
+            <!-- <div
+                class="w-full px-4 sm:px-6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60 flex flex-col xl:flex-row justify-between gap-8 lg:gap-0">-->
                 <!-- Ліва частина -->
-                <div class="w-full lg:w-5/6 lg:mx-auto xl:w-3/5">
+                <!-- <div class="w-full lg:w-5/6 lg:mx-auto xl:w-3/5">
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
                         Навіщо я створив <span class="text-yellow-400">"serafim.info"?</span>
                     </p>
@@ -662,10 +742,10 @@
                             Тепер це моя місія: <span class="font-bold">допомогти іншим знати свої права, діяти грамотно, бути захищеним навіть там, де здається — ти сам.</span>
                         </p>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Права частина -->
-                <div class="w-full xl:w-2/5 flex flex-col justify-end items-center space-y-6">
+               <!-- <div class="w-full xl:w-2/5 flex flex-col justify-end items-center space-y-6">
                     <p class="text-lg sm:text-xl text-slate-600 text-center mb-4">Я особисто пройшов через:</p>
                     <div class="w-full sm:w-10/12 lg:w-9/12">
                         <div
@@ -689,10 +769,18 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Секція безкоштовної допомоги -->
-            <div class="w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60" id="for_free">
+
+            <div class="lg:hidden">
+                @include('components.forfree-mobile')
+            </div>
+            <div class="hidden lg:block">
+                @include('components.forfree')
+            </div>
+
+            <!-- <div class="w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60" id="for_free">
                 <div class="w-full lg:w-5/6 xl:w-3/5 mb-8 lg:mb-10">
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">Сайти із безкоштовною</p>
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
@@ -731,10 +819,17 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Секція соцмереж -->
-            <div class="w-full px-4 sm:px-6 lg:w-4/6 mx-auto my-12 sm:my-20 lg:my-60" id="social">
+            <div class="lg:hidden">
+                @include('components.socialnetwork-mobile')
+            </div>
+            <div class="hidden lg:block">
+                @include('components.socialnetwork')
+            </div>
+
+            <!-- <div class="w-full px-4 sm:px-6 lg:w-4/6 mx-auto my-12 sm:my-20 lg:my-60" id="social">
                 <div class="w-full lg:w-6/12 mb-8">
                     <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
                         Слідкуй в <span class="text-yellow-400">соцмережах</span>
@@ -782,7 +877,7 @@
                         Тут — підтримка, дієві поради і спільнота, що не здається...
                     </div>
                 </div>
-            </div>
+            </div> -->
 
     <script>
 
