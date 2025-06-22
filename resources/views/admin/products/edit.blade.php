@@ -239,7 +239,7 @@
                                     <div class="mt-4">
                                         <p class="text-sm font-medium text-gray-700 mb-2">Поточне зображення:</p>
                                         <div class="relative inline-block">
-                                            <img src="{{ $product->getFirstMediaUrl('product_images') }}"
+                                            <img src="{{ asset($product->getFirstMediaUrl('product_images')) }}"
                                                  alt="{{ $product->name }}"
                                                  class="h-32 w-32 object-cover rounded-lg border-2 border-gray-200 shadow-sm">
                                         </div>
