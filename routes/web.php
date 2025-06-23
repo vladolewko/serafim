@@ -55,20 +55,11 @@ Route::get('setSenderRef', [NovaPostController::class, 'setSenderRef']);
 Route::post('/setup-sender', [NovaPostController::class, 'setupSender'])->name('orders.setupSender');
 Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('orders.checkStatus');
 
-//    Route::match(['GET', 'POST'], 'payment/success', [NovaPostController::class, 'paymentSuccessPage']);
-//    Route::get('payment/failed', [NovaPostController::class, 'paymentFailedPage']);
-// В routes/web.php змінюємо маршрут на:
-//Route::post('/orders/payment/callback', [NovaPostController::class, 'paymentCallback'])->name('orders.payment.callback');
-//Route::get('/orders/payment/return', [NovaPostController::class, 'paymentReturn'])->name('orders.payment.return');
-//Route::get('/orders/status', [NovaPostController::class, 'checkOrderStatus'])->name('orders.status');
-
-//Route::post('/test-webhook', function(Request $request) {
-//    Log::info('🔥 TEST WEBHOOK CALLED!', $request->all());
-//    return 'OK';
-//});
-
-//Route::get('/orders/payment/return', [NovaPostController::class, 'paymentReturn'])->name('orders.payment.return');
-//Route::get('/orders/status', [NovaPostController::class, 'checkOrderStatus'])->name('orders.status');
-
-
 Route::get('/test/create-ttn/{orderReference}', [NovaPostController::class, 'createTTNManually']);
+
+Route::post('/api/orders/payment/callback', [OrderController::class, 'paymentCallback'])
+    ->name('orders.payment.callback');
+
+//protected $except = [
+//    'api/orders/payment/callback', // Виключаємо CSRF для callback
+//];

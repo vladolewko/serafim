@@ -24,6 +24,6 @@ use App\Http\Controllers\NovaPostController;
 //    Log::info('🔥 TEST WEBHOOK CALLED!', $request->all());
 //    return 'OK';
 //});
-
-Route::get('/api/orders/payment/return', [OrderController::class, 'paymentReturn'])->name('orders.payment.return');
-Route::post('/api/orders/payment/callback', [OrderController::class, 'paymentCallback'])->name('orders.payment.callback');
+//
+//Route::get('/api/orders/payment/return', [OrderController::class, 'paymentReturn'])->name('orders.payment.return');
+//Route::post('/api/orders/payment/callback', [OrderController::class, 'paymentCallback'])->name('orders.payment.callback');

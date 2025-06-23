@@ -1171,15 +1171,50 @@
 
             async handlePaymentSuccess(response) {
                 try {
-                    this.showSuccessMessage('Оплата успішна! Ваше замовлення обробляється.');
-                    this.resetForm();
+                    // Показуємо повідомлення про успішну оплату
+                    this.showSuccessMessage('Оплата успішна! Ваше замовлення створюється...');
 
-                    setTimeout(() => {
-                        window.location.href = '{{ route('home') }}';
-                    }, 2000);
+                    // Перевіряємо статус створення замовлення
+                    await this.checkOrderStatus(response.orderReference);
+
                 } catch (error) {
+                    console.error('Error after payment:', error);
+                    // Навіть якщо є помилка, оплата пройшла успішно
                     this.showSuccessMessage('Оплата пройшла успішно! Ваше замовлення буде оброблено найближчим часом.');
-                    this.resetForm();
+                    this.redirectToHome();
+                }
+            }
+
+            async checkOrderStatus(orderReference) {
+                try {
+                    // Чекаємо трохи, щоб callback встиг обробитися
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+
+                    const response = await fetch(`/api/orders/status/${orderReference}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.order) {
+                            this.showSuccessMessage(`Замовлення успішно створено! ${data.order.ttn_number ? 'ТТН: ' + data.order.ttn_number : ''}`);
+                        } else {
+                            this.showSuccessMessage('Оплата успішна! Замовлення обробляється.');
+                        }
+                    } else {
+                        this.showSuccessMessage('Оплата успішна! Замовлення обробляється.');
+                    }
+
+                    this.redirectToHome();
+
+                } catch (error) {
+                    console.error('Error checking order status:', error);
+                    this.showSuccessMessage('Оплата успішна! Замовлення обробляється.');
+                    this.redirectToHome();
                 }
             }
 
@@ -1189,6 +1224,13 @@
                     : 'Оплата не пройшла. Спробуйте ще раз або оберіть інший спосіб оплати.';
 
                 this.showErrorMessage(errorMessage);
+            }
+
+            redirectToHome() {
+                this.resetForm();
+                setTimeout(() => {
+                    window.location.href = '{{ route('home') }}';
+                }, 3000);
             }
 
             resetForm() {
