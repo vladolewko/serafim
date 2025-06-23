@@ -194,7 +194,8 @@ class NovaPostController extends Controller
             $warehouses = $this->novaPostService->getWarehouses($data['settlement']);
 
             $settlementRef = $data['settlement'];
-            $weight = $cart['product']->weight * $cart['quantity'];
+            $quantity = $data['quantity'];
+            $weight = $cart['product']->weight;
             $total = (int)$cart['total'];
 
             // Валідація параметрів для розрахунку доставки
@@ -212,9 +213,10 @@ class NovaPostController extends Controller
                 ], 400);
             }
 
-            $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total);
+//            $deliveryCost = $this->novaPostService->getServiceCosts($settlementRef, $weight, $total, $quantity);
+            $deliveryCost = 1;
 
-            if ($deliveryCost === false || $deliveryCost < 0) {
+            if ($deliveryCost == false || $deliveryCost < 0) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Не вдалося розрахувати вартість доставки. Спробуйте обрати інше відділення.'

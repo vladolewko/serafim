@@ -143,7 +143,7 @@ class NovaPostService
         return $response['data'][0];
     }
 
-    public function getServiceCosts(string $recipientCityRef, float $weight, float $total)
+    public function getServiceCosts(string $recipientCityRef, float $weight, float $total,  int $quantity = 1)
     {
         $request = $this->makeRequest('InternetDocument', 'getDocumentPrice', [
             'CitySender' => env('NOVA_POST_CITY_SENDER'),
@@ -151,7 +151,7 @@ class NovaPostService
             'Weight' => (string)$weight,
             'ServiceType' => 'WarehouseWarehouse',
             'CargoType' => 'Cargo',
-            'SeatsAmount' => '1',
+            'SeatsAmount' => $quantity,
             'RedeliveryCalculate' => [
                 'CargoType' => 'Money',
                 'Amount' => $total
