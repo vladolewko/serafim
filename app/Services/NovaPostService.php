@@ -163,40 +163,74 @@ class NovaPostService
 
     public function setupSender($data)
     {
-        $senderRef = $this->createOrGetSender($data);
-        if (!$senderRef) {
-            throw new \Exception('Не вдалося створити/отримати відправника');
+        try {
+            Log::info('Setup sender started', ['data' => $data]);
+
+            // Крок 1: Створення/отримання відправника
+            Log::info('Step 1: Creating/getting sender');
+            $senderRef = $this->createOrGetSender($data);
+            if (!$senderRef) {
+                Log::error('Failed to create/get sender');
+                throw new \Exception('Не вдалося створити/отримати відправника');
+            }
+            Log::info('Sender ref obtained', ['senderRef' => $senderRef]);
+
+            // Крок 2: Встановлення міста відправника
+            Log::info('Step 2: Setting city sender', ['city' => $data['city']]);
+            $cityRef = $this->setCitySender($data['city']);
+            if (!$cityRef) {
+                Log::error('Failed to set city sender', ['city' => $data['city']]);
+                throw new \Exception('Не вдалося знайти місто відправника');
+            }
+            Log::info('City ref obtained', ['cityRef' => $cityRef]);
+
+            // Крок 3: Пошук населеного пункту
+            Log::info('Step 3: Searching settlement', ['city' => $data['city']]);
+            $senderSettlement = $this->searchSettlement($data['city']);
+            if (empty($senderSettlement)) {
+                Log::error('Failed to find settlement', ['city' => $data['city']]);
+                throw new \Exception('Не вдалося знайти населений пункт');
+            }
+            Log::info('Settlement found', ['settlement' => $senderSettlement[0]['Ref']]);
+
+            // Крок 4: Отримання адреси відправника
+            Log::info('Step 4: Getting sender address');
+            $senderAddress = $this->getSenderAddress($senderSettlement[0]['Ref']);
+            if (!$senderAddress) {
+                Log::error('Failed to get sender address', ['settlementRef' => $senderSettlement[0]['Ref']]);
+                throw new \Exception('Не вдалося отримати адресу відправника');
+            }
+            Log::info('Sender address obtained', ['senderAddress' => $senderAddress]);
+
+            // Крок 5: Отримання контактної особи
+            Log::info('Step 5: Getting contact person');
+            $contactSender = $this->getContactPerson($senderRef);
+            if (!$contactSender) {
+                Log::error('Failed to get contact person', ['senderRef' => $senderRef]);
+                throw new \Exception('Не вдалося отримати контактну особу відправника');
+            }
+            Log::info('Contact person obtained', ['contactSender' => $contactSender]);
+
+            // Крок 6: Оновлення .env файлу
+            Log::info('Step 6: Updating env file');
+            $this->updateEnvFile('NOVA_POST_CITY_SENDER', $cityRef);
+            $this->updateEnvFile('NOVA_POST_SENDER_REF', $senderRef);
+            $this->updateEnvFile('NOVA_POST_SENDER_ADDRESS', $senderAddress);
+            $this->updateEnvFile('NOVA_POST_CONTACT_SENDER', $contactSender);
+            $this->updateEnvFile('NOVA_POST_SENDER_PHONE', $data['phone']);
+
+            Log::info('Setup sender completed successfully');
+            return true;
+
+        } catch (\Exception $e) {
+            Log::error('Setup sender failed', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
-
-        // Оновлюємо всі дані в .env
-        $cityRef = $this->setCitySender($data['city']);
-        if (!$cityRef) {
-            throw new \Exception('Не вдалося знайти місто відправника');
-        }
-
-        $senderSettlement = $this->searchSettlement($data['city']);
-        if (empty($senderSettlement)) {
-            throw new \Exception('Не вдалося знайти населений пункт');
-        }
-
-        $senderAddress = $this->getSenderAddress($senderSettlement[0]['Ref']);
-        if (!$senderAddress) {
-            throw new \Exception('Не вдалося отримати адресу відправника');
-        }
-
-        $contactSender = $this->getContactPerson($senderRef);
-        if (!$contactSender) {
-            throw new \Exception('Не вдалося отримати контактну особу відправника');
-        }
-
-        // Оновлюємо всі дані в .env
-        $this->updateEnvFile('NOVA_POST_CITY_SENDER', $cityRef);
-        $this->updateEnvFile('NOVA_POST_SENDER_REF', $senderRef);
-        $this->updateEnvFile('NOVA_POST_SENDER_ADDRESS', $senderAddress);
-        $this->updateEnvFile('NOVA_POST_CONTACT_SENDER', $contactSender);
-        $this->updateEnvFile('NOVA_POST_SENDER_PHONE', $data['phone']);
-
-        return true;
     }
 
     public function checkSenderSetup()

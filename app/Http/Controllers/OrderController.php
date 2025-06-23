@@ -44,9 +44,4 @@ class OrderController extends Controller
 
         return back()->with('error', 'Помилка');
     }
-
-    public function paymentSuccess()
-    {
-
-    }
 }
