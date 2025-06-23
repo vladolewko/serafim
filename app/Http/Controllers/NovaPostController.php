@@ -552,6 +552,39 @@ class NovaPostController extends Controller
         }
     }
 
+    public function getOrderStatus($orderReference)
+    {
+        try {
+            $order = Order::where('order_reference', $orderReference)->first();
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Замовлення не знайдено'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'order' => [
+                    'id' => $order->id,
+                    'order_reference' => $order->order_reference,
+                    'status' => $order->status,
+                    'payment_status' => $order->payment_status,
+                    'ttn_number' => $order->ttn_number,
+                    'created_at' => $order->created_at
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error getting order status: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Помилка при отриманні статусу замовлення'
+            ], 500);
+        }
+    }
+
     private function verifySignature($data)
     {
         $merchantSecretKey = config('services.wayforpay.secret_key');
