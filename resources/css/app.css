@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url(https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css);
 /* Перевизначаємо стиль для checkbox */
 [type="checkbox"]:checked {
     background-image: none; /* Прибираємо SVG-зображення */

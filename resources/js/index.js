@@ -1,4 +1,5 @@
 import "flowbite/dist/flowbite.min.js";
+import "flowbite/dist/flowbite.js";
 import "flowbite";
 
 // function smoothScrollToElement(targetId, offset = 80) {
