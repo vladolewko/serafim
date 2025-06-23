@@ -50,6 +50,7 @@
             <div class="p-6">
                 <form id="setup-sender-form" class="space-y-6">
                     @csrf
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-700">Ім'я відправника</label>

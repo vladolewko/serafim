@@ -288,31 +288,10 @@ class NovaPostController extends Controller
                 return response()->json(['success' => false, 'message' => 'Не вдалося створити контрагента'], 400);
             }
 
-            $weight = $cart['product']->weight * $cart['quantity'];
-            $total = (int)$cart['total'];
-            $deliveryCost = 0;
-            $totalAmount = $total + $deliveryCost;
-
-            $order = Order::create([
-                'order_reference' => Order::generateOrderReference(),
-                'status' => 'pending',
-                'payment_type' => $validated['payment'],
-                'payment_status' => 'pending',
-                'customer_name' => trim($validated['name']),
-                'customer_surname' => trim($validated['surname']),
-                'customer_phone' => $validated['phone'],
-                'customer_email' => strtolower(trim($validated['email'])),
-                'settlement_ref' => $data['settlement'],
-                'warehouse_ref' => $data['warehouse'],
-                'counterparty_ref' => $counterparty['Ref'],
-                'contact_person_ref' => $counterparty['ContactPersonRef'],
-                'cart_data' => $cart,
-                'product_total' => $total,
-                'delivery_cost' => $deliveryCost,
-                'total_amount' => $totalAmount
-            ]);
-
             if ($validated['payment'] == 'cash') {
+                // Для готівкової оплати створюємо замовлення відразу
+                $order = $this->createOrder($validated, $cart, $data, $counterparty);
+
                 $ttn = $this->novaPostService->createTTN([
                     'settlement' => $data['settlement'],
                     'warehouse' => $data['warehouse'],
@@ -341,10 +320,24 @@ class NovaPostController extends Controller
             }
 
             if ($validated['payment'] == 'card') {
+                // Для картки зберігаємо дані в сесії для створення замовлення після оплати
+                $orderData = [
+                    'validated' => $validated,
+                    'cart' => $cart,
+                    'nova_post_data' => $data,
+                    'counterparty' => $counterparty
+                ];
+
+                Session::put('pending_order_data', $orderData);
+
+                // Генеруємо унікальний номер замовлення для WayForPay
+                $orderReference = Order::generateOrderReference();
+                Session::put('pending_order_reference', $orderReference);
+
                 return response()->json([
                     'success' => true,
                     'payment_type' => 'card',
-                    'wayforpay_data' => $this->prepareWayForPayData($order)
+                    'wayforpay_data' => $this->prepareWayForPayData($validated, $cart, $data, $orderReference)
                 ]);
             }
 
@@ -363,7 +356,34 @@ class NovaPostController extends Controller
         }
     }
 
-    private function prepareWayForPayData($order)
+    private function createOrder($validated, $cart, $data, $counterparty)
+    {
+        $weight = $cart['product']->weight * $cart['quantity'];
+        $total = (int)$cart['total'];
+        $deliveryCost = 0;
+        $totalAmount = $total + $deliveryCost;
+
+        return Order::create([
+            'order_reference' => Order::generateOrderReference(),
+            'status' => 'pending',
+            'payment_type' => $validated['payment'],
+            'payment_status' => $validated['payment'] == 'cash' ? 'pending' : 'pending',
+            'customer_name' => trim($validated['name']),
+            'customer_surname' => trim($validated['surname']),
+            'customer_phone' => $validated['phone'],
+            'customer_email' => strtolower(trim($validated['email'])),
+            'settlement_ref' => $data['settlement'],
+            'warehouse_ref' => $data['warehouse'],
+            'counterparty_ref' => $counterparty['Ref'],
+            'contact_person_ref' => $counterparty['ContactPersonRef'],
+            'cart_data' => $cart,
+            'product_total' => $total,
+            'delivery_cost' => $deliveryCost,
+            'total_amount' => $totalAmount
+        ]);
+    }
+
+    private function prepareWayForPayData($validated, $cart, $data, $orderReference)
     {
         $merchantAccount = config('services.wayforpay.merchant_account');
         $merchantSecretKey = config('services.wayforpay.secret_key');
@@ -373,15 +393,18 @@ class NovaPostController extends Controller
             throw new \Exception('WayForPay не налаштований');
         }
 
-        $orderReference = $order->order_reference;
-        $amount = number_format($order->total_amount, 2, '.', '');
+        $total = (int)$cart['total'];
+        $deliveryCost = 0;
+        $totalAmount = $total + $deliveryCost;
+
+        $amount = number_format($totalAmount, 2, '.', '');
         $currency = 'UAH';
         $orderDate = time();
 
-        $product = $order->cart_data['product'];
+        $product = $cart['product'];
         $productName = [is_array($product) ? $product['name'] : $product->name];
-        $productPrice = [number_format($order->product_total, 2, '.', '')];
-        $productCount = [$order->cart_data['quantity']];
+        $productPrice = [number_format($total, 2, '.', '')];
+        $productCount = [$cart['quantity']];
 
         $signString = implode(';', [
             $merchantAccount,
@@ -407,10 +430,10 @@ class NovaPostController extends Controller
             'productName' => $productName,
             'productCount' => $productCount,
             'productPrice' => $productPrice,
-            'clientFirstName' => $order->customer_name,
-            'clientLastName' => $order->customer_surname,
-            'clientEmail' => $order->customer_email,
-            'clientPhone' => preg_replace('/[^\d]/', '', $order->customer_phone),
+            'clientFirstName' => trim($validated['name']),
+            'clientLastName' => trim($validated['surname']),
+            'clientEmail' => strtolower(trim($validated['email'])),
+            'clientPhone' => preg_replace('/[^\d]/', '', $validated['phone']),
             'language' => 'UA',
             'serviceUrl' => $merchantDomainName . '/api/orders/payment/callback',
             'merchantSignature' => $merchantSignature
@@ -426,18 +449,54 @@ class NovaPostController extends Controller
                 return response('Invalid signature', 400);
             }
 
-            $order = Order::where('order_reference', $data['orderReference'])->first();
-            if (!$order) {
-                return response('Order not found', 404);
+            $orderReference = $data['orderReference'];
+
+            // Перевіряємо чи є дані в сесії для цього замовлення
+            $pendingOrderReference = Session::get('pending_order_reference');
+            $pendingOrderData = Session::get('pending_order_data');
+
+            if ($pendingOrderReference !== $orderReference || !$pendingOrderData) {
+                Log::error('Order reference mismatch or no pending order data', [
+                    'expected' => $pendingOrderReference,
+                    'received' => $orderReference
+                ]);
+                return response('Order data not found', 404);
             }
 
             if ($data['transactionStatus'] === 'Approved') {
+                // Створюємо замовлення тільки після успішної оплати
+                $order = $this->createOrder(
+                    $pendingOrderData['validated'],
+                    $pendingOrderData['cart'],
+                    $pendingOrderData['nova_post_data'],
+                    $pendingOrderData['counterparty']
+                );
+
+                // Оновлюємо номер замовлення на той, що використовувався в WayForPay
                 $order->update([
+                    'order_reference' => $orderReference,
                     'payment_status' => 'paid',
                     'status' => 'paid'
                 ]);
 
+                // Створюємо ТТН після успішної оплати
                 $this->createTTNAfterPayment($order);
+
+                // Очищуємо сесію
+                Session::forget(['pending_order_data', 'pending_order_reference', 'nova_post_data', 'cart']);
+
+                Log::info('Order created successfully after payment', [
+                    'order_id' => $order->id,
+                    'order_reference' => $orderReference
+                ]);
+            } else {
+                // Якщо оплата не пройшла, очищуємо тільки дані замовлення
+                Session::forget(['pending_order_data', 'pending_order_reference']);
+
+                Log::info('Payment failed', [
+                    'order_reference' => $orderReference,
+                    'status' => $data['transactionStatus']
+                ]);
             }
 
             return response('OK');
