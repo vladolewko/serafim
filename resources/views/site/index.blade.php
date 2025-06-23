@@ -527,7 +527,7 @@
                             <div class="bg-white flex flex-col items-center rounded-xl p-4">
                                 <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4">
                                     @if($product->getMedia('product_images')->isNotEmpty())
-                                        <img  class="w-full h-full"  src="{{ $product->getFirstMediaUrl('product_images') }}"
+                                        <img  class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}"
                                              alt="{{ $product->title }}">
                                     @endif
                                 </div>
@@ -587,7 +587,7 @@
                                               <!--  <div
                                                     class="h-[212px] w-[212px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                                     @if($product->getMedia('product_images')->isNotEmpty())
-                                                        <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('product_images') }}"
+                                                        <img class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}"
                                                              alt="{{ $product->title }}">
                                                     @endif
                                                 </div>

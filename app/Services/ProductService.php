@@ -26,18 +26,25 @@ class ProductService implements ProductServiceInterface
         return $product;
     }
 
-    public function update(int $id, array $data, $productImage = null): Product
+    public function update(int $id, array $data, $productImage): Product|null
     {
-        $product = Product::findOrFail($id);
-        $product->update($data);
-        if ($productImage) {
+        try {
+            $product = Product::findOrFail($id);
+            $product->update($data);
+
             if ($product->hasMedia('product_images')) {
-                $product->clearMediaCollection('product_images');
+                    $product->clearMediaCollection('product_images');
             }
 
-            $product->addMedia($productImage)->toMediaCollection('product_images');
+            if (!$product->addMedia($productImage)->toMediaCollection('product_images')) {
+                throw new \Exception("Failed to update product images");
+            }
+            return $product;
+
+        } catch (\Exception $exception) {
+            return null;
         }
-        return $product;
+
     }
 
       public function destroy(int $id): bool

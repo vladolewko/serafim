@@ -75,7 +75,6 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request)
     {
-        $product = $this->productService->getById($request->product_id);
         if ($request->hasFile('product_image')) {
             $productImage = $request->file('product_image');
         }
@@ -84,7 +83,7 @@ class ProductController extends Controller
         $data['content'] = array_map('trim', explode('|', $data['content']));
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
-        if ($this->productService->update($request->product_id, $data, $productImage ?? null)) {
+        if ($this->productService->update($request->product_id, $data, $productImage)) {
             return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
         }
         return redirect()->back()->with('error', 'Failed to update product. Please try again.');
