@@ -239,9 +239,13 @@
                                     <div class="mt-4">
                                         <p class="text-sm font-medium text-gray-700 mb-2">Поточне зображення:</p>
                                         <div class="relative inline-block">
-                                            <img src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                                 alt="{{ $product->name }}"
-                                                 class="h-32 w-32 object-cover rounded-lg border-2 border-gray-200 shadow-sm">
+                                            @if($product->getMedia('product_images')->isNotEmpty())
+                                                @php
+                                                    $imageUrl = $product->getFirstMediaUrl('product_images');
+                                                    $imageUrl = str_replace('http://110.172.148.57:8000', 'https://serafym.info', $imageUrl);
+                                                @endphp
+                                                <img class="w-32 h-32" src="{{ $imageUrl }}" alt="{{ $product->title }}">
+                                            @endif
                                         </div>
                                     </div>
                                 @endif

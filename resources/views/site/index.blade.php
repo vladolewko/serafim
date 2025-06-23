@@ -515,8 +515,11 @@
                             <div class="bg-white flex flex-col items-center rounded-xl p-4">
                                 <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4">
                                     @if($product->getMedia('product_images')->isNotEmpty())
-                                        <img  class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                             alt="{{ $product->title }}">
+                                        @php
+                                            $imageUrl = $product->getFirstMediaUrl('product_images');
+                                            $imageUrl = str_replace('http://110.172.148.57:8000', 'https://serafym.info', $imageUrl);
+                                        @endphp
+                                        <img class="w-full h-full" src="{{ $imageUrl }}" alt="{{ $product->title }}">
                                     @endif
                                 </div>
                                 <p class="text-lg lg:text-2xl font-bold text-center mb-3">{{$product->name}}</p>
@@ -564,8 +567,11 @@
                                                 <div
                                                     class="h-[212px] w-[212px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                                     @if($product->getMedia('product_images')->isNotEmpty())
-                                                        <img class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                                             alt="{{ $product->title }}">
+                                                        @php
+                                                            $imageUrl = $product->getFirstMediaUrl('product_images');
+                                                            $imageUrl = str_replace('http://110.172.148.57:8000', 'https://serafym.info', $imageUrl);
+                                                        @endphp
+                                                        <img class="w-full h-full" src="{{ $imageUrl }}" alt="{{ $product->title }}">
                                                     @endif
                                                 </div>
 
