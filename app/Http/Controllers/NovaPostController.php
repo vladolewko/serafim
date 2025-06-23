@@ -521,6 +521,8 @@ class NovaPostController extends Controller
                 'phone' => ['required', 'string'],
                 'city' => ['required', 'string', 'min:2', 'max:100']
             ]);
+            Log::error('Валідація пройшла успішно: ');
+
 
             $result = $this->novaPostService->setupSender($validated);
 
