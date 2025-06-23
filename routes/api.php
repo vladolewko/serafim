@@ -27,3 +27,7 @@ use App\Http\Controllers\NovaPostController;
 //
 //Route::get('/api/orders/payment/return', [OrderController::class, 'paymentReturn'])->name('orders.payment.return');
 //Route::post('/api/orders/payment/callback', [OrderController::class, 'paymentCallback'])->name('orders.payment.callback');
+
+
+Route::post('/api/orders/payment/callback', [NovaPostController::class, 'paymentCallback'])
+    ->name('orders.payment.callback');

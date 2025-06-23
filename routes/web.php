@@ -57,8 +57,6 @@ Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('or
 
 Route::get('/test/create-ttn/{orderReference}', [NovaPostController::class, 'createTTNManually']);
 
-Route::post('/api/orders/payment/callback', [NovaPostController::class, 'paymentCallback'])
-    ->name('orders.payment.callback');
 
 Route::get('/api/orders/status/{orderReference}', [NovaPostController::class, 'getOrderStatus'])
     ->name('orders.status');
