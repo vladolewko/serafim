@@ -15,8 +15,8 @@
                 @include('components.introduction-mobile')
             @endif -->
 
-            <div class="sm:hidden"> @include('components.introduction-mobile') </div>
-            <div class="hidden sm:block"> @include('components.introduction')</div>
+            <div class="lg:hidden"> @include('components.introduction-mobile') </div>
+            <div class="hidden lg:block"> @include('components.introduction') </div>
 
             <!-- </div> -->
             <!-- Why Important Section -->
@@ -164,7 +164,10 @@
 
 
             <!-- Knowledge Pack Section -->
-            @include('components.knowledgepack')
+             <div id="wt_knowledge_pack">
+                @include('components.knowledgepack')
+             </div>
+
 
 
 
@@ -546,7 +549,7 @@
 
 
             <!-- Choose Knowledge Pack Selection Desktop -->
-            <div class="lg:hidden">
+            <div class="lg:hidden" id="knowledge_pack">
                 @include('components.chooseknoweledge-mobile')
             </div>
 
@@ -651,7 +654,7 @@
 
 
             <!-- About Author Section -->
-            <div class="lg:hidden">
+            <div class="lg:hidden" id="about_author">
                 @include('components.aboutauthor-mobile')
             </div>
 

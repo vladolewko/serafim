@@ -20,7 +20,7 @@
             </div>
 
             <ul class="list-disc ml-6 pr-2 mb-6">
-                <li class="text-slate-600 text-sm lg:text-base leading-relaxed" id="description">
+                <li class="text-slate-600 text-sm sm:text-base leading-relaxed" id="description">
                     Знання Конституції України, законів, прав людини та міжнародного права — це не просто
                     освіченість.
                     Це влада, безпека та свобода у щоденному житті. Ось ключові переваги:
@@ -77,7 +77,7 @@
     </div>
 
     <div class="w-full lg:w-[50.25%] order-1 lg:order-2">
-        <div class="flex gap-1 justify-start mt-0 lg:mt-8 flex-wrap">
+        <div class="flex gap-1 sm:gap-4 justify-start sm:justify-center lg:justify-start mt-0 lg:mt-8 flex-wrap">
             @php
                 // Створюємо масиви для цін, ID та картинок
                 $prices = [];
@@ -118,12 +118,12 @@
         </div>
 
         <div
-            class="flex flex-col sm:flex-row justify-between lg:justify-end mt-6 lg:my-5 items-center gap-4 lg:gap-5 lg:pt-14">
+            class="flex flex-col lg:flex-row justify-between lg:justify-end mt-6 lg:my-5 items-center gap-4 lg:gap-5 lg:pt-14">
             <div class="text-black text-2xl lg:text-4xl">
                 <span class="text-yellow-400" id="price">600</span> грн
             </div>
             <a href="" id="productHref"
-                class="w-full text-center sm:w-auto bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">замовити</a>
+                class="w-full text-center lg:w-auto bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">замовити</a>
         </div>
     </div>
 </div>

@@ -42,7 +42,7 @@
 
     <div class="w-full flex justify-end">
         <div
-            class="border border-blue-400 rounded-xl px-6 sm:px-10 py-3 font-bold w-full sm:w-10/12 lg:w-6/12 text-center text-base sm:text-lg">
+            class="border border-blue-400 rounded-xl px-6 sm:px-10 py-3 font-bold w-full lg:w-6/12 text-center text-base sm:text-lg">
             Тут — підтримка, дієві поради і спільнота, що не здається...
         </div>
     </div>

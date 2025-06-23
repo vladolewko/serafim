@@ -1,4 +1,4 @@
-  <div class="hidden lg:block lg:w-5/6 xl:w-4/6 mx-auto my-72 section" id="knowledge_pack">
+  <div class="hidden lg:block lg:w-5/6 xl:w-4/6 mx-auto my-72 section">
     <div class="flex">
         <div>
             <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span>

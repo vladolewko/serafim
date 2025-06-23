@@ -9,7 +9,7 @@
             Бо надто багато бачив хлопців і дівчат, які:
         </p>
 
-        <ul class="list-disc mt-4 text-[10px] font-bold text-slate-600 w-4/6 pl-4 mx-auto">
+        <ul class="list-disc mt-4 text-[15px] font-bold text-slate-600 w-4/6 pl-5 mx-auto">
             <li>потрапляють у правові пастки без жодної вини;</li>
             <li>не завжди розуміють що є злочином, за який є відповідальність</li>
             <li>не знають, куди звертатись;</li>

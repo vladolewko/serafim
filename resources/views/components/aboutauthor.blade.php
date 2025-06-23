@@ -1,4 +1,4 @@
-<div class="w-full bg-blue-400 py-12 lg:py-20 text-white" id="about_author">
+<div class="w-full bg-blue-400 py-12 lg:py-20 text-white">
     <div class="w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto">
         <div class="flex flex-col lg:flex-row gap-8 lg:justify-between">
             <div class="w-full lg:w-5/12 flex justify-center xl:justify-start items-center">
