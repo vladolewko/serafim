@@ -601,6 +601,7 @@ class NovaPostController extends Controller
             if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] === true)) {
                 $ttnNumber = $ttnResult['IntDocNumber'] ?? $ttnResult['Number'] ?? null;
 
+
                 if ($ttnNumber) {
                     $order->addTTNData($ttnNumber, $ttnResult);
                     $order->update(['status' => 'processing']); // Змініть статус після створення ТТН
@@ -609,6 +610,7 @@ class NovaPostController extends Controller
                     // Можна спробувати повторно пізніше
                 }
             }
+
 
         } catch (\Exception $e) {
             Log::error('TTN creation error: ' . $e->getMessage() . ' Order: ' . $order->order_reference);
