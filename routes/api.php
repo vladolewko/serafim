@@ -1,37 +1,41 @@
 <?php
 
-
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
+// 1. ПЕРЕВІРКА РОУТІВ - api.php
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\NovaPostController;
 
-
-// WayForPay колбек
+// Важливо! Додайте middleware для CSRF виключення
 Route::post('/orders/payment/callback', [NovaPostController::class, 'paymentCallback'])
+    ->withoutMiddleware(['auth', 'verified']) // Виключаємо auth middleware
     ->name('orders.payment.callback');
 
-// Статус замовлення
 Route::get('/orders/status/{orderReference}', [NovaPostController::class, 'getOrderStatus'])
     ->name('orders.status');
 
-// Тестові роути
+// Тестові роути для діагностики
 Route::post('/test/callback', function(Request $request) {
     Log::info('Test callback received', [
+        'method' => $request->method(),
+        'url' => $request->fullUrl(),
         'data' => $request->all(),
         'headers' => $request->headers->all(),
-        'ip' => $request->ip()
+        'ip' => $request->ip(),
+        'user_agent' => $request->userAgent()
     ]);
 
     return response()->json([
         'status' => 'received',
+        'timestamp' => now(),
         'data' => $request->all()
     ]);
-});
+})->withoutMiddleware(['auth', 'verified']);
 
 Route::get('/test/callback', function() {
     return response()->json([
-        'status' => 'callback endpoint is working',
-        'time' => now()
+        'status' => 'GET endpoint working',
+        'time' => now(),
+        'url' => request()->fullUrl()
     ]);
 });
