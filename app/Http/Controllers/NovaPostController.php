@@ -476,30 +476,51 @@ class NovaPostController extends Controller
             'method' => $request->method(),
             'url' => $request->fullUrl(),
             'ip' => $request->ip(),
+            'content_type' => $request->header('Content-Type'),
             'raw_input' => $request->getContent(),
         ]);
 
         try {
-            // Отримуємо дані
-            $data = $request->all();
-            if ($request->isJson()) {
-                $data = $request->json()->all();
-            }
+            $data = [];
+            $rawInput = $request->getContent();
 
-            // Якщо дані порожні, спробуємо парсити raw input
-            if (empty($data)) {
-                $rawInput = $request->getContent();
-                $parsedJson = json_decode($rawInput, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $data = $parsedJson;
+            Log::info('Raw input received', ['raw' => $rawInput]);
+
+            // Спочатку пробуємо отримати дані з request->all()
+            if ($request->has('orderReference')) {
+                $data = $request->all();
+                Log::info('Data from request->all()', $data);
+            }
+            // Якщо це JSON
+            elseif ($request->isJson()) {
+                $data = $request->json()->all();
+                Log::info('Data from JSON', $data);
+            }
+            // Якщо дані передані як form-data або raw JSON
+            elseif (!empty($rawInput)) {
+                // Спробуємо спочатку як JSON
+                $jsonData = json_decode($rawInput, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
+                    $data = $jsonData;
+                    Log::info('Data parsed as JSON', $data);
+                }
+                // Якщо не JSON, спробуємо як form data
+                else {
+                    parse_str($rawInput, $data);
+                    Log::info('Data parsed as form data', $data);
                 }
             }
 
-            Log::info('Callback data received', $data);
+            Log::info('Final callback data', $data);
 
             // Перевіряємо обов'язкові поля
             if (!isset($data['orderReference']) || !isset($data['transactionStatus'])) {
-                Log::error('Missing required fields in callback', $data);
+                Log::error('Missing required fields in callback', [
+                    'has_orderReference' => isset($data['orderReference']),
+                    'has_transactionStatus' => isset($data['transactionStatus']),
+                    'all_keys' => array_keys($data),
+                    'data' => $data
+                ]);
                 return response('Missing required fields', 400);
             }
 
@@ -527,17 +548,23 @@ class NovaPostController extends Controller
 
             // Обробляємо результат платежу
             if ($data['transactionStatus'] === 'Approved') {
-                Log::info('Payment approved', ['order_reference' => $orderReference]);
+                Log::info('Payment approved, updating order', ['order_reference' => $orderReference]);
 
                 $order->update([
                     'payment_status' => 'paid',
-                    'status' => 'paid'
+                    'status' => 'paid',
+                    'payment_date' => now()
+                ]);
+
+                Log::info('Order status updated, creating TTN', [
+                    'order_id' => $order->id,
+                    'order_reference' => $orderReference
                 ]);
 
                 // Створюємо ТТН після успішної оплати
                 $this->createTTNAfterPayment($order);
 
-                Log::info('Order updated successfully after payment', [
+                Log::info('Order processing completed', [
                     'order_id' => $order->id,
                     'order_reference' => $orderReference
                 ]);
@@ -560,7 +587,8 @@ class NovaPostController extends Controller
         } catch (\Exception $e) {
             Log::error('Payment callback error: ' . $e->getMessage(), [
                 'exception' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
+                'raw_input' => $request->getContent()
             ]);
             return response('Error: ' . $e->getMessage(), 500);
         }
