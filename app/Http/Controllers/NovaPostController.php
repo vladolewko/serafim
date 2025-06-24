@@ -601,6 +601,7 @@ class NovaPostController extends Controller
             if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] === true)) {
                 $ttnNumber = $ttnResult['IntDocNumber'] ?? $ttnResult['Number'] ?? null;
 
+
                 if ($ttnNumber) {
                     $order->addTTNData($ttnNumber, $ttnResult);
                     $order->update(['status' => 'processing']); // Змініть статус після створення ТТН
