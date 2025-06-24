@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_reference')->unique(); // Унікальний номер замовлення
-            $table->enum('status', ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled', 'pending_payment', 'failed'])->default('pending');
             $table->enum('payment_type', ['cash', 'card']);
             $table->enum('payment_status', ['pending', 'paid', 'failed', 'cancelled'])->default('pending');
 

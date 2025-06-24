@@ -252,7 +252,35 @@ class NovaPostController extends Controller
             ], 500);
         }
     }
+// 1. Зберігайте дані замовлення в базі даних, а не в сесії
+    private function createPendingOrder($validated, $cart, $data, $counterparty, $orderReference)
+    {
+        $weight = $cart['product']->weight * $cart['quantity'];
+        $total = (int)$cart['total'];
+        $deliveryCost = 0;
+        $totalAmount = $total + $deliveryCost;
 
+        return Order::create([
+            'order_reference' => $orderReference,
+            'status' => 'pending_payment', // Новий статус для очікування оплати
+            'payment_type' => $validated['payment'],
+            'payment_status' => 'pending',
+            'customer_name' => trim($validated['name']),
+            'customer_surname' => trim($validated['surname']),
+            'customer_phone' => $validated['phone'],
+            'customer_email' => strtolower(trim($validated['email'])),
+            'settlement_ref' => $data['settlement'],
+            'warehouse_ref' => $data['warehouse'],
+            'counterparty_ref' => $counterparty['Ref'],
+            'contact_person_ref' => $counterparty['ContactPersonRef'],
+            'cart_data' => $cart,
+            'product_total' => $total,
+            'delivery_cost' => $deliveryCost,
+            'total_amount' => $totalAmount
+        ]);
+    }
+
+// 2. Оновіть метод createCounterparty
     public function createCounterparty(Request $request)
     {
         try {
@@ -320,19 +348,12 @@ class NovaPostController extends Controller
             }
 
             if ($validated['payment'] == 'card') {
-                // Для картки зберігаємо дані в сесії для створення замовлення після оплати
-                $orderData = [
-                    'validated' => $validated,
-                    'cart' => $cart,
-                    'nova_post_data' => $data,
-                    'counterparty' => $counterparty
-                ];
-
-                Session::put('pending_order_data', $orderData);
-
-                // Генеруємо унікальний номер замовлення для WayForPay
+                // Створюємо замовлення одразу зі статусом pending_payment
                 $orderReference = Order::generateOrderReference();
-                Session::put('pending_order_reference', $orderReference);
+                $order = $this->createPendingOrder($validated, $cart, $data, $counterparty, $orderReference);
+
+                // Очищаємо корзину та дані доставки
+                Session::forget(['nova_post_data', 'cart']);
 
                 return response()->json([
                     'success' => true,
@@ -448,62 +469,41 @@ class NovaPostController extends Controller
         ];
     }
 
+    // 3. Спростіть метод paymentCallback
     public function paymentCallback(Request $request)
     {
-        // Логування на самому початку
         Log::info('WayForPay callback START', [
             'method' => $request->method(),
             'url' => $request->fullUrl(),
             'ip' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'content_type' => $request->header('Content-Type'),
             'raw_input' => $request->getContent(),
         ]);
 
         try {
-            // Отримуємо дані з різних джерел
-            $postData = $request->all();
-            $jsonData = [];
-
-            // Перевіряємо чи це JSON
+            // Отримуємо дані
+            $data = $request->all();
             if ($request->isJson()) {
-                $jsonData = $request->json()->all();
-                Log::info('JSON data received', $jsonData);
+                $data = $request->json()->all();
             }
 
-            // Перевіряємо raw input
-            $rawInput = $request->getContent();
-            if (!empty($rawInput) && $rawInput !== '[]') {
-                Log::info('Raw input content', ['raw' => $rawInput]);
-
-                // Спробуємо парсити як JSON
+            // Якщо дані порожні, спробуємо парсити raw input
+            if (empty($data)) {
+                $rawInput = $request->getContent();
                 $parsedJson = json_decode($rawInput, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
-                    $jsonData = $parsedJson;
+                    $data = $parsedJson;
                 }
             }
 
-            // Використовуємо дані з найбільш повного джерела
-            $data = !empty($jsonData) ? $jsonData : $postData;
+            Log::info('Callback data received', $data);
 
-            Log::info('Final parsed data', $data);
-
-            // Перевіряємо наявність обов'язкових полів
-            if (empty($data) || !isset($data['orderReference'])) {
-                Log::error('Missing orderReference in callback data', [
-                    'post_data' => $postData,
-                    'json_data' => $jsonData,
-                    'raw_input' => substr($rawInput, 0, 500) // Обмежуємо для безпеки
-                ]);
+            // Перевіряємо обов'язкові поля
+            if (!isset($data['orderReference']) || !isset($data['transactionStatus'])) {
+                Log::error('Missing required fields in callback', $data);
                 return response('Missing required fields', 400);
             }
 
-            if (!isset($data['transactionStatus'])) {
-                Log::error('Missing transactionStatus in callback', $data);
-                return response('Missing transaction status', 400);
-            }
-
-            // Перевіряємо підпис (якщо потрібно)
+            // Перевіряємо підпис
             if (!$this->verifySignature($data)) {
                 Log::error('Invalid signature in callback', $data);
                 return response('Invalid signature', 400);
@@ -511,70 +511,37 @@ class NovaPostController extends Controller
 
             $orderReference = $data['orderReference'];
 
-            // Отримуємо дані з сесії
-            $pendingOrderReference = session('pending_order_reference');
-            $pendingOrderData = session('pending_order_data');
+            // Шукаємо замовлення в базі даних
+            $order = Order::where('order_reference', $orderReference)->first();
 
-            Log::info('Session data check', [
-                'pending_reference' => $pendingOrderReference,
-                'received_reference' => $orderReference,
-                'has_pending_data' => !empty($pendingOrderData),
-                'session_id' => session()->getId()
-            ]);
-
-            // Альтернативний пошук, якщо немає в сесії
-            if ($pendingOrderReference !== $orderReference || !$pendingOrderData) {
-                Log::warning('Order reference mismatch, searching by reference', [
-                    'expected' => $pendingOrderReference,
-                    'received' => $orderReference
-                ]);
-
-                // Можливо замовлення вже існує
-                $existingOrder = \App\Models\Order::where('order_reference', $orderReference)->first();
-                if ($existingOrder) {
-                    Log::info('Found existing order', ['order_id' => $existingOrder->id]);
-
-                    if ($data['transactionStatus'] === 'Approved') {
-                        $existingOrder->update([
-                            'payment_status' => 'paid',
-                            'status' => 'paid'
-                        ]);
-
-                        $this->createTTNAfterPayment($existingOrder);
-                    }
-
-                    return response('OK', 200);
-                }
-
-                return response('Order data not found', 404);
+            if (!$order) {
+                Log::error('Order not found', ['order_reference' => $orderReference]);
+                return response('Order not found', 404);
             }
+
+            Log::info('Order found', [
+                'order_id' => $order->id,
+                'current_status' => $order->status,
+                'payment_status' => $order->payment_status
+            ]);
 
             // Обробляємо результат платежу
             if ($data['transactionStatus'] === 'Approved') {
-                Log::info('Payment approved, creating order', ['order_reference' => $orderReference]);
-
-                $order = $this->createOrder(
-                    $pendingOrderData['validated'],
-                    $pendingOrderData['cart'],
-                    $pendingOrderData['nova_post_data'],
-                    $pendingOrderData['counterparty']
-                );
+                Log::info('Payment approved', ['order_reference' => $orderReference]);
 
                 $order->update([
-                    'order_reference' => $orderReference,
                     'payment_status' => 'paid',
                     'status' => 'paid'
                 ]);
 
+                // Створюємо ТТН після успішної оплати
                 $this->createTTNAfterPayment($order);
 
-                // Очищуємо сесію
-                session()->forget(['pending_order_data', 'pending_order_reference', 'nova_post_data', 'cart']);
-
-                Log::info('Order created successfully after payment', [
+                Log::info('Order updated successfully after payment', [
                     'order_id' => $order->id,
                     'order_reference' => $orderReference
                 ]);
+
             } else {
                 Log::info('Payment failed or declined', [
                     'order_reference' => $orderReference,
@@ -582,7 +549,10 @@ class NovaPostController extends Controller
                     'reason_code' => $data['reasonCode'] ?? 'Unknown'
                 ]);
 
-                session()->forget(['pending_order_data', 'pending_order_reference']);
+                $order->update([
+                    'payment_status' => 'failed',
+                    'status' => 'failed'
+                ]);
             }
 
             return response('OK', 200);
@@ -590,8 +560,7 @@ class NovaPostController extends Controller
         } catch (\Exception $e) {
             Log::error('Payment callback error: ' . $e->getMessage(), [
                 'exception' => $e->getTraceAsString(),
-                'request_data' => $request->all(),
-                'raw_input' => $request->getContent()
+                'request_data' => $request->all()
             ]);
             return response('Error: ' . $e->getMessage(), 500);
         }
@@ -634,6 +603,10 @@ class NovaPostController extends Controller
 
                 if ($ttnNumber) {
                     $order->addTTNData($ttnNumber, $ttnResult);
+                    $order->update(['status' => 'processing']); // Змініть статус після створення ТТН
+                } else {
+                    Log::error('TTN number not received', ['order_id' => $order->id]);
+                    // Можна спробувати повторно пізніше
                 }
             }
 
