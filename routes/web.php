@@ -58,9 +58,4 @@ Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('or
 Route::get('/test/create-ttn/{orderReference}', [NovaPostController::class, 'createTTNManually']);
 
 
-Route::get('/api/orders/status/{orderReference}', [NovaPostController::class, 'getOrderStatus'])
-    ->name('orders.status');
 
-//protected $except = [
-//    'api/orders/payment/callback', // Виключаємо CSRF для callback
-//];
