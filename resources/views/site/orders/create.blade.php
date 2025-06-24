@@ -1190,6 +1190,7 @@
                     // Чекаємо трохи, щоб callback встиг обробитися
                     await new Promise(resolve => setTimeout(resolve, 2000));
 
+                    // Виправляємо URL для API роуту
                     const response = await fetch(`/api/orders/status/${orderReference}`, {
                         method: 'GET',
                         headers: {

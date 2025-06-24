@@ -387,7 +387,8 @@ class NovaPostController extends Controller
     {
         $merchantAccount = config('services.wayforpay.merchant_account');
         $merchantSecretKey = config('services.wayforpay.secret_key');
-        $merchantDomainName = 'www.market.u';
+        // Використовуємо реальний домен з конфігурації
+        $merchantDomainName = config('services.wayforpay.url', 'https://serafym.info');
 
         if (!$merchantAccount || !$merchantSecretKey) {
             throw new \Exception('WayForPay не налаштований');
@@ -435,7 +436,8 @@ class NovaPostController extends Controller
             'clientEmail' => strtolower(trim($validated['email'])),
             'clientPhone' => preg_replace('/[^\d]/', '', $validated['phone']),
             'language' => 'UA',
-            'serviceUrl' => $merchantDomainName . '/api/orders/payment/callback',
+            // Виправляємо URL колбеку
+            'serviceUrl' => rtrim($merchantDomainName, '/') . '/api/orders/payment/callback',
             'merchantSignature' => $merchantSignature
         ];
     }
@@ -443,9 +445,25 @@ class NovaPostController extends Controller
     public function paymentCallback(Request $request)
     {
         try {
+            // Логуємо всі отримані дані
+            Log::info('WayForPay callback received', [
+                'headers' => $request->headers->all(),
+                'data' => $request->all(),
+                'ip' => $request->ip(),
+                'method' => $request->method(),
+                'url' => $request->fullUrl()
+            ]);
+
             $data = $request->all();
 
+            // Перевіряємо наявність обов'язкових полів
+            if (!isset($data['orderReference']) || !isset($data['transactionStatus'])) {
+                Log::error('Missing required fields in callback', $data);
+                return response('Missing required fields', 400);
+            }
+
             if (!$this->verifySignature($data)) {
+                Log::error('Invalid signature in callback', $data);
                 return response('Invalid signature', 400);
             }
 
@@ -455,15 +473,24 @@ class NovaPostController extends Controller
             $pendingOrderReference = Session::get('pending_order_reference');
             $pendingOrderData = Session::get('pending_order_data');
 
+            Log::info('Checking pending order data', [
+                'pending_reference' => $pendingOrderReference,
+                'received_reference' => $orderReference,
+                'has_pending_data' => !empty($pendingOrderData)
+            ]);
+
             if ($pendingOrderReference !== $orderReference || !$pendingOrderData) {
                 Log::error('Order reference mismatch or no pending order data', [
                     'expected' => $pendingOrderReference,
-                    'received' => $orderReference
+                    'received' => $orderReference,
+                    'has_data' => !empty($pendingOrderData)
                 ]);
                 return response('Order data not found', 404);
             }
 
             if ($data['transactionStatus'] === 'Approved') {
+                Log::info('Payment approved, creating order', ['order_reference' => $orderReference]);
+
                 // Створюємо замовлення тільки після успішної оплати
                 $order = $this->createOrder(
                     $pendingOrderData['validated'],
@@ -490,19 +517,23 @@ class NovaPostController extends Controller
                     'order_reference' => $orderReference
                 ]);
             } else {
+                Log::info('Payment failed or declined', [
+                    'order_reference' => $orderReference,
+                    'status' => $data['transactionStatus'],
+                    'reason_code' => $data['reasonCode'] ?? 'Unknown'
+                ]);
+
                 // Якщо оплата не пройшла, очищуємо тільки дані замовлення
                 Session::forget(['pending_order_data', 'pending_order_reference']);
-
-                Log::info('Payment failed', [
-                    'order_reference' => $orderReference,
-                    'status' => $data['transactionStatus']
-                ]);
             }
 
-            return response('OK');
+            return response('OK', 200);
 
         } catch (\Exception $e) {
-            Log::error('Payment callback error: ' . $e->getMessage());
+            Log::error('Payment callback error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all()
+            ]);
             return response('Error', 500);
         }
     }
