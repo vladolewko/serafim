@@ -611,6 +611,7 @@ class NovaPostController extends Controller
                 }
             }
 
+
         } catch (\Exception $e) {
             Log::error('TTN creation error: ' . $e->getMessage() . ' Order: ' . $order->order_reference);
         }
