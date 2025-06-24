@@ -569,7 +569,14 @@ class NovaPostController extends Controller
     private function createTTNAfterPayment($order)
     {
         try {
+            Log::info('Starting TTN creation after payment', [
+                'order_id' => $order->id,
+                'order_reference' => $order->order_reference,
+                'current_ttn' => $order->ttn_number
+            ]);
+
             if ($order->ttn_number) {
+                Log::info('TTN already exists', ['ttn_number' => $order->ttn_number]);
                 return;
             }
 
@@ -582,8 +589,18 @@ class NovaPostController extends Controller
 
             foreach ($requiredFields as $field => $value) {
                 if (empty($value)) {
+                    Log::error("Missing required field: {$field}", [
+                        'order_id' => $order->id,
+                        'all_fields' => $requiredFields
+                    ]);
                     throw new \Exception("Відсутнє обов'язкове поле: {$field}");
                 }
+            }
+
+            // Перевіряємо чи є дані кошика
+            if (empty($order->cart_data)) {
+                Log::error('Cart data is empty', ['order_id' => $order->id]);
+                throw new \Exception('Відсутні дані кошика');
             }
 
             $ttnData = [
@@ -596,24 +613,58 @@ class NovaPostController extends Controller
                 'surname' => $order->customer_surname,
             ];
 
+            Log::info('Calling createTTN with data', [
+                'ttn_data' => $ttnData,
+                'cart_data' => $order->cart_data,
+                'payment_type' => 'card'
+            ]);
+
+            // Передаємо 'card' як тип оплати, щоб не створювати накладений платіж
             $ttnResult = $this->novaPostService->createTTN($ttnData, $order->cart_data, 'card');
 
-            if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] === true)) {
+            Log::info('TTN creation result', ['result' => $ttnResult]);
+
+            if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] !== false)) {
                 $ttnNumber = $ttnResult['IntDocNumber'] ?? $ttnResult['Number'] ?? null;
 
-
                 if ($ttnNumber) {
+                    Log::info('TTN created successfully', [
+                        'order_id' => $order->id,
+                        'ttn_number' => $ttnNumber
+                    ]);
+
                     $order->addTTNData($ttnNumber, $ttnResult);
-                    $order->update(['status' => 'processing']); // Змініть статус після створення ТТН
+                    $order->update(['status' => 'processing']);
+
+                    Log::info('Order updated with TTN data', [
+                        'order_id' => $order->id,
+                        'new_status' => 'processing'
+                    ]);
                 } else {
-                    Log::error('TTN number not received', ['order_id' => $order->id]);
-                    // Можна спробувати повторно пізніше
+                    Log::error('TTN number not received from API response', [
+                        'order_id' => $order->id,
+                        'api_response' => $ttnResult
+                    ]);
+                    throw new \Exception('ТТН створено, але номер не отримано');
                 }
+            } else {
+                Log::error('TTN creation failed', [
+                    'order_id' => $order->id,
+                    'result' => $ttnResult
+                ]);
+                throw new \Exception('Не вдалося створити ТТН: ' . json_encode($ttnResult));
             }
 
-
         } catch (\Exception $e) {
-            Log::error('TTN creation error: ' . $e->getMessage() . ' Order: ' . $order->order_reference);
+            Log::error('TTN creation error', [
+                'order_id' => $order->id,
+                'order_reference' => $order->order_reference,
+                'error_message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Можна додати повторну спробу або відправити сповіщення адміністратору
+            // throw $e; // Розкоментуйте, якщо хочете, щоб помилка піднімалася вище
         }
     }
 

@@ -79,68 +79,97 @@ class NovaPostService
 
     public function createTTN($data, $cart, $payment)
     {
-        $this->validateSenderConfiguration();
+        try {
+            Log::info('Starting TTN creation', [
+                'payment_type' => $payment,
+                'cart' => $cart,
+                'data' => $data
+            ]);
 
-        $product = $cart['product'];
-        $quantity = $cart['quantity'] ?? 1;
+            $this->validateSenderConfiguration();
 
-        $contactRecipient = $data['contact_person_ref'] ?? $this->getContactPerson($data['counterparty_ref']);
-        if (!$contactRecipient) {
-            throw new \Exception('Не вдалося отримати контактну особу отримувача');
-        }
+            $product = $cart['product'];
+            $quantity = $cart['quantity'] ?? 1;
 
-        $serviceType = $this->determineServiceType($data['warehouse']);
-        $isDropOff = $serviceType === 'WarehouseDoors';
+            $contactRecipient = $data['contact_person_ref'] ?? $this->getContactPerson($data['counterparty_ref']);
+            if (!$contactRecipient) {
+                Log::error('Failed to get contact person', ['counterparty_ref' => $data['counterparty_ref']]);
+                throw new \Exception('Не вдалося отримати контактну особу отримувача');
+            }
 
-        if ($isDropOff && $quantity > 1) {
-            throw new \Exception('Для доставки до поштоматів можна відправити лише 1 товар. Оберіть відділення Нової Пошти або зменште кількість товарів.');
-        }
+            $serviceType = $this->determineServiceType($data['warehouse']);
+            $isDropOff = $serviceType === 'WarehouseDoors';
 
-        $productData = is_object($product) ? $product : (object)$product;
-        $totalWeight = $productData->weight * $quantity;
-        $totalVolume = $this->calculateTotalVolume($productData->dimension ?? '', $quantity);
+            if ($isDropOff && $quantity > 1) {
+                throw new \Exception('Для доставки до поштоматів можна відправити лише 1 товар. Оберіть відділення Нової Пошти або зменште кількість товарів.');
+            }
 
-        $ttnData = [
-            'PayerType' => 'Sender',
-            'PaymentMethod' => 'Cash',
-            'DateTime' => now()->addDay()->format('d.m.Y'),
-            'CargoType' => 'Cargo',
-            'VolumeGeneral' => (string)$totalVolume,
-            'Weight' => (string)$totalWeight,
-            'ServiceType' => $serviceType,
-            'SeatsAmount' => $isDropOff ? '1' : (string)$quantity,
-            'Description' => $this->generateDescription($productData, $quantity),
-            'CitySender' => env('NOVA_POST_CITY_SENDER'),
-            'Sender' => env('NOVA_POST_SENDER_REF'),
-            'SenderAddress' => env('NOVA_POST_SENDER_ADDRESS'),
-            'ContactSender' => env('NOVA_POST_CONTACT_SENDER'),
-            'SendersPhone' => env('NOVA_POST_SENDER_PHONE'),
-            'CityRecipient' => $data['settlement'],
-            'Recipient' => $data['counterparty_ref'],
-            'RecipientAddress' => $data['warehouse'],
-            'ContactRecipient' => $contactRecipient,
-            'RecipientsPhone' => $data['phone'],
-        ];
+            $productData = is_object($product) ? $product : (object)$product;
+            $totalWeight = $productData->weight * $quantity;
+            $totalVolume = $this->calculateTotalVolume($productData->dimension ?? '', $quantity);
 
-        if ($payment === 'cash') {
-            $cartTotal = is_array($cart) ? $cart['total'] : $cart->total;
-            $ttnData['BackwardDeliveryData'] = [
-                [
-                    'PayerType' => 'Recipient',
-                    'CargoType' => 'Money',
-                    'RedeliveryString' => $cartTotal,
-                ],
+            $ttnData = [
+                'PayerType' => 'Sender',
+                'PaymentMethod' => 'Cash', // Завжди Cash для методу оплати доставки
+                'DateTime' => now()->addDay()->format('d.m.Y'),
+                'CargoType' => 'Cargo',
+                'VolumeGeneral' => (string)$totalVolume,
+                'Weight' => (string)$totalWeight,
+                'ServiceType' => $serviceType,
+                'SeatsAmount' => $isDropOff ? '1' : (string)$quantity,
+                'Description' => $this->generateDescription($productData, $quantity),
+                'CitySender' => env('NOVA_POST_CITY_SENDER'),
+                'Sender' => env('NOVA_POST_SENDER_REF'),
+                'SenderAddress' => env('NOVA_POST_SENDER_ADDRESS'),
+                'ContactSender' => env('NOVA_POST_CONTACT_SENDER'),
+                'SendersPhone' => env('NOVA_POST_SENDER_PHONE'),
+                'CityRecipient' => $data['settlement'],
+                'Recipient' => $data['counterparty_ref'],
+                'RecipientAddress' => $data['warehouse'],
+                'ContactRecipient' => $contactRecipient,
+                'RecipientsPhone' => $data['phone'],
             ];
+
+            // Додаємо накладений платіж ТІЛЬКИ для готівкової оплати
+            if ($payment === 'cash') {
+                $cartTotal = is_array($cart) ? $cart['total'] : $cart->total;
+                $ttnData['BackwardDeliveryData'] = [
+                    [
+                        'PayerType' => 'Recipient',
+                        'CargoType' => 'Money',
+                        'RedeliveryString' => (string)$cartTotal,
+                    ],
+                ];
+                Log::info('Added BackwardDeliveryData for cash payment', ['amount' => $cartTotal]);
+            }
+
+            Log::info('TTN data prepared', $ttnData);
+
+            $response = $this->makeRequest('InternetDocumentGeneral', 'save', $ttnData);
+
+            Log::info('Nova Post API response', $response);
+
+            if (!isset($response['data'][0])) {
+                $errors = $response['errors'] ?? ['Невідома помилка створення ТТН'];
+                Log::error('TTN creation failed', [
+                    'errors' => $errors,
+                    'response' => $response
+                ]);
+                throw new \Exception('Помилка створення ТТН: ' . implode(', ', $errors));
+            }
+
+            Log::info('TTN created successfully', $response['data'][0]);
+            return $response['data'][0];
+
+        } catch (\Exception $e) {
+            Log::error('TTN creation exception', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'payment' => $payment,
+                'data' => $data
+            ]);
+            throw $e;
         }
-
-        $response = $this->makeRequest('InternetDocumentGeneral', 'save', $ttnData);
-
-        if (!isset($response['data'][0])) {
-            $errors = $response['errors'] ?? ['Невідома помилка створення ТТН'];
-            throw new \Exception('Помилка створення ТТН: ' . implode(', ', $errors));
-        }
-
-        return $response['data'][0];
     }
 
     public function getServiceCosts(string $recipientCityRef, float $weight, float $total,  int $quantity = 1)
