@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'flowbite';
-
 
 /* Перевизначаємо стиль для checkbox */
 [type="checkbox"]:checked {
