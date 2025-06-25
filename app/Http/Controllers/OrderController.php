@@ -8,13 +8,7 @@ use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\OrderService;
 use App\Services\WayForPayService;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Area;
-use App\Models\District;
 use Illuminate\Validation\ValidationException;
 
 
@@ -50,7 +44,8 @@ class OrderController extends Controller
             session()->put('cart', [
                 'product' => $product,
                 'quantity' => $quantity,
-                'total' => $product->price * $quantity
+//                'total' => $product->price * $quantity
+                'total' => 5
             ]);
             $cart = session()->get('cart');
 
