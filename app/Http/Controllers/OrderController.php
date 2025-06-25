@@ -257,7 +257,7 @@ class OrderController extends Controller
             $validated = $request->validate([
                 'name' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
                 'surname' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
-                'phone' => ['required', 'string', 'regex:/^\+380\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/'],
+                'phone' => ['required', 'string'],
                 'email' => ['required', 'email', 'max:255'],
                 'payment' => ['required', 'in:cash,card']
             ]);
