@@ -5,7 +5,6 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                "flowbite/dist/flowbite.css",
                 "resources/css/app.css",
                 "resources/js/app.js",
                 "resources/js/index.js",
@@ -14,13 +13,12 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    build: {
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    flowbite: ["flowbite"],
-                },
-            },
+    css: {
+        postcss: {
+            plugins: [
+                require('tailwindcss'),
+                require('autoprefixer'),
+            ],
         },
     },
 });
