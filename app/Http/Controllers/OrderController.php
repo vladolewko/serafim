@@ -112,15 +112,26 @@ class OrderController extends Controller
             $data['settlement'] = $settlementRef;
             Session::put('nova_post_data', $data);
 
-            $warehouses = $this->novaPostService->getWarehouses($settlementRef);
+            $cart = session('cart');
+            $warehouses = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart);
             $settlements = $this->novaPostService->searchSettlement($data['search']);
 
+            // У контролері chooseSettlement:
             if (empty($warehouses)) {
+                $cart = session('cart');
+                $product = $cart['product'] ?? null;
+                $quantity = $cart['quantity'] ?? 1;
+
+                if ($quantity > 1) {
+                    return $this->errorResponse(
+                        "Для {$quantity} товарів доступні тільки відділення (не поштомати). У цьому населеному пункті підходящих відділень не знайдено.",
+                        ['suggestion' => 'Спробуйте обрати інше місто або зменшіть кількість до 1']
+                    );
+                }
+
                 return $this->errorResponse(
-                    'У обраному населеному пункті немає доступних відділень Нової Пошти',
-                    [
-                        'suggestion' => 'Спробуйте обрати сусіднє місто або зв\'яжіться з підтримкою'
-                    ]
+                    'У цьому населеному пункті немає відділень для вашого товару',
+                    ['suggestion' => 'Спробуйте обрати інше місто']
                 );
             }
 
@@ -170,7 +181,7 @@ class OrderController extends Controller
             Session::put('nova_post_data', $data);
 
             $settlements = $this->novaPostService->searchSettlement($data['search']);
-            $warehouses = $this->novaPostService->getWarehouses($data['settlement']);
+            $warehouses = $this->novaPostService->getFilteredWarehouses($data['settlement'], $cart);
 
             $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
 

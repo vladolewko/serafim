@@ -36,6 +36,125 @@ class NovaPostService
     }
 
     /**
+     * Отримання відділень/поштоматів з інформацією про обмеження
+     */
+    public function getWarehousesWithRestrictions(string $settlementRef): array
+    {
+        $warehouses = $this->getWarehouses($settlementRef);
+
+        foreach ($warehouses as &$warehouse) {
+            $warehouse['restrictions'] = [
+                'max_weight' => (float)($warehouse['TotalMaxWeightAllowed'] ?? 0),
+                'max_volume' => (float)($warehouse['MaxVolumeAllowed'] ?? 0),
+                'is_postbox' => ($warehouse['TypeOfWarehouse'] ?? 'Branch') === 'PostBox',
+                'postbox_only_single_item' => ($warehouse['TypeOfWarehouse'] ?? 'Branch') === 'PostBox'
+            ];
+        }
+
+        return $warehouses;
+    }
+
+    /**
+     * Отримання відфільтрованих відділень з урахуванням обмежень товару
+     */
+    public function getFilteredWarehouses(string $settlementRef, array $cart): array
+    {
+
+        $warehouses = $this->getWarehousesWithRestrictions($settlementRef);
+
+        if (empty($cart['product']) || empty($cart['quantity'])) {
+            return $warehouses;
+        }
+
+        $quantity = $cart['quantity'];
+
+        // Якщо кількість > 1, виключаємо всі поштомати
+        if ($quantity > 1) {
+            $warehouses = array_filter($warehouses, function($warehouse) {
+                $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
+                return $categoryOfWarehouse !== 'Postomat';
+            });
+        }
+
+        $product = is_object($cart['product']) ? $cart['product'] : (object)$cart['product'];
+
+        $quantity = $cart['quantity'];
+
+        // Розрахунок параметрів
+        $totalWeight = ($product->weight ?? 0) * $quantity;
+        $volumeWeight = $this->calculateVolumeWeight($product->dimension ?? '', $quantity);
+        $finalWeight = max($totalWeight, $volumeWeight);
+        $cargoType = $finalWeight <= 2 ? 'Parcel' : 'Cargo';
+
+        $filteredWarehouses = [];
+
+        foreach ($warehouses as $warehouse) {
+            $warehouseType = $warehouse['TypeOfWarehouse'] ?? 'Branch';
+
+            // Жорсткі обмеження для поштоматів
+            if ($warehouseType === 'PostBox') {
+                // 1. Тільки 1 товар
+                if ($quantity > 1) {
+                    continue;
+                }
+
+                // 2. Вага до 20кг
+                if ($finalWeight > 20) {
+                    continue;
+                }
+                // І в циклі фільтрації додай:
+                $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+
+// Якщо це Drop-Off відділення і вантаж важкий - пропускаємо
+                if ($maxWeight > 0 && $maxWeight <= 10 && $cargoType === 'Cargo') {
+                    continue; // Drop-Off відділення не приймають важкий вантаж
+                }
+
+                // 3. Габарити 40x30x60см
+                if (!empty($product->dimension)) {
+                    $dims = preg_split('/\s+на\s+/i', trim($product->dimension));
+                    if (count($dims) === 3) {
+                        $maxDim = max((float)$dims[0], (float)$dims[1], (float)$dims[2]);
+                        if ($maxDim > 60 || (float)$dims[0] > 40 || (float)$dims[1] > 30) {
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            // Для відділень використовуй API дані, але з обережністю
+            $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+
+            // Якщо API повернув обмеження і воно менше фактичної ваги
+            if ($maxWeight > 0 && $finalWeight > $maxWeight) {
+                continue;
+            }
+
+            $filteredWarehouses[] = $warehouse;
+        }
+
+        return $filteredWarehouses;
+    }
+
+    /**
+     * Отримання відділень з фільтрацією тільки поштоматів за кількістю
+     */
+    public function getWarehousesWithQuantityFilter(string $settlementRef, int $quantity): array
+    {
+        $warehouses = $this->getWarehousesWithRestrictions($settlementRef);
+
+        // Фільтруємо тільки поштомати якщо кількість > 1
+        if ($quantity <= 1) {
+            return $warehouses;
+        }
+
+        return array_filter($warehouses, function($warehouse) {
+            $warehouseType = $warehouse['TypeOfWarehouse'] ?? 'Branch';
+            return $warehouseType !== 'PostBox'; // Виключаємо поштомати
+        });
+    }
+
+    /**
      * Отримання відділень/поштоматів
      */
     public function getWarehouses(string $settlementRef): array
@@ -114,24 +233,26 @@ class NovaPostService
                 throw new \Exception('Не вдалося отримати контактну особу отримувача');
             }
 
-            // Визначення типу сервісу та перевірка обмежень
-            $serviceType = $this->determineServiceType($data['warehouse']);
-            $isPostBox = $serviceType === 'WarehouseDoors';
-
-            if ($isPostBox && $quantity > 1) {
-                throw new \Exception('Для доставки до поштоматів можна відправити лише 1 товар. Оберіть відділення Нової Пошти або зменште кількість товарів.');
-            }
-
             // Розрахунок габаритів та ваги
-            $totalWeight = $productData->weight * $quantity;
-            $totalVolume = $this->calculateTotalVolume($productData->dimension ?? '', $quantity);
+            $actualWeight = ($productData->weight ?? 0) * $quantity;
+            $volumeWeight = $this->calculateVolumeWeight($productData->dimension ?? '', $quantity);
+            $totalWeight = max($actualWeight, $volumeWeight); // Це йде в Weight
+            $totalVolume = $this->calculateTotalVolumeInM3($productData->dimension ?? '', $quantity); // Це йде в VolumeGeneral
+
+            // Отримання інформації про відділення та валідація обмежень
+            $warehouseInfo = $this->getWarehouseInfo($data['warehouse']);
+            $this->validateWarehouseRestrictions($warehouseInfo, $totalWeight, $totalVolume, $quantity);
+
+            // Визначення типу сервісу
+            $serviceType = $this->determineServiceType($data['warehouse'], $warehouseInfo);
+            $isPostBox = $serviceType === 'WarehouseDoors';
 
             // Базові дані ТТН
             $ttnData = [
                 'PayerType' => 'Sender',
                 'PaymentMethod' => 'Cash',
                 'DateTime' => now()->addDay()->format('d.m.Y'),
-                'CargoType' => 'Cargo',
+                'CargoType' => $totalWeight <= 2 ? 'Parcel' : 'Cargo',
                 'VolumeGeneral' => (string)$totalVolume,
                 'Weight' => (string)$totalWeight,
                 'ServiceType' => $serviceType,
@@ -152,6 +273,33 @@ class NovaPostService
                 'ContactRecipient' => $contactRecipient,
                 'RecipientsPhone' => $data['phone'],
             ];
+
+            $categoryOfWarehouse = $warehouseInfo['CategoryOfWarehouse'] ?? '';
+            if ($categoryOfWarehouse === 'Postomat') {
+                $dimensions = $productData->dimension ?? '';
+                if (!empty($dimensions)) {
+                    $optionsSeat = [
+                        [
+                            'volumetricWidth' => $this->getDimensionFromString($productData->dimension ?? '', 0),
+                            'volumetricLength' => $this->getDimensionFromString($productData->dimension ?? '', 1),
+                            'volumetricHeight' => $this->getDimensionFromString($productData->dimension ?? '', 2),
+                            'weight' => (string)$totalWeight
+                        ]
+                    ];
+                    Log::info('OptionsSeat debug', $optionsSeat);
+                    $ttnData['OptionsSeat'] = $optionsSeat;
+                } else {
+                    // Якщо габаритів немає - використовуємо стандартні
+                    $ttnData['OptionsSeat'] = [
+                        [
+                            'volumetricWidth' => 20,
+                            'volumetricLength' => 20,
+                            'volumetricHeight' => 20,
+                            'weight' => (string)$totalWeight
+                        ]
+                    ];
+                }
+            }
 
             // Накладений платіж для готівкової оплати
             if ($payment === 'cash') {
@@ -180,6 +328,24 @@ class NovaPostService
             ]);
             throw $e;
         }
+    }
+
+    /**
+     * Отримання розміру з рядка габаритів
+     */
+    private function getDimensionFromString(string $dimensions, int $index): float
+    {
+        if (empty($dimensions)) {
+            return 20;
+        }
+
+        $dimensionParts = preg_split('/\s+на\s+/i', trim($dimensions));
+
+        if (count($dimensionParts) > $index) {
+            return (float)trim($dimensionParts[$index]);
+        }
+
+        return 20;
     }
 
     /**
@@ -327,29 +493,30 @@ class NovaPostService
         }
     }
 
-    /**
-     * Розрахунок загального об'єму
-     */
-    private function calculateTotalVolume(string $dimensions, int $quantity): float
-    {
-        if (empty($dimensions)) {
-            return 0.1 * $quantity;
-        }
-
-        $dimensionParts = explode('|', $dimensions);
-        if (count($dimensionParts) !== 3) {
-            return 0.1 * $quantity;
-        }
-
-        $length = (float)$dimensionParts[0] / 100;
-        $width = (float)$dimensionParts[1] / 100;
-        $height = (float)$dimensionParts[2] / 100;
-
-        $volumePerItem = $length * $width * $height;
-        $totalVolume = $volumePerItem * $quantity;
-
-        return max($totalVolume, 0.1);
-    }
+//    /**
+//     * Розрахунок загального об'єму
+//     */
+//    private function calculateTotalVolume(string $dimensions, int $quantity): float
+//    {
+//        if (empty($dimensions)) {
+//            return 0.004 * $quantity; // стандартний об'єм НП
+//        }
+//
+//        $dimensionParts = preg_split('/\s+на\s+/i', trim($dimensions));
+//
+//        if (count($dimensionParts) !== 3) {
+//            return 0.004 * $quantity;
+//        }
+//
+//        $length = (float)trim($dimensionParts[0]);  // в см
+//        $width = (float)trim($dimensionParts[1]);   // в см
+//        $height = (float)trim($dimensionParts[2]);  // в см
+//
+//        // Об'ємна вага НП = (L x W x H) / 4000
+//        $volumeWeightPerItem = ($length * $width * $height) / 4000;
+//
+//        return $volumeWeightPerItem * $quantity;
+//    }
 
     /**
      * Генерація опису товару
@@ -363,12 +530,93 @@ class NovaPostService
     }
 
     /**
+     * Розрахунок об'ємної ваги за стандартами НП
+     */
+    private function calculateVolumeWeight(string $dimensions, int $quantity): float
+    {
+        if (empty($dimensions)) {
+            return 1 * $quantity; // мінімальна об'ємна вага
+        }
+
+        $dimensionParts = preg_split('/\s+на\s+/i', trim($dimensions));
+
+        if (count($dimensionParts) !== 3) {
+            return 1 * $quantity;
+        }
+
+        $length = (float)trim($dimensionParts[0]);
+        $width = (float)trim($dimensionParts[1]);
+        $height = (float)trim($dimensionParts[2]);
+
+        // Об'ємна вага = (L x W x H в см³) / 4000
+        $volumeWeightPerItem = ($length * $width * $height) / 4000;
+
+        return max($volumeWeightPerItem * $quantity, 0.1); // мінімум 0.1 кг
+    }
+
+    /**
+     * Розрахунок об'єму в м³ для API
+     */
+    private function calculateTotalVolumeInM3(string $dimensions, int $quantity): float
+    {
+        if (empty($dimensions)) {
+            return 0.004 * $quantity; // 4 літри стандарт
+        }
+
+        $dimensionParts = preg_split('/\s+на\s+/i', trim($dimensions));
+
+        if (count($dimensionParts) !== 3) {
+            return 0.004 * $quantity;
+        }
+
+        $length = (float)trim($dimensionParts[0]) / 100;  // з см в метри
+        $width = (float)trim($dimensionParts[1]) / 100;   // з см в метри
+        $height = (float)trim($dimensionParts[2]) / 100;  // з см в метри
+
+        $volumePerItem = $length * $width * $height; // в м³
+        return $volumePerItem * $quantity;
+    }
+
+    /**
+     * Валідація обмежень відділення/поштомату
+     */
+    private function validateWarehouseRestrictions(?array $warehouseInfo, float $totalWeight, float $totalVolume, int $quantity): void
+    {
+        if (!$warehouseInfo) {
+            return;
+        }
+
+        $warehouseType = $warehouseInfo['TypeOfWarehouse'] ?? 'Branch';
+        $maxWeight = (float)($warehouseInfo['TotalMaxWeightAllowed'] ?? 0);
+
+        // Перевірка для поштоматів
+        if ($warehouseType === 'PostBox') {
+            if ($quantity > 1) {
+                throw new \Exception('Для доставки до поштоматів можна відправити лише 1 товар.');
+            }
+
+            // Жорстке обмеження для поштоматів - 20кг
+            if ($totalWeight > 20) {
+                throw new \Exception('Вага товару перевищує максимально дозволену для поштоматів (20 кг).');
+            }
+        }
+
+        // Перевірка API обмежень тільки якщо вони є і більше 0
+        if ($maxWeight > 0 && $totalWeight > $maxWeight) {
+            $warehouseName = $warehouseType === 'PostBox' ? 'поштомату' : 'відділення';
+            throw new \Exception("Вага відправлення ({$totalWeight} кг) перевищує максимально дозволену для цього {$warehouseName} ({$maxWeight} кг).");
+        }
+    }
+
+    /**
      * Визначення типу сервісу доставки
      */
-    private function determineServiceType(string $warehouseRef): string
+    private function determineServiceType(string $warehouseRef, ?array $warehouseInfo = null): string
     {
         try {
-            $warehouseInfo = $this->getWarehouseInfo($warehouseRef);
+            if (!$warehouseInfo) {
+                $warehouseInfo = $this->getWarehouseInfo($warehouseRef);
+            }
 
             if ($warehouseInfo &&
                 isset($warehouseInfo['TypeOfWarehouse']) &&
