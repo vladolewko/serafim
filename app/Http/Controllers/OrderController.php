@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchSettlementRequest;
+use App\Http\Requests\ChooseSettlementRequest;
+use App\Http\Requests\SetWarehouseRequest;
+use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
 use App\Services\NovaPostService;
 use App\Services\Interfaces\ProductServiceInterface;
@@ -9,8 +13,7 @@ use App\Services\OrderService;
 use App\Services\WayForPayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\ValidationException;
-
+use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
 {
@@ -44,7 +47,6 @@ class OrderController extends Controller
             session()->put('cart', [
                 'product' => $product,
                 'quantity' => $quantity,
-//                'total' => $product->price * $quantity
                 'total' => 5
             ]);
             $cart = session()->get('cart');
@@ -58,83 +60,53 @@ class OrderController extends Controller
     /**
      * Пошук населених пунктів
      */
-    public function searchSettlement(Request $request)
+    public function searchSettlement(SearchSettlementRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'search' => [
-                    'required',
-                    'string',
-                    'min:2',
-                    'max:100',
-                    'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'
-                ]
-            ], [
-                'search.required' => 'Введіть назву населеного пункту',
-                'search.min' => 'Назва повинна містити мінімум 2 символи',
-                'search.max' => 'Назва занадто довга (максимум 100 символів)',
-                'search.regex' => 'Назва може містити лише українські букви, пробіли, дефіси та апострофи'
-            ]);
-
-            $search = trim($validated['search']);
+            $search = trim($request->validated()['search']);
             $settlements = $this->novaPostService->searchSettlement($search);
 
             if (empty($settlements)) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Населені пункти з такою назвою не знайдено. Спробуйте ввести частину назви або перевірте правильність написання.',
-                    'suggestions' => 'Спробуйте ввести: "Київ", "Львів", "Одеса" або частину назви вашого міста'
-                ]);
+                return $this->errorResponse(
+                    'Населені пункти з такою назвою не знайдено. Спробуйте ввести частину назви або перевірте правильність написання.',
+                    [
+                        'suggestions' => 'Спробуйте ввести: "Київ", "Львів", "Одеса" або частину назви вашого міста'
+                    ]
+                );
             }
 
             Session::put('nova_post_data', ['search' => $search]);
 
-            return response()->json([
-                'success' => true,
+            return $this->successResponse([
                 'settlements' => $settlements,
                 'addressData' => ['search' => $search],
                 'count' => count($settlements)
             ]);
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->validator->errors()->first(),
-                'validation_errors' => $e->validator->errors()->all()
-            ], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Сталася помилка при пошуку населених пунктів. Спробуйте пізніше.'
-            ], 500);
+            return $this->errorResponse(
+                'Сталася помилка при пошуку населених пунктів. Спробуйте пізніше.',
+                [],
+                500
+            );
         }
     }
 
     /**
      * Вибір населеного пункту
      */
-    public function chooseSettlement(Request $request)
+    public function chooseSettlement(ChooseSettlementRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'settlement' => [
-                    'required',
-                    'string',
-                    'size:36'
-                ]
-            ], [
-                'settlement.required' => 'Оберіть населений пункт зі списку',
-                'settlement.size' => 'Некоректний ідентифікатор населеного пункту'
-            ]);
-
-            $settlementRef = $validated['settlement'];
+            $settlementRef = $request->validated()['settlement'];
             $data = Session::get('nova_post_data', []);
 
             if (empty($data['search'])) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Спочатку виконайте пошук населеного пункту'
-                ], 400);
+                return $this->errorResponse(
+                    'Спочатку виконайте пошук населеного пункту',
+                    [],
+                    400
+                );
             }
 
             $data['settlement'] = $settlementRef;
@@ -144,69 +116,54 @@ class OrderController extends Controller
             $settlements = $this->novaPostService->searchSettlement($data['search']);
 
             if (empty($warehouses)) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'У обраному населеному пункті немає доступних відділень Нової Пошти',
-                    'suggestion' => 'Спробуйте обрати сусіднє місто або зв\'яжіться з підтримкою'
-                ]);
+                return $this->errorResponse(
+                    'У обраному населеному пункті немає доступних відділень Нової Пошти',
+                    [
+                        'suggestion' => 'Спробуйте обрати сусіднє місто або зв\'яжіться з підтримкою'
+                    ]
+                );
             }
 
-            return response()->json([
-                'success' => true,
+            return $this->successResponse([
                 'warehouses' => $warehouses,
                 'settlements' => $settlements,
                 'addressData' => $data,
                 'warehouses_count' => count($warehouses)
             ]);
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->validator->errors()->first(),
-                'validation_errors' => $e->validator->errors()->all()
-            ], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Помилка при завантаженні відділень. Спробуйте оновити сторінку.'
-            ], 500);
+            return $this->errorResponse(
+                'Помилка при завантаженні відділень. Спробуйте оновити сторінку.',
+                [],
+                500
+            );
         }
     }
 
     /**
      * Вибір відділення
      */
-    public function setWarehouse(Request $request)
+    public function setWarehouse(SetWarehouseRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'warehouse' => [
-                    'required',
-                    'string',
-                    'size:36'
-                ]
-            ], [
-                'warehouse.required' => 'Оберіть відділення або поштомат',
-                'warehouse.size' => 'Некоректний ідентифікатор відділення'
-            ]);
-
-            $warehouseRef = $validated['warehouse'];
+            $warehouseRef = $request->validated()['warehouse'];
             $data = Session::get('nova_post_data', []);
 
             if (empty($data['settlement']) || empty($data['search'])) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Втрачено дані про населений пункт. Почніть процес заново.'
-                ], 400);
+                return $this->errorResponse(
+                    'Втрачено дані про населений пункт. Почніть процес заново.',
+                    [],
+                    400
+                );
             }
 
             $cart = session('cart');
             if (empty($cart) || empty($cart['product']) || empty($cart['quantity'])) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Корзина порожня. Додайте товари перед оформленням замовлення.',
-                    'redirect' => route('home')
-                ], 400);
+                return $this->errorResponse(
+                    'Корзина порожня. Додайте товари перед оформленням замовлення.',
+                    ['redirect' => route('home')],
+                    400
+                );
             }
 
             $data['warehouse'] = $warehouseRef;
@@ -218,14 +175,14 @@ class OrderController extends Controller
             $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
 
             if ($deliveryCost < 0) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Не вдалося розрахувати вартість доставки. Спробуйте обрати інше відділення.'
-                ], 400);
+                return $this->errorResponse(
+                    'Не вдалося розрахувати вартість доставки. Спробуйте обрати інше відділення.',
+                    [],
+                    400
+                );
             }
 
-            return response()->json([
-                'success' => true,
+            return $this->successResponse([
                 'deliveryCost' => $deliveryCost,
                 'productCosts' => $cart['total'],
                 'totalAmount' => $cart['total'] + $deliveryCost,
@@ -234,59 +191,47 @@ class OrderController extends Controller
                 'warehouses' => $warehouses
             ]);
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->validator->errors()->first(),
-                'validation_errors' => $e->validator->errors()->all()
-            ], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Помилка при розрахунку доставки. Спробуйте ще раз.'
-            ], 500);
+            return $this->errorResponse(
+                'Помилка при розрахунку доставки. Спробуйте ще раз.',
+                [],
+                500
+            );
         }
     }
 
     /**
      * Створення замовлення
      */
-    public function createCounterparty(Request $request)
+    public function createCounterparty(CreateOrderRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'name' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
-                'surname' => ['required', 'string', 'min:2', 'max:50', 'regex:/^[а-яА-ЯіІїЇєЄ\s\-\']+$/u'],
-                'phone' => ['required', 'string'],
-                'email' => ['required', 'email', 'max:255'],
-                'payment' => ['required', 'in:cash,card']
-            ]);
-
+            $validated = $request->validated();
             $cart = session()->get('cart');
             $data = Session::get('nova_post_data', []);
 
             if (empty($cart)) {
-                return response()->json(['success' => false, 'message' => 'Корзина порожня'], 400);
+                return $this->errorResponse('Корзина порожня', [], 400);
             }
 
             if (empty($data['settlement']) || empty($data['warehouse'])) {
-                return response()->json(['success' => false, 'message' => 'Не обрано адресу доставки'], 400);
+                return $this->errorResponse('Не обрано адресу доставки', [], 400);
             }
 
             $result = $this->orderService->processOrder($validated, $cart, $data);
 
-            return response()->json($result);
+            if ($result['success']) {
+                return $this->successResponse($result);
+            } else {
+                return $this->errorResponse($result['message'], $result);
+            }
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Помилка валідації: ' . $e->validator->errors()->first()
-            ], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Сталася помилка при створенні замовлення'
-            ], 500);
+            return $this->errorResponse(
+                'Сталася помилка при створенні замовлення',
+                [],
+                500
+            );
         }
     }
 
@@ -314,20 +259,20 @@ class OrderController extends Controller
     /**
      * Статус замовлення
      */
-    public function getOrderStatus($orderReference)
+    public function getOrderStatus($orderReference): JsonResponse
     {
         try {
             $order = Order::where('order_reference', $orderReference)->first();
 
             if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Замовлення не знайдено'
-                ], 404);
+                return $this->errorResponse(
+                    'Замовлення не знайдено',
+                    [],
+                    404
+                );
             }
 
-            return response()->json([
-                'success' => true,
+            return $this->successResponse([
                 'order' => [
                     'id' => $order->id,
                     'order_reference' => $order->order_reference,
@@ -339,12 +284,34 @@ class OrderController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Помилка при отриманні статусу замовлення'
-            ], 500);
+            return $this->errorResponse(
+                'Помилка при отриманні статусу замовлення',
+                [],
+                500
+            );
         }
     }
 
+    /**
+     * Стандартна відповідь для успішних запитів
+     */
+    private function successResponse(array $data = [], int $status = 200): JsonResponse
+    {
+        return response()->json(array_merge([
+            'success' => true,
+            'timestamp' => now()->toISOString()
+        ], $data), $status);
+    }
 
+    /**
+     * Стандартна відповідь для помилок
+     */
+    private function errorResponse(string $message, array $data = [], int $status = 400): JsonResponse
+    {
+        return response()->json(array_merge([
+            'success' => false,
+            'error' => $message,
+            'timestamp' => now()->toISOString()
+        ], $data), $status);
+    }
 }
