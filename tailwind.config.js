@@ -26,6 +26,23 @@ export default {
         },
     },
     plugins: [
-        require('flowbite/plugin')
+        require('flowbite/plugin')({
+            // Налаштування для низького пріоритету
+            charts: true,
+            forms: true,
+            tooltips: true,
+            popover: true,
+            modal: true,
+            dropdown: true,
+            navbar: true,
+            carousel: true,
+            accordion: true,
+            tabs: true,
+            rating: true,
+            timeline: true,
+            progress: true
+        })
     ],
+    // Додаємо важливість для власних стилів
+    important: false,
 };
