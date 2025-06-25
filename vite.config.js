@@ -5,6 +5,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                "flowbite/dist/flowbite.css",
                 "resources/css/app.css",
                 "resources/js/app.js",
                 "resources/js/index.js",
@@ -17,9 +18,9 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    flowbite: ['flowbite']
-                }
-            }
-        }
-    }
+                    flowbite: ["flowbite"],
+                },
+            },
+        },
+    },
 });

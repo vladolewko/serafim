@@ -4,7 +4,7 @@
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Navigation -->
         <nav class="mb-6">
-            <ul class="flex flex-wrap text-lg sm:text-xl text-slate-600 items-center gap-2 sm:gap-4">
+            <ul class="flex flex-wrap text-lg sm:text-xl text-slate-600 items-center justify-center sm:justify-start gap-2 sm:gap-4">
                 <li class="hover:text-slate-800 cursor-pointer">
                     <a href="{{ route('home') }}">головна</a>
                 </li>
@@ -48,12 +48,12 @@
                                             autocomplete="off"
                                             readonly>
                                         <div id="settlement-loader"
-                                             class="absolute right-10 top-1/2 transform -translate-y-1/2 hidden">
+                                             class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 hidden">
                                             <div
                                                 class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                                         </div>
                                         <div
-                                            class="absolute right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                            class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                                  viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -87,12 +87,12 @@
                                             readonly
                                             disabled>
                                         <div id="warehouse-loader"
-                                             class="absolute right-10 top-1/2 transform -translate-y-1/2 hidden">
+                                             class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 hidden">
                                             <div
                                                 class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                                         </div>
                                         <div
-                                            class="absolute right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                            class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                                  viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

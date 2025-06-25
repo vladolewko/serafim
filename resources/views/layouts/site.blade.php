@@ -16,9 +16,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
     <!-- Styles / Scripts -->
     @vite([
+    'flowbite/dist/flowbite.css',
     'resources/css/app.css',
      'resources/js/app.js',
-      'resources/js/index.js'
+      'resources/js/index.js',
+
       ])
 </head>
 <body class="overflow-x-hidden w-full">

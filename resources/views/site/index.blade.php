@@ -6,18 +6,11 @@
 
 @section('content')
 
+            <div class="lg:hidden mb-16"> @include('components.introduction-mobile') </div>
 
-            <!-- Introduction and video -->
-            <!-- @if(isset($_POST['screenWidth']) && $_POST['screenWidth'] > 1025)
-                @include('components.introduction')
-            @else
-                @include('components.introduction-mobile')
-            @endif -->
-
-            <div class="lg:hidden"> @include('components.introduction-mobile') </div>
             <div class="hidden lg:block"> @include('components.introduction') </div>
 
-            <!-- </div> -->
+
             <!-- Why Important Section -->
              @include('components.whyimportant')
 
@@ -33,12 +26,12 @@
             </div>
 
             <!-- How to Submit Section Mobile -->
-            <div class="lg:hidden">
+            <div class="lg:hidden my-32">
                 @include('components.howtosubmit-mobile')
             </div>
 
             <!-- Choose Knowledge Pack Selection Desktop -->
-            <div class="lg:hidden" id="knowledge_pack">
+            <div class="lg:hidden my-32" id="knowledge_pack">
                 @include('components.chooseknoweledge-mobile')
             </div>
 
@@ -48,7 +41,7 @@
             </div>
 
             <!-- About Author Section -->
-            <div class="lg:hidden" id="about_author">
+            <div class="lg:hidden my-32" id="about_author">
                 @include('components.aboutauthor-mobile')
             </div>
 
@@ -57,7 +50,7 @@
             </div>
 
             <!-- Why Created Section -->
-            <div class="lg:hidden">
+            <div class="lg:hidden my-32">
                 @include('components.whycreated-mobile')
             </div>
 
@@ -66,18 +59,20 @@
             </div>
 
             <!-- Секція безкоштовної допомоги -->
-
-            <div class="lg:hidden">
+            <div class="lg:hidden my-32">
                 @include('components.forfree-mobile')
             </div>
+
             <div class="hidden lg:block">
                 @include('components.forfree')
             </div>
 
+
             <!-- Секція соцмереж -->
-            <div class="lg:hidden">
+            <div class="lg:hidden my-32">
                 @include('components.socialnetwork-mobile')
             </div>
+
             <div class="hidden lg:block">
                 @include('components.socialnetwork')
             </div>

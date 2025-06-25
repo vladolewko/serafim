@@ -1,6 +1,6 @@
 <header class="lg:pt-3 bg-blue-400 w-full">
     <!-- Desktop -->
-    <div class="w-11/12 lg:w-4/6 hidden sm:block mx-auto">
+    <div class="w-11/12 lg:w-4/6 hidden lg:block mx-auto ">
         <!-- Navigation -->
         @include('components.navigation')
         <div class="text-white flex justify-center items-center gap-3 flex-wrap sm:flex-nowrap">
@@ -37,12 +37,12 @@
     </div>
 
     <!-- Mobile -->
-    <div class="sm:hidden mx-auto">
+    <div class="lg:hidden mx-auto">
 
         <nav class="bg-blue-400">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2" >
 
-            <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden focus:outline-none dark:text-white dark:hover:bg-gray-700 " aria-controls="navbar-default" aria-expanded="false">
+            <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg lg:hidden focus:outline-none dark:text-white dark:hover:bg-gray-700 " aria-controls="navbar-default" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
                 <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
@@ -51,16 +51,16 @@
 
             <!-- Social media -->
 
-            <div class="hidden sm:block flex gap-2 justify-center sm:justify-start">
-                <a href="https://youtube.com/@serafim_ngu"><img class="w-[20px] h-[20px]" src="{{ asset('img/youtube_footer.svg') }}" alt=""></a>
-                <a href=""><img class="w-[20px] h-[20px]" src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
-                <a href="tiktok.com/@serafim_ngu"><img class="w-[20px] h-[20px]" src="{{ asset('img/tiktok_footer.svg') }}" alt=""></a>
-                <a href=""><img class="w-[20px] h-[20px]" src="{{ asset('img/telegram_footer.svg') }}" alt=""></a>
-                <a href="https://www.instagram.com/serafim_ngu"><img class="w-[20px] h-[20px]" src="{{ asset('img/instagram_footer.svg') }}" alt=""></a>
+            <div class="flex no-wrap gap-2 justify-center sm:flex hidden">
+                <a href="https://youtube.com/@serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/youtube_footer.svg') }}" alt=""></a>
+                <a href=""><img class="w-[30px] h-[30px]" src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
+                <a href="tiktok.com/@serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/tiktok_footer.svg') }}" alt=""></a>
+                <a href=""><img class="w-[30px] h-[30px]" src="{{ asset('img/telegram_footer.svg') }}" alt=""></a>
+                <a href="https://www.instagram.com/serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/instagram_footer.svg') }}" alt=""></a>
             </div>
 
 
-            <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <div class="text-right text-white">
                 <p class="text-xs">
                     авторська онлайн-школа
@@ -74,23 +74,22 @@
             </div>
                 <img class="h-[65px] w-[65px]" src="{{ asset('img/logo.png') }}" alt="logo">
             </a>
-
-            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-            <ul class="bg-gray-800 font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0d sm:dark:bg-blue-400 dark:border-gray-700">
-                <li>
-                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent nav-item" data-target="wt_knowledge_pack">що таке комплект знань</a>
+            <div class="hidden w-full lg:block lg:w-auto" id="navbar-default">
+            <ul class="bg-gray-800 font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg lg:flex-row lg:space-x-8 rtl:space-x-reverse lg:mt-0 lg:border-0d lg:dark:bg-blue-400 dark:border-gray-700">
+                <li class="m-0">
+                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item">що таке комплект знань</a>
                 </li>
                 <li>
-                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent nav-item">обрати комплект</a>
+                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item">обрати комплект</a>
                 </li>
                 <li>
-                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent nav-item" data-target="about_author">про автора</a>
+                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="about_author">про автора</a>
                 </li>
                 <li>
-                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent nav-item" data-target="social">соцмережі</a>
+                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="social">соцмережі</a>
                 </li>
                 <li>
-                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent nav-item" data-target="for_free">безкоштовно</a>
+                <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="for_free">безкоштовно</a>
                 </li>
             </ul>
             </div>

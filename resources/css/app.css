@@ -2,21 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url(https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css);
 /* Перевизначаємо стиль для checkbox */
 [type="checkbox"]:checked {
     background-image: none; /* Прибираємо SVG-зображення */
 }
 
-#settlement-input {
+/* #settlement-input {
     -webkit-appearance: none;
     appearance: none;
     background-image: none;
-}
+} */
 
 /* Перевизначаємо стиль для radio */
-[type="radio"]:checked {
-    background-image: none; /* Прибираємо SVG-зображення */
+[type="radio"] {
+    background-image: none !important; /* Прибираємо SVG-зображення */
+    appearance: none;
 }
 
 * {
