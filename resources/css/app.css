@@ -22,3 +22,133 @@
 * {
     box-sizing: border-box;
 }
+
+/* Searchable Select Styles */
+.searchable-select {
+    position: relative;
+}
+
+.select-input {
+    cursor: pointer;
+}
+
+.select-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    margin-top: 4px;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+    background: #f9fafb;
+    color: black;
+}
+
+.search-input:focus {
+    background: white;
+    border-bottom-color: #fbbf24;
+}
+
+.options-container {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.select-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.15s ease-in-out;
+    font-size: 0.875rem;
+    color: black;
+
+}
+
+.select-option:hover {
+    background-color: #f9fafb;
+}
+
+.select-option:last-child {
+    border-bottom: none;
+}
+
+.select-option.highlighted {
+    background-color: #fef3c7;
+}
+
+.no-results {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+/* Custom scrollbar for options */
+.options-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.options-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.options-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.options-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Animation for dropdown */
+.select-dropdown {
+    animation: slideDown 0.2s ease-out;
+    transform-origin: top;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scaleY(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scaleY(1);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .select-dropdown {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        top: auto;
+        bottom: 1rem;
+        max-height: 50vh;
+    }
+
+    .options-container {
+        max-height: calc(50vh - 4rem);
+    }
+}
