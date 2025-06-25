@@ -25,10 +25,13 @@
     box-sizing: border-box;
 }
 
-/* Searchable Select Styles */
-.searchable-select {
-    position: relative;
-}
+
+
+
+     /* Searchable Select Styles */
+ .searchable-select {
+     position: relative;
+ }
 
 .select-input {
     cursor: pointer;
@@ -113,6 +116,7 @@
     border-radius: 10px;
 }
 
+
 .options-container::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 10px;
@@ -142,12 +146,13 @@
 /* Responsive adjustments */
 @media (max-width: 640px) {
     .select-dropdown {
-        position: fixed;
-        left: 1rem;
-        right: 1rem;
-        top: auto;
-        bottom: 1rem;
+        position: absolute;
+        left: auto;
+        right: auto;
+        top: 3.5rem;
+        bottom: auto;
         max-height: 50vh;
+        width: 100%;
     }
 
     .options-container {
