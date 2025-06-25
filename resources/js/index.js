@@ -101,6 +101,8 @@ radios.forEach((radio) => {
     if (radio.value === "citizen") {
         radio.checked = true;
 
+        radio.classList.remove("bg-white");
+        radio.classList.add("bg-blue-400");
         radio.closest("div").classList.add("bg-yellow-400");
         radio.closest("div").classList.remove("bg-blue-400");
         radio.nextElementSibling.classList.remove("text-white");
@@ -126,6 +128,9 @@ radios.forEach((radio) => {
         radios.forEach((r) => {
             const rParentDiv = r.closest("div");
             const rLabel = r.nextElementSibling;
+
+            r.classList.remove("bg-blue-400");
+            r.classList.add("bg-white");
             if (rParentDiv) {
                 rParentDiv.classList.remove("bg-yellow-400");
                 rParentDiv.classList.add("bg-blue-400");
@@ -138,6 +143,9 @@ radios.forEach((radio) => {
 
         // Оновлення тексту та стилів для вибраної радіокнопки
         if (radio.checked) {
+            radio.classList.add("bg-blue-400");
+            radio.classList.remove("bg-white");
+
             if (parentDiv) {
                 parentDiv.classList.add("bg-yellow-400");
                 parentDiv.classList.remove("bg-blue-400");

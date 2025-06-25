@@ -12,12 +12,12 @@
     <div id="indicators-carousel" class="relative w-full" data-carousel="static">
         <!-- Carousel wrapper -->
 
-        <div class="relative h-[450px] overflow-hidden rounded-lg md:h-[450px] xl:h-96">
+        <div class="relative h-[400px] overflow-hidden rounded-lg md:h-[350px] xl:h-96">
             <!-- Item 1 -->
 
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item="active">
                 <div class="flex gap-2 my-16 justify-center items-center">
-                    <div class="flex flex-col items-center w-3/5 gap-1">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                             <img src="{{ asset('img/command.png') }}" alt="command img">
                             <p class="underline text-center">командування</p>
                             <p class="text-center">Першим кроком рекомендується звернутися зі скаргою до свого
@@ -30,7 +30,7 @@
             <!-- Item 2 -->
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
-                    <div class="flex flex-col items-center w-3/5 gap-1">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                             <img src="{{ asset('img/ministry.png') }}" alt="ministry img">
                             <p class="underline text-center">Міністерство оборони України</p>
                             <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
@@ -44,7 +44,7 @@
             <!-- Item 3 -->
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center">
-                   <div class="flex flex-col items-center w-3/5 gap-1">
+                   <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                         <img src="{{ asset('img/commissioner.png') }}" alt="commissioner img">
                         <p class="underline text-center">Уповноважений Верховної Ради України з прав
                             людини</p>
@@ -60,7 +60,7 @@
             <!-- Item 4 -->
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center">
-                    <div class="flex flex-col items-center w-3/5 gap-1">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                         <img src="{{ asset('img/VSP.png') }}" alt="vsp img">
                         <p class="underline text-center">Військова служба правопорядку (ВСП)</p>
                         <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
@@ -106,13 +106,3 @@
         </button>
     </div>
 </div>
-
-
-<style>
-    /* Каруселі працюють адекватно тільки якщо підключити flowbite css
-        Чесно кажучи сорі, я не розумію, як це зробити ІЗОЛЬОВАНО
-        Інакше ці стилі ломають tailwindcss код
-        З любов'ю, Женя
-    */
-    /* @import url(https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css); */
-</style>
