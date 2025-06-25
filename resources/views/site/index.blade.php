@@ -6,9 +6,8 @@
 
 @section('content')
 
-
-
             <div class="lg:hidden mb-16"> @include('components.introduction-mobile') </div>
+
             <div class="hidden lg:block"> @include('components.introduction') </div>
 
 
@@ -16,17 +15,10 @@
              @include('components.whyimportant')
 
 
-
-
             <!-- Knowledge Pack Section -->
              <div id="wt_knowledge_pack">
                 @include('components.knowledgepack')
              </div>
-
-
-
-
-
 
             <!-- How to Submit Section Desktop -->
             <div class="hidden lg:block">
@@ -38,10 +30,6 @@
                 @include('components.howtosubmit-mobile')
             </div>
 
-
-
-
-
             <!-- Choose Knowledge Pack Selection Desktop -->
             <div class="lg:hidden my-32" id="knowledge_pack">
                 @include('components.chooseknoweledge-mobile')
@@ -52,8 +40,6 @@
                 @include('components.chooseknoweledge')
             </div>
 
-
-
             <!-- About Author Section -->
             <div class="lg:hidden my-32" id="about_author">
                 @include('components.aboutauthor-mobile')
@@ -62,8 +48,6 @@
             <div class="hidden lg:block">
                 @include('components.aboutauthor')
             </div>
-
-
 
             <!-- Why Created Section -->
             <div class="lg:hidden my-32">
@@ -74,7 +58,6 @@
                 @include('components.whycreated')
             </div>
 
-
             <!-- Секція безкоштовної допомоги -->
             <div class="lg:hidden my-32">
                 @include('components.forfree-mobile')
@@ -83,7 +66,6 @@
             <div class="hidden lg:block">
                 @include('components.forfree')
             </div>
-
 
 
             <!-- Секція соцмереж -->
