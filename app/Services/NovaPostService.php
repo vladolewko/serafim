@@ -69,10 +69,23 @@ class NovaPostService
         $quantity = $cart['quantity'];
 
         // Якщо кількість > 1, виключаємо всі поштомати
+        // Якщо кількість > 1, виключаємо поштомати та Drop-Off відділення
         if ($quantity > 1) {
             $warehouses = array_filter($warehouses, function($warehouse) {
                 $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
-                return $categoryOfWarehouse !== 'Postomat';
+                $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+
+                // Виключаємо поштомати
+                if ($categoryOfWarehouse === 'Postomat') {
+                    return false;
+                }
+
+                // Виключаємо Drop-Off відділення (обмеження до 10кг)
+                if ($maxWeight > 0 && $maxWeight <= 10) {
+                    return false;
+                }
+
+                return true;
             });
         }
 
