@@ -1,17 +1,18 @@
 <?php
 
 // 1. ПЕРЕВІРКА РОУТІВ - api.php
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\NovaPostController;
 
 // Важливо! Додайте middleware для CSRF виключення
-Route::post('/orders/payment/callback', [NovaPostController::class, 'paymentCallback'])
+Route::post('/orders/payment/callback', [OrderController::class, 'paymentCallback'])
     ->withoutMiddleware(['auth', 'verified']) // Виключаємо auth middleware
     ->name('orders.payment.callback');
 
-Route::get('/orders/status/{orderReference}', [NovaPostController::class, 'getOrderStatus'])
+Route::get('/orders/status/{orderReference}', [OrderController::class, 'getOrderStatus'])
     ->name('orders.status');
 
 // Тестові роути для діагностики

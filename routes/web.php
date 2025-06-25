@@ -39,23 +39,23 @@ Route::middleware(AdminMiddleware::class)->group(function () {
 Route::prefix('orders')->group(function () {
     Route::post('/', [OrderController::class, 'create'])->name('orders.create');
 
-    Route::post('/setArea', [NovaPostController::class, 'setArea'])->name('orders.setArea');
-    Route::post('/setDistrict', [NovaPostController::class, 'setDistrict'])->name('orders.setDistrict');
-    Route::post('/setSettlement', [NovaPostController::class, 'setSettlement'])->name('orders.setSettlement');
-    Route::post('/searchSettlement', [NovaPostController::class, 'searchSettlement'])->name('orders.searchSettlement');
-    Route::post('/chooseSettlement', [NovaPostController::class, 'chooseSettlement'])->name('orders.chooseSettlement');
-    Route::post('/setWarehouse', [NovaPostController::class, 'setWarehouse'])->name('orders.setWarehouse');
-    Route::post('/createCounterparty', [NovaPostController::class, 'createCounterparty'])->name('orders.createCounterparty');
+    Route::post('/setArea', [OrderController::class, 'setArea'])->name('orders.setArea');
+    Route::post('/setDistrict', [OrderController::class, 'setDistrict'])->name('orders.setDistrict');
+    Route::post('/setSettlement', [OrderController::class, 'setSettlement'])->name('orders.setSettlement');
+    Route::post('/searchSettlement', [OrderController::class, 'searchSettlement'])->name('orders.searchSettlement');
+    Route::post('/chooseSettlement', [OrderController::class, 'chooseSettlement'])->name('orders.chooseSettlement');
+    Route::post('/setWarehouse', [OrderController::class, 'setWarehouse'])->name('orders.setWarehouse');
+    Route::post('/createCounterparty', [OrderController::class, 'createCounterparty'])->name('orders.createCounterparty');
 });
 
 
-Route::get('setCitySender', [NovaPostController::class, 'setCitySender']);
-Route::get('setSenderRef', [NovaPostController::class, 'setSenderRef']);
+Route::get('setCitySender', [OrderController::class, 'setCitySender']);
+Route::get('setSenderRef', [OrderController::class, 'setSenderRef']);
 
-Route::post('/setup-sender', [NovaPostController::class, 'setupSender'])->name('orders.setupSender');
-Route::get('/checkStatus', [NovaPostController::class, 'checkStatus'])->name('orders.checkStatus');
+Route::post('/setup-sender', [OrderController::class, 'setupSender'])->name('orders.setupSender');
+Route::get('/checkStatus', [OrderController::class, 'checkStatus'])->name('orders.checkStatus');
 
-Route::get('/test/create-ttn/{orderReference}', [NovaPostController::class, 'createTTNManually']);
+Route::get('/test/create-ttn/{orderReference}', [OrderController::class, 'createTTNManually']);
 
 
 

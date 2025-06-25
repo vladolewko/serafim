@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 
+use App\Services\WayForPayService;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\ProductService;
@@ -16,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
+//        $this->app->bind(WayForPayService::class, WayForPayService::class);
+//        $this->app->bind(OrderService::class, OrderService::class);
 
 
     }
