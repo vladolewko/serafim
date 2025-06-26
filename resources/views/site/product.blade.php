@@ -195,6 +195,7 @@
             const increaseBtn = document.getElementById('increaseBtn');
             const quantityDisplay = document.getElementById('quantityDisplay');
             const orderForm = document.getElementById('orderForm');
+            const productId = orderForm.getAttribute('data-product-id');
 
             let quantity = 1;
             const minQuantity = 1;
@@ -245,7 +246,7 @@
                 const productIdInput = document.createElement('input');
                 productIdInput.type = 'hidden';
                 productIdInput.name = 'productId';
-                productIdInput.value = '{{ $product->id }}';
+                productIdInput.value = productId;
 
                 // Додаємо поля до форми
                 this.appendChild(quantityInput);

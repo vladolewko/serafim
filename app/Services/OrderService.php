@@ -3,17 +3,20 @@
 namespace App\Services;
 
 use App\Models\Order;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class OrderService
 {
     private $novaPostService;
     private $wayForPayService;
+    private TelegramBotService $telegramBotService;
 
-    public function __construct(NovaPostService $novaPostService, WayForPayService $wayForPayService)
+    public function __construct(NovaPostService $novaPostService, WayForPayService $wayForPayService, TelegramBotService $telegramBotService)
     {
         $this->novaPostService = $novaPostService;
         $this->wayForPayService = $wayForPayService;
+        $this->telegramBotService = $telegramBotService;
     }
 
     /**
@@ -85,6 +88,13 @@ class OrderService
 
         $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
         $order->addTTNData($ttnNumber, $ttn);
+        try {
+            $this->telegramBotService->sendOrderToTelegram($order);
+        } catch (\Exception $e) {
+            // Логування помилки без припинення роботи
+            Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
+        }
+
 
         Session::forget(['nova_post_data', 'cart']);
 
@@ -247,6 +257,13 @@ class OrderService
                 if ($ttnNumber) {
                     $order->addTTNData($ttnNumber, $ttnResult);
                     $order->update(['status' => 'processing']);
+
+                    try {
+                        $this->telegramBotService->sendOrderToTelegram($order);
+                    } catch (\Exception $e) {
+                        Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
+                    }
+
                 } else {
                     throw new \Exception('ТТН створено, але номер не отримано');
                 }
