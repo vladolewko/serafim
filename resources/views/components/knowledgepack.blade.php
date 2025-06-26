@@ -1,7 +1,7 @@
 <div
 class="flex flex-col lg:flex-row w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 lg:mx-auto lg:justify-between my-16 lg:my-72 gap-4 lg:gap-8">
-<div class="w-full lg:w-5/12">
-    <div class="lg:mb-6 text-center">
+<div class="w-full lg:w-[48%]">
+    <div class="lg:mb-6 text-center lg:text-left">
         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
             Комплект знань — юридичний <span class="text-yellow-400">набір виживання</span>
         </p>

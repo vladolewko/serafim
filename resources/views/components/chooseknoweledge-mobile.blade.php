@@ -17,7 +17,7 @@
             @foreach ($products as $index => $product)
                 <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
                     <div class="flex justify-center mt-10">
-                        <div class="lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
+                        <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
                             <div class="bg-white flex flex-col items-center rounded-xl">
                                 <!-- posible img -->
                                 <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">

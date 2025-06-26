@@ -229,8 +229,71 @@
                         </div>
                         <div class="md:col-span-2">
                             <div class="space-y-4">
-                                <input type="file" id="image" name="product_image" accept="image/*"
-                                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none">
+                                <!-- <input type="file" id="image" name="product_image" accept="image/*"
+                                       class=" align-middle block border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none">
+
+                                     <input type="file" id="image" accept="image/*" name="product_image" class="hidden">
+                                    <label for="image" class="flex items-center w-full px-4 py-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-colors">
+                                        <span id="simple-text" class="text-black">Файл не вибрано</span>
+                                    </label>
+
+
+
+                                 <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label> -->
+
+<!--
+                                <div for="image_update" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition duration-200">
+                                    <div for="image_update" class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="image_update" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Завантажити файл</span>
+                                                <input id="image_update" name="product_image" type="file" class="sr-only" required accept="image/*">
+                                            </label>
+                                            <p class="pl-1">або перетягніть сюди</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG, GIF до 10MB</p>
+                                    </div>
+                                </div> -->
+
+
+
+
+
+
+                                    <div for="image_update" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition duration-200">
+                                        <div for="image_update" class="space-y-1 text-center">
+                                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            <div class="flex text-sm text-gray-600">
+                                                <label for="image_update" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                    <span>Завантажити файл</span>
+                                                    <input id="image_update" name="product_image" type="file" class="sr-only" required accept="image/*">
+                                                </label>
+                                                <p class="pl-1">або перетягніть сюди</p>
+                                            </div>
+                                            <p class="text-xs text-gray-500">PNG, JPG, GIF до 10MB</p>
+                                        </div>
+                                    </div>
+                                <!-- <div class="flex items-center justify-center w-full">
+                                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                            </svg>
+                                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                        </div>
+                                        <input id="dropzone-file" type="file" class="hidden" />
+                                    </label>
+                                </div> -->
+
+
+
                                 @if($errors->has('product_image'))
                                     <p class="text-sm text-red-600">{{ $errors->first('product_image') }}</p>
                                 @endif
@@ -289,4 +352,109 @@
         </div>
     </div>
 </div>
+
 @endsection
+
+
+<script defer>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('image_update');
+    const uploadArea = fileInput.closest('.border-dashed');
+
+    // Функція для оновлення UI після вибору файлу
+    function updateUploadArea(file) {
+        const fileName = file.name;
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        const textArea = uploadArea.querySelector('.space-y-1');
+
+        // Перевірка розміру файлу (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Файл занадто великий! Максимальний розмір: 10MB');
+            return false;
+        }
+
+        textArea.innerHTML = `
+            <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-sm text-gray-600">
+                <p class="font-medium text-green-600">${fileName}</p>
+                <p class="text-xs text-gray-500">${fileSize} MB</p>
+            </div>
+        `;
+        uploadArea.classList.remove('border-gray-300', 'hover:border-gray-400');
+        uploadArea.classList.add('border-green-300', 'bg-green-50');
+        return true;
+    }
+
+    // Обробка події change для input
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            console.log('Файл вибрано через input:', file.name, file.type);
+            updateUploadArea(file);
+        }
+    });
+
+    // Обробка drag-and-drop подій
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    uploadArea.addEventListener('dragenter', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+
+        const file = e.dataTransfer.files[0];
+        console.log('Файл перетягнуто:', file.name, file.type); // Для діагностики
+
+        // Перевірка, чи це зображення
+        if (file && file.type.startsWith('image/')) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            if (updateUploadArea(file)) {
+                fileInput.dispatchEvent(new Event('change')); // Викликаємо подію change
+            }
+        } else {
+            alert('Будь ласка, виберіть файл типу PNG, JPG або GIF');
+        }
+    });
+
+    // Form validation feedback
+    const form = document.querySelector('form');
+    if (form) {
+        const inputs = form.querySelectorAll('input[required]');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.classList.add('border-red-300', 'ring-red-500');
+                    this.classList.remove('border-green-300');
+                } else {
+                    this.classList.remove('border-red-300', 'ring-red-500');
+                    this.classList.add('border-green-300');
+                }
+            });
+
+            input.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('border-red-300', 'ring-red-500');
+                    this.classList.add('border-green-300');
+                }
+            });
+        });
+    }
+});
+</script>
