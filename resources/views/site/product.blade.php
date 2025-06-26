@@ -178,140 +178,6 @@
                 </div>
             </div>
 
-            <!-- Knowledge Pack Selection Mobile -->
-            <!-- <div class="lg:hidden w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto my-16 lg:my-72" id="knowledge_pack">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-8">
-                    <div>
-                        <p class="text-2xl sm:text-3xl lg:text-4xl font-bold">
-                            Обери свій <span class="text-yellow-400"> комплект знань!</span>
-                        </p>
-                        <p class="text-lg lg:text-xl text-slate-600 mt-2">
-                            Замовляй свій набір та будь захищеним знанями...
-                        </p>
-                    </div>
-                    <div class="hidden lg:block ml-6">
-                        <div class="w-8 h-8 bg-yellow-400 rounded transform rotate-90"></div>
-                    </div>
-                </div> -->
-                <!-- @if($products->isNotEmpty()) -->
-                    <!-- Knowledge Pack Cards -->
-                    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                        @foreach($products as $product)
-                            <div class="rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-0.5">
-                                <div class="bg-white flex flex-col items-center rounded-xl p-4">
-                                    <div class="h-32 w-32 lg:h-48 lg:w-48 rounded-xl bg-gray-200 mb-4 overflow-hidden">
-                                        @if($product->getMedia('product_images')->isNotEmpty())
-                                            @php
-                                                $imageUrl = $product->getFirstMediaUrl('product_images');
-                                                $imageUrl = str_replace('http://110.172.148.57:8000', 'https://serafym.info', $imageUrl);
-                                            @endphp
-                                            <img class="w-full h-full" src="{{ $imageUrl }}" alt="{{ $product->title }}">
-                                        @endif
-                                    </div>
-                                    <p class="text-lg lg:text-2xl font-bold text-center mb-3">{{ $product->name }}</p>
-                                    <p class="text-2xl lg:text-4xl text-center mb-4 font-bold">{{ $product->price }}
-                                        грн</p>
-                                    <button
-                                        class="bg-yellow-400 px-6 py-2 lg:px-8 lg:py-3 rounded-lg text-black text-lg lg:text-xl font-semibold">
-                                        Переглянути
-                                    </button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div> -->
-
-            <!-- Knowledge Pack Selection Desktop -->
-            <!-- @if($productsChunks->isNotEmpty())
-                <div class="hidden lg:block mx-auto my-72 section lg:w-5/6 xl:w-4/6" id="knowledge_pack">
-                    <div class="flex">
-                        <div>
-                            <p class="text-4xl font-bold">Обери свій <span
-                                    class="text-yellow-400"> комплект знань!</span></p>
-                            <p class="text-xl text-slate-600">Замовляй свій набір та будь захищеним знанями...</p>
-                        </div>
-                        <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
-                    </div> -->
-                    <!-- Carousel knowledge pack -->
-                    <!-- <div id="indicators-carousel" class="relative w-full mb-20" data-carousel="static"> -->
-                        <!-- Carousel wrapper -->
-
-                        <!-- <div class="relative h-56 overflow-hidden rounded-lg md:h-[500px] w-full"> -->
-                            <!-- Item 1 -->
-                            <!-- @foreach ($productsChunks as $perPage)
-
-                                <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
-                                    <div class="flex lg:gap-10 xl:gap-20 mt-10 justify-center ">
-                                        @foreach($perPage as $product)
-                                            <div
-                                                class="lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
-
-                                                <div class="bg-white flex flex-col items-center rounded-xl"> -->
-                                                    <!-- posible img -->
-                                                    <!-- <div
-                                                        class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-                                                        @if($product->getMedia('product_images')->isNotEmpty())
-                                                            @php
-                                                                $imageUrl = $product->getFirstMediaUrl('product_images');
-                                                                $imageUrl = str_replace('http://110.172.148.57:8000', 'https://serafym.info', $imageUrl);
-                                                            @endphp
-                                                            <img class="w-full h-full" src="{{ $imageUrl }}" alt="{{ $product->title }}">
-                                                        @endif
-                                                    </div>
-
-                                                    <p class="text-2xl/6 font-bold text-center">{{$product->name}}</p>
-                                                    <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
-                                                    <a class="flex items-center bg-yellow-400 px-8 m-3 rounded-lg inline-block align-middle h-10 text-black text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
-                                                       href="{{ route('product.show', $product->id) }}">перейти</a>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div> -->
-                        <!-- Slider indicators -->
-                        <!-- <div
-                            class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-0 w-full justify-center">
-                            @foreach ($productsChunks as $index => $perPage)
-                                <button
-                                    type="button"
-                                    class="h-[1px] rounded-full slide_button {{ $index === 0 ? 'bg-gray-800' : 'bg-gray-400' }}"
-                                    style="width: {{ 90 / count($productsChunks) }}%"
-                                    aria-current="{{ $index === 0 ? 'true' : 'false' }}"
-                                    aria-label="Slide {{ $index + 1 }}"
-                                    data-carousel-slide-to="{{ $index }}"
-                                ></button>
-                            @endforeach
-
-                        </div> -->
-                        <!-- Slider controls -->
-                        <!-- <button type="button"
-                                class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                                data-carousel-prev>
-                            <span class="inline-flex items-center justify-center">
-                                <img class="w-8 h-8 text-white dark:text-gray-800 rtl:rotate-180"
-                                     src="{{ asset('img/button_carousel_left.svg') }}" alt="button_carousel_left">
-                                <span class="sr-only">Previous</span>
-                            </span>
-                        </button>
-                        <button type="button"
-                                class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                                data-carousel-next>
-                            <span class="inline-flex items-center justify-center group-focus:outline-none">
-                                <img class="w-8 h-8 text-white dark:text-gray-800 rtl:rotate-180"
-                                     src="{{ asset('img/button_carousel_right.svg') }}" alt="button_carousel_right">
-                                <span class="sr-only">Next</span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            @endif -->
-
-
-
-
 <div class="lg:hidden py-32" id="knowledge_pack">
     @include('components.chooseknoweledge-mobile')
 </div>
@@ -328,6 +194,7 @@
             const increaseBtn = document.getElementById('increaseBtn');
             const quantityDisplay = document.getElementById('quantityDisplay');
             const orderForm = document.getElementById('orderForm');
+            const productId = orderForm.getAttribute('data-product-id');
 
             let quantity = 1;
             const minQuantity = 1;
@@ -378,7 +245,7 @@
                 const productIdInput = document.createElement('input');
                 productIdInput.type = 'hidden';
                 productIdInput.name = 'productId';
-                productIdInput.value = '{{ $product->id }}';
+                productIdInput.value = productId;
 
                 // Додаємо поля до форми
                 this.appendChild(quantityInput);

@@ -9,7 +9,7 @@
                     <a href="{{ route('home') }}">головна</a>
                 </li>
                 <li class="hover:text-slate-800 cursor-pointer">
-                    <a href="{{ route('product.show', session('cart')['product']->id) }}">замовлення</a>
+                    <a href="{{ route('product.show', $cart['product']->id) }}">замовлення</a>
                 </li>
                 <li class="text-yellow-400 text-xl sm:text-2xl font-semibold">оформлення</li>
             </ul>

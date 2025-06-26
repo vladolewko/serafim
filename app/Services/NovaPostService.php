@@ -36,6 +36,47 @@ class NovaPostService
     }
 
     /**
+     * Перетворення warehouse ref Нової Пошти в текстову назву
+     */
+    public function convertNovaPoshtaWarehouseRef(string $warehouseRef): string
+    {
+        try {
+            // Отримуємо дані про відділення
+            $response = $this->makeRequest('Address', 'getWarehouses', [
+                'Ref' => $warehouseRef,
+                'Language' => 'UA'
+            ]);
+
+            if (empty($response['data'][0])) {
+                return "Відділення: {$warehouseRef}";
+            }
+
+            $warehouse = $response['data'][0];
+
+            // Отримуємо назву міста
+            $cityResponse = $this->makeRequest('Address', 'getCities', [
+                'Ref' => $warehouse['CityRef'],
+                'Language' => 'UA'
+            ]);
+
+            $cityName = $cityResponse['data'][0]['Description'] ?? 'Невідоме місто';
+
+            // Формуємо результат
+            $result = "м. {$cityName}, {$warehouse['Description']}";
+
+            if (!empty($warehouse['ShortAddress'])) {
+                $result .= " ({$warehouse['ShortAddress']})";
+            }
+
+            return $result;
+
+        } catch (Exception $e) {
+            Log::error('Failed to convert Nova Poshta warehouse ref: ' . $e->getMessage());
+            return "Відділення: {$warehouseRef}";
+        }
+    }
+
+    /**
      * Отримання відділень/поштоматів з інформацією про обмеження
      */
     public function getWarehousesWithRestrictions(string $settlementRef): array
@@ -73,19 +114,10 @@ class NovaPostService
         if ($quantity > 1) {
             $warehouses = array_filter($warehouses, function($warehouse) {
                 $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
-                $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+                $warehouseType = $warehouse['WarehouseType'] ?? ''; // або інше поле
 
-                // Виключаємо поштомати
-                if ($categoryOfWarehouse === 'Postomat') {
-                    return false;
-                }
-
-                // Виключаємо Drop-Off відділення (обмеження до 10кг)
-                if ($maxWeight > 0 && $maxWeight <= 10) {
-                    return false;
-                }
-
-                return true;
+                // Виключаємо поштомати та Drop-Off
+                return $categoryOfWarehouse !== 'Postomat' && $warehouseType !== 'DropOff';
             });
         }
 
