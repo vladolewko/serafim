@@ -69,35 +69,6 @@ class TelegramBotService
     }
 
     /**
-     * Відправка простого повідомлення про помилку
-     */
-    public function sendErrorNotification(string $error, ?string $context = null): bool
-    {
-        $message = "⚠️ <b>Помилка в системі</b>\n\n";
-        $message .= "📝 <b>Опис:</b> {$error}\n";
-
-        if ($context) {
-            $message .= "🔍 <b>Контекст:</b> {$context}\n";
-        }
-
-        $message .= "\n📅 <b>Час:</b> " . date('d.m.Y H:i:s');
-
-        return $this->sendMessage($message);
-    }
-
-    /**
-     * Відправка повідомлення про новий контакт/звернення
-     */
-    public function sendContactMessage(array $contactData): bool
-    {
-        $message = $this->formatContactMessage($contactData);
-        return $this->sendMessage($message);
-    }
-
-    /**
-     * Форматування повідомлення про замовлення
-     */
-    /**
      * Форматування повідомлення про замовлення
      */
     private function formatOrderMessage($orderData): string
@@ -138,28 +109,6 @@ class TelegramBotService
     }
 
     /**
-     * Форматування повідомлення про контакт
-     */
-    private function formatContactMessage(array $contactData): string
-    {
-        $name = $contactData['name'] ?? 'Не вказано';
-        $email = $contactData['email'] ?? 'Не вказано';
-        $phone = $contactData['phone'] ?? 'Не вказано';
-        $subject = $contactData['subject'] ?? 'Загальне звернення';
-        $messageText = $contactData['message'] ?? 'Повідомлення відсутнє';
-
-        $message = "📨 <b>Нове звернення</b>\n\n";
-        $message .= "👤 <b>Ім'я:</b> " . $this->escapeHtml($name) . "\n";
-        $message .= "📧 <b>Email:</b> " . $this->escapeHtml($email) . "\n";
-        $message .= "📞 <b>Телефон:</b> " . $this->escapeHtml($phone) . "\n";
-        $message .= "📋 <b>Тема:</b> " . $this->escapeHtml($subject) . "\n\n";
-        $message .= "💬 <b>Повідомлення:</b>\n" . $this->escapeHtml($messageText) . "\n\n";
-        $message .= "📅 <b>Дата:</b> " . date('d.m.Y H:i');
-
-        return $message;
-    }
-
-    /**
      * Екранування HTML символів для безпеки
      */
     private function escapeHtml(string $text): string
@@ -182,73 +131,4 @@ class TelegramBotService
         return true;
     }
 
-    /**
-     * Перевірка підключення до бота
-     */
-    public function testConnection(): bool
-    {
-        if (!$this->validateCredentials()) {
-            return false;
-        }
-
-        try {
-            $response = Http::get("{$this->apiUrl}/getMe");
-            return $this->handleResponse($response);
-        } catch (Exception $e) {
-            Log::error('Failed to test Telegram connection: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Отримання інформації про бота
-     */
-    public function getBotInfo(): ?array
-    {
-        if (!$this->validateCredentials()) {
-            return null;
-        }
-
-        try {
-            $response = Http::get("{$this->apiUrl}/getMe");
-            $result = $response->json();
-
-            if (isset($result['ok']) && $result['ok'] === true) {
-                return $result['result'];
-            }
-
-            return null;
-        } catch (Exception $e) {
-            Log::error('Failed to get bot info: ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Відправка повідомлення з можливістю додавання клавіатури
-     */
-    public function sendMessageWithKeyboard(string $message, array $keyboard, ?string $chatId = null): bool
-    {
-        if (!$this->validateCredentials()) {
-            return false;
-        }
-
-        $targetChatId = $chatId ?? $this->chatId;
-
-        try {
-            $response = Http::post("{$this->apiUrl}/sendMessage", [
-                'chat_id' => $targetChatId,
-                'text' => $message,
-                'parse_mode' => 'HTML',
-                'reply_markup' => json_encode([
-                    'inline_keyboard' => $keyboard
-                ])
-            ]);
-
-            return $this->handleResponse($response);
-        } catch (Exception $e) {
-            Log::error('Failed to send Telegram message with keyboard: ' . $e->getMessage());
-            return false;
-        }
-    }
 }
