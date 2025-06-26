@@ -21,7 +21,7 @@
              </div>
 
             <!-- How to Submit Section Desktop -->
-            <div class="hidden lg:block">
+            <div class="hidden lg:block" >
                 @include('components.howtosubmit')
             </div>
 
@@ -31,6 +31,7 @@
             </div>
 
             <!-- Choose Knowledge Pack Selection Desktop -->
+             <div id="knowledge_pack"></div>
             <div class="lg:hidden my-32" id="knowledge_pack">
                 @include('components.chooseknoweledge-mobile')
             </div>
@@ -41,7 +42,8 @@
             </div>
 
             <!-- About Author Section -->
-            <div class="lg:hidden my-32" id="about_author">
+             <div id="about_author"></div>
+            <div class="lg:hidden my-32">
                 @include('components.aboutauthor-mobile')
             </div>
 
@@ -59,7 +61,8 @@
             </div>
 
             <!-- Секція безкоштовної допомоги -->
-            <div class="lg:hidden my-32">
+             <div id="for_free"></div>
+            <div class="lg:hidden my-32" >
                 @include('components.forfree-mobile')
             </div>
 
@@ -69,7 +72,8 @@
 
 
             <!-- Секція соцмереж -->
-            <div class="lg:hidden my-32">
+             <div id="social"></div>
+            <div class="lg:hidden my-32" >
                 @include('components.socialnetwork-mobile')
             </div>
 

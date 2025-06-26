@@ -234,42 +234,98 @@
             </form>
         </div>
     </div>
+</div>
+@endsection
 
-    <script>
-        // File upload preview
-        const fileInput = document.getElementById('image');
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const fileName = file.name;
-                const fileSize = (file.size / 1024 / 1024).toFixed(2);
 
-                // Update the upload area text
-                const uploadArea = fileInput.closest('.border-dashed');
-                const textArea = uploadArea.querySelector('.space-y-1');
-                textArea.innerHTML = `
-                    <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div class="text-sm text-gray-600">
-                        <p class="font-medium text-green-600">${fileName}</p>
-                        <p class="text-xs text-gray-500">${fileSize} MB</p>
-                    </div>
-                `;
-                uploadArea.classList.remove('border-gray-300');
-                uploadArea.classList.add('border-green-300', 'bg-green-50');
+
+
+<script defer>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('image');
+    const uploadArea = fileInput.closest('.border-dashed');
+
+    // Функція для оновлення UI після вибору файлу
+    function updateUploadArea(file) {
+        const fileName = file.name;
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        const textArea = uploadArea.querySelector('.space-y-1');
+
+        // Перевірка розміру файлу (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Файл занадто великий! Максимальний розмір: 10MB');
+            return false;
+        }
+
+        textArea.innerHTML = `
+            <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-sm text-gray-600">
+                <p class="font-medium text-green-600">${fileName}</p>
+                <p class="text-xs text-gray-500">${fileSize} MB</p>
+            </div>
+        `;
+        uploadArea.classList.remove('border-gray-300', 'hover:border-gray-400');
+        uploadArea.classList.add('border-green-300', 'bg-green-50');
+        return true;
+    }
+
+    // Обробка події change для input
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            console.log('Файл вибрано через input:', file.name, file.type);
+            updateUploadArea(file);
+        }
+    });
+
+    // Обробка drag-and-drop подій
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    uploadArea.addEventListener('dragenter', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('border-blue-500', 'bg-blue-50');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+
+        const file = e.dataTransfer.files[0];
+        console.log('Файл перетягнуто:', file.name, file.type); // Для діагностики
+
+        // Перевірка, чи це зображення
+        if (file && file.type.startsWith('image/')) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            if (updateUploadArea(file)) {
+                fileInput.dispatchEvent(new Event('change')); // Викликаємо подію change
             }
-        });
+        } else {
+            alert('Будь ласка, виберіть файл типу PNG, JPG або GIF');
+        }
+    });
 
-        // Form validation feedback
-        const form = document.querySelector('form');
+    // Form validation feedback
+    const form = document.querySelector('form');
+    if (form) {
         const inputs = form.querySelectorAll('input[required]');
-
         inputs.forEach(input => {
             input.addEventListener('blur', function() {
                 if (this.value.trim() === '') {
                     this.classList.add('border-red-300', 'ring-red-500');
-                    this.classList.remove('border-gray-300');
+                    this.classList.remove('border-green-300');
                 } else {
                     this.classList.remove('border-red-300', 'ring-red-500');
                     this.classList.add('border-green-300');
@@ -283,11 +339,8 @@
                 }
             });
         });
-    </script>
-</div>
-@endsection
-
-
-
+    }
+});
+</script>
 
 

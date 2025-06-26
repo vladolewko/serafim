@@ -1,4 +1,4 @@
-<div class="w-full px-4 sm:px-6 lg:w-4/6 mx-auto my-12 sm:my-20 lg:my-60" id="social">
+<div class="w-full px-4 sm:px-6 lg:w-4/6 mx-auto my-12 sm:my-20 lg:my-60">
     <div class="w-full lg:w-6/12 mb-8">
         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
             Слідкуй в <span class="text-yellow-400">соцмережах</span>

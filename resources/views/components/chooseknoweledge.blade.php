@@ -17,16 +17,16 @@
                 @foreach ($productsChunks as $perPage)
 
                 <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
-                    <div class="flex lg:gap-10 xl:gap-20 mt-10 justify-center ">
+                    <div class="flex lg:gap-10 xl:gap-7 mt-10 justify-center ">
                         @foreach($perPage as $product)
                             <div
-                                class="lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
+                                class="lg:w-3/12 xl:w-min h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
 
                                 <div class="bg-white flex flex-col items-center rounded-xl ">
                                     <!-- posible img -->
 
                                         <div
-                                        class="h-[212px] w-[212px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
+                                        class="xl:h-[212px] xl:w-[212px] lg:w-[200px] lg:h-[200px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                         @if($product->getMedia('product_images')->isNotEmpty())
                                             <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('product_images') }}"
                                                     alt="{{ $product->title }}">
