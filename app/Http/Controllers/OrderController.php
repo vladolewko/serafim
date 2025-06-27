@@ -12,6 +12,7 @@ use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\OrderService;
 use App\Services\WayForPayService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\JsonResponse;
 
@@ -47,7 +48,8 @@ class OrderController extends Controller
             session()->put('cart', [
                 'product' => $product,
                 'quantity' => $quantity,
-                'total' => 5
+                'total' => $product->price * $quantity
+//                'total' => 5
             ]);
             $cart = session()->get('cart');
 
@@ -178,12 +180,13 @@ class OrderController extends Controller
             }
 
             $data['warehouse'] = $warehouseRef;
-            Session::put('nova_post_data', $data);
 
             $settlements = $this->novaPostService->searchSettlement($data['search']);
             $warehouses = $this->novaPostService->getFilteredWarehouses($data['settlement'], $cart);
 
             $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
+            $data['deliveryCost'] = $deliveryCost;
+            Session::put('nova_post_data', $data);
 
             if ($deliveryCost < 0) {
                 return $this->errorResponse(

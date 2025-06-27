@@ -36,26 +36,60 @@ class TelegramBotService
     /**
      * Загальний метод для відправки повідомлення
      */
-    public function sendMessage(string $message, string $parseMode = 'HTML', ?string $chatId = null): bool
+    public function sendMessage(string $message, string $parseMode = 'HTML', ?string $chatId = null, int $maxRetries = 3): bool
     {
         if (!$this->validateCredentials()) {
             return false;
         }
 
         $targetChatId = $chatId ?? $this->chatId;
+        $attempt = 0;
 
-        try {
-            $response = Http::post("{$this->apiUrl}/sendMessage", [
-                'chat_id' => $targetChatId,
-                'text' => $message,
-                'parse_mode' => $parseMode,
-            ]);
+        while ($attempt < $maxRetries) {
+            try {
+                $response = Http::timeout(30)->post("{$this->apiUrl}/sendMessage", [
+                    'chat_id' => $targetChatId,
+                    'text' => $message,
+                    'parse_mode' => $parseMode,
+                ]);
 
-            return $this->handleResponse($response);
-        } catch (Exception $e) {
-            Log::error('Failed to send Telegram message: ' . $e->getMessage());
-            return false;
+                if ($response->successful()) {
+                    return $this->handleResponse($response);
+                }
+
+                // Перевіряємо чи це помилка rate limiting
+                $responseData = $response->json();
+                if (isset($responseData['error_code']) && $responseData['error_code'] == 429) {
+                    $retryAfter = $responseData['parameters']['retry_after'] ?? pow(2, $attempt + 1);
+
+                    Log::warning("Telegram rate limit hit. Retrying after {$retryAfter} seconds");
+                    sleep($retryAfter);
+                    $attempt++;
+                    continue;
+                }
+
+                // Інші помилки
+                throw new Exception("Telegram API error: " . $response->body());
+
+            } catch (Exception $e) {
+                $attempt++;
+
+                if (str_contains($e->getMessage(), 'Too many requests') || str_contains($e->getMessage(), '429')) {
+                    if ($attempt < $maxRetries) {
+                        $delay = pow(2, $attempt); // Експоненційна затримка: 2s, 4s, 8s
+                        Log::warning("Too many requests to Telegram. Retrying in {$delay} seconds (attempt {$attempt}/{$maxRetries})");
+                        sleep($delay);
+                        continue;
+                    }
+                }
+
+                Log::error('Failed to send Telegram message: ' . $e->getMessage());
+                return false;
+            }
         }
+
+        Log::error("Failed to send Telegram message after {$maxRetries} attempts");
+        return false;
     }
 
     /**

@@ -88,12 +88,12 @@ class OrderService
 
         $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
         $order->addTTNData($ttnNumber, $ttn);
-        try {
-            $this->telegramBotService->sendOrderToTelegram($order);
-        } catch (\Exception $e) {
-            // Логування помилки без припинення роботи
-            Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
-        }
+
+            try {
+                $this->telegramBotService->sendOrderToTelegram($order);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
+            }
 
 
         Session::forget(['nova_post_data', 'cart']);
@@ -125,11 +125,11 @@ class OrderService
     /**
      * Створення замовлення
      */
-    private function createOrder($validated, $cart, $data, $counterparty, $status)
+    private function createOrder($validated, $cart, $data, $counterparty, $status = 'pending')
     {
-        $weight = $cart['product']->weight * $cart['quantity'];
+//        $weight = $cart['product']->weight * $cart['quantity'];
         $total = (int)$cart['total'];
-        $deliveryCost = 0;
+        $deliveryCost = $data['deliveryCost'];
         $totalAmount = $total + $deliveryCost;
 
         return Order::create([
@@ -267,6 +267,7 @@ class OrderService
                 } else {
                     throw new \Exception('ТТН створено, але номер не отримано');
                 }
+
             } else {
                 throw new \Exception('Не вдалося створити ТТН: ' . json_encode($ttnResult));
             }
