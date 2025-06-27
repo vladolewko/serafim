@@ -159,7 +159,7 @@ class OrderService
     {
         $weight = $cart['product']->weight * $cart['quantity'];
         $total = (int)$cart['total'];
-        $deliveryCost = 0;
+        $deliveryCost = $data['deliveryCost'];
         $totalAmount = $total + $deliveryCost;
 
         return Order::create([
@@ -258,11 +258,11 @@ class OrderService
                     $order->addTTNData($ttnNumber, $ttnResult);
                     $order->update(['status' => 'processing']);
 
-                    try {
-                        $this->telegramBotService->sendOrderToTelegram($order);
-                    } catch (\Exception $e) {
-                        Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
-                    }
+                        try {
+                            $this->telegramBotService->sendOrderToTelegram($order);
+                        } catch (\Exception $e) {
+                            Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
+                        }
 
                 } else {
                     throw new \Exception('ТТН створено, але номер не отримано');

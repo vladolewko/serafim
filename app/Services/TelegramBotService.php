@@ -108,6 +108,7 @@ class TelegramBotService
     private function formatOrderMessage($orderData): string
     {
         $orderId = $orderData->id;
+        $orderTTN = $orderData->ttn_number;
         $customerName = $orderData->customer_name;
         $customerSurname = $orderData->customer_surname;
         $customerPhone = $orderData->customer_phone;
@@ -121,6 +122,7 @@ class TelegramBotService
         $shippingAddress = $this->novaPostService->convertNovaPoshtaWarehouseRef($orderData->warehouse_ref);
 
         $message = "🔔 <b>Нове замовлення #{$orderId}</b>\n\n";
+        $message .= "🔔 <b>ТТН №</b>" . $this->escapeHtml($orderTTN) . "\n";
         $message .= "👤 <b>Клієнт:</b> " . $this->escapeHtml($customerName . ' ' . $customerSurname) . "\n";
         $message .= "📞 <b>Телефон:</b> " . $this->escapeHtml($customerPhone) . "\n";
         $message .= "📧 <b>Email:</b> " . $this->escapeHtml($customerEmail) . "\n";
