@@ -787,10 +787,11 @@
                 const response = await this.makeFormRequest(ORDER_CONFIG.routes.createCounterparty, formData);
 
                 if (response.success) {
-                    this.showSuccessToastWithRedirect(
+                    // Замість showSuccessToastWithRedirect використовуємо новий метод
+                    this.showOrderSuccessPopup(
                         'Замовлення успішно створено!',
                         `ТТН: ${response.ttn_number}`,
-                        ORDER_CONFIG.routes.home
+                        response.ttn_number
                     );
                 } else {
                     throw new Error(response.message || 'Помилка створення замовлення');
@@ -838,8 +839,10 @@
                     await this.checkOrderStatus(response.orderReference);
                 } catch (error) {
                     console.error('Error after payment:', error);
-                    this.showSuccessMessage('Оплата пройшла успішно! Ваше замовлення буде оброблено найближчим часом.');
-                    this.redirectToHome();
+                    this.showOrderSuccessPopup(
+                        'Оплата успішна!',
+                        'Ваше замовлення буде оброблено найближчим часом.'
+                    );
                 }
             }
 
@@ -857,19 +860,31 @@
 
                     if (response.ok) {
                         const data = await response.json();
-                        const message = data.success && data.order
-                            ? `Замовлення успішно створено! ${data.order.ttn_number ? 'ТТН: ' + data.order.ttn_number : ''}`
-                            : 'Оплата успішна! Замовлення обробляється.';
-                        this.showSuccessMessage(message);
+                        if (data.success && data.order) {
+                            this.showOrderSuccessPopup(
+                                'Замовлення успішно створено!',
+                                data.order.ttn_number ? `ТТН: ${data.order.ttn_number}` : 'Замовлення обробляється.',
+                                data.order.ttn_number
+                            );
+                        } else {
+                            this.showOrderSuccessPopup(
+                                'Оплата успішна!',
+                                'Замовлення обробляється.'
+                            );
+                        }
                     } else {
-                        this.showSuccessMessage('Оплата успішна! Замовлення обробляється.');
+                        this.showOrderSuccessPopup(
+                            'Оплата успішна!',
+                            'Замовлення обробляється.'
+                        );
                     }
                 } catch (error) {
                     console.error('Error checking order status:', error);
-                    this.showSuccessMessage('Оплата успішна! Замовлення обробляється.');
+                    this.showOrderSuccessPopup(
+                        'Оплата успішна!',
+                        'Замовлення обробляється.'
+                    );
                 }
-
-                this.redirectToHome();
             }
 
             handlePaymentError(response) {
@@ -879,12 +894,6 @@
                 this.showErrorMessage(errorMessage);
             }
 
-            redirectToHome() {
-                this.resetForm();
-                setTimeout(() => {
-                    window.location.href = ORDER_CONFIG.routes.home;
-                }, ORDER_CONFIG.constants.REDIRECT_DELAY);
-            }
 
             resetForm() {
                 this.elements.unifiedOrderForm?.reset();
@@ -1002,31 +1011,49 @@
             showErrorMessage(msg) { this.showToast(msg, 'error'); }
             showInfoMessage(msg) { this.showToast(msg, 'info'); }
 
-            showSuccessToastWithRedirect(title, message, redirectUrl, delay = ORDER_CONFIG.constants.REDIRECT_DELAY) {
-                const toast = document.createElement('div');
-                toast.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
-                toast.innerHTML = `
-            <div class="bg-white rounded-lg p-6 max-w-md mx-4 text-center">
-                <div class="text-green-500 text-6xl mb-4">✓</div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
-                <p class="text-gray-600 mb-4">${message}</p>
-                <div class="text-sm text-gray-500">
-                    Перенаправлення через <span id="countdown">${delay / 1000}</span> секунд...
-                </div>
-            </div>
-        `;
+            showOrderSuccessPopup(title, message, ttnNumber = null) {
+                const popup = document.createElement('div');
+                popup.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
 
-                document.body.appendChild(toast);
+                const ttnInfo = ttnNumber ? `
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <p class="text-sm text-gray-600 mb-2">Номер ТТН для відстеження:</p>
+            <p class="text-lg font-mono font-bold text-blue-600">${ttnNumber}</p>
+        </div>
+    ` : '';
 
-                let seconds = delay / 1000;
-                const countdownEl = toast.querySelector('#countdown');
-                const interval = setInterval(() => {
-                    seconds--;
-                    if (countdownEl) countdownEl.textContent = seconds;
-                    if (seconds <= 0) clearInterval(interval);
-                }, 1000);
+                popup.innerHTML = `
+        <div class="bg-white rounded-lg p-6 max-w-md mx-4 text-center">
+            <div class="text-green-500 text-6xl mb-4">✓</div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
+            <p class="text-gray-600 mb-4">${message}</p>
+            ${ttnInfo}
+            <button
+                id="goToHomeBtn"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-blue-300"
+            >
+                Перейти на головну
+            </button>
+        </div>
+    `;
 
-                setTimeout(() => window.location.href = redirectUrl, delay);
+                document.body.appendChild(popup);
+
+                // Обробник кнопки
+                popup.querySelector('#goToHomeBtn').addEventListener('click', () => {
+                    popup.remove();
+                    this.resetForm();
+                    window.location.href = ORDER_CONFIG.routes.home;
+                });
+
+                // Закриття по кліку на backdrop
+                popup.addEventListener('click', (e) => {
+                    if (e.target === popup) {
+                        popup.remove();
+                        this.resetForm();
+                        window.location.href = ORDER_CONFIG.routes.home;
+                    }
+                });
             }
         }
 
