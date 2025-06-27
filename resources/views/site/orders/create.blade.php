@@ -42,7 +42,7 @@
                                     <div class="relative">
                                         <input
                                             id="settlement-input"
-                                            class="select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-white cursor-pointer"
+                                            class="tracking-normal select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-white cursor-pointer"
                                             type="text"
                                             placeholder="Оберіть місто..."
                                             autocomplete="off"
@@ -80,7 +80,7 @@
                                     <div class="relative">
                                         <input
                                             id="warehouse-input"
-                                            class="select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-gray-50 cursor-pointer"
+                                            class="tracking-normal select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-gray-50 cursor-pointer"
                                             type="text"
                                             placeholder="Спочатку оберіть місто"
                                             autocomplete="off"
