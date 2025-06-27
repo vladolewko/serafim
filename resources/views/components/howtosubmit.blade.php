@@ -12,7 +12,7 @@
     <div id="indicators-carousel" class="relative w-full" data-carousel="static">
         <!-- Carousel wrapper -->
 
-        <div class="relative h-56 overflow-hidden rounded-lg md:h-[450px] xl:h-96">
+        <div class="relative h-56 overflow-hidden rounded-lg md:h-[450px]">
             <!-- Item 1 -->
 
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
