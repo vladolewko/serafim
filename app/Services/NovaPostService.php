@@ -100,7 +100,6 @@ class NovaPostService
      */
     public function getFilteredWarehouses(string $settlementRef, array $cart): array
     {
-
         $warehouses = $this->getWarehousesWithRestrictions($settlementRef);
 
         if (empty($cart['product']) || empty($cart['quantity'])) {
@@ -108,22 +107,7 @@ class NovaPostService
         }
 
         $quantity = $cart['quantity'];
-
-        // Якщо кількість > 1, виключаємо всі поштомати
-        // Якщо кількість > 1, виключаємо поштомати та Drop-Off відділення
-        if ($quantity > 1) {
-            $warehouses = array_filter($warehouses, function($warehouse) {
-                $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
-                $warehouseType = $warehouse['WarehouseType'] ?? ''; // або інше поле
-
-                // Виключаємо поштомати та Drop-Off
-                return $categoryOfWarehouse !== 'Postomat' && $warehouseType !== 'DropOff';
-            });
-        }
-
         $product = is_object($cart['product']) ? $cart['product'] : (object)$cart['product'];
-
-        $quantity = $cart['quantity'];
 
         // Розрахунок параметрів
         $totalWeight = ($product->weight ?? 0) * $quantity;
@@ -131,10 +115,39 @@ class NovaPostService
         $finalWeight = max($totalWeight, $volumeWeight);
         $cargoType = $finalWeight <= 2 ? 'Parcel' : 'Cargo';
 
+        // Якщо кількість > 1, виключаємо всі поштомати та залишаємо тільки відділення до 30кг і більше
+        if ($quantity > 1) {
+            $warehouses = array_filter($warehouses, function($warehouse) {
+                $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
+                $warehouseType = $warehouse['WarehouseType'] ?? '';
+                $typeOfWarehouse = $warehouse['TypeOfWarehouse'] ?? 'Branch';
+                $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+
+                // Виключаємо поштомати
+                if ($categoryOfWarehouse === 'Postomat' || $typeOfWarehouse === 'PostBox') {
+                    return false;
+                }
+
+                // Виключаємо Drop-Off відділення
+                if ($warehouseType === 'DropOff') {
+                    return false;
+                }
+
+                // Залишаємо тільки відділення з максимальною вагою 30кг і більше
+                // Якщо maxWeight = 0, то це означає необмежену вагу, тому залишаємо
+                if ($maxWeight > 0 && $maxWeight < 30) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
         $filteredWarehouses = [];
 
         foreach ($warehouses as $warehouse) {
             $warehouseType = $warehouse['TypeOfWarehouse'] ?? 'Branch';
+            $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
 
             // Жорсткі обмеження для поштоматів
             if ($warehouseType === 'PostBox') {
@@ -146,13 +159,6 @@ class NovaPostService
                 // 2. Вага до 20кг
                 if ($finalWeight > 20) {
                     continue;
-                }
-                // І в циклі фільтрації додай:
-                $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
-
-// Якщо це Drop-Off відділення і вантаж важкий - пропускаємо
-                if ($maxWeight > 0 && $maxWeight <= 10 && $cargoType === 'Cargo') {
-                    continue; // Drop-Off відділення не приймають важкий вантаж
                 }
 
                 // 3. Габарити 40x30x60см
@@ -167,9 +173,12 @@ class NovaPostService
                 }
             }
 
-            // Для відділень використовуй API дані, але з обережністю
-            $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+            // Якщо це Drop-Off відділення і вантаж важкий - пропускаємо
+            if ($maxWeight > 0 && $maxWeight <= 10 && $cargoType === 'Cargo') {
+                continue; // Drop-Off відділення не приймають важкий вантаж
+            }
 
+            // Для відділень використовуємо API дані, але з обережністю
             // Якщо API повернув обмеження і воно менше фактичної ваги
             if ($maxWeight > 0 && $finalWeight > $maxWeight) {
                 continue;

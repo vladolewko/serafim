@@ -89,12 +89,26 @@ class OrderService
         $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
         $order->addTTNData($ttnNumber, $ttn);
 
-            try {
-                $this->telegramBotService->sendOrderToTelegram($order);
-            } catch (\Exception $e) {
-                Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
+        try {
+            Log::info("Starting Telegram notification for order #{$order->id}");
+
+            $result = $this->telegramBotService->sendOrderToTelegram($order);
+
+            if ($result) {
+                Log::info("Order #{$order->id} successfully sent to Telegram");
+            } else {
+                Log::error("Failed to send order #{$order->id} to Telegram - will not retry automatically");
+
+                // Опціонально: відправити email адміну як резервний канал
+                // Mail::to('admin@example.com')->send(new OrderNotification($order));
             }
 
+        } catch (\Exception $e) {
+            Log::error("Exception while sending order #{$order->id} to Telegram: " . $e->getMessage(), [
+                'order_id' => $order->id,
+                'exception' => $e->getTraceAsString()
+            ]);
+        }
 
         Session::forget(['nova_post_data', 'cart']);
 
@@ -258,12 +272,26 @@ class OrderService
                     $order->addTTNData($ttnNumber, $ttnResult);
                     $order->update(['status' => 'processing']);
 
-                        try {
-                            $this->telegramBotService->sendOrderToTelegram($order);
-                        } catch (\Exception $e) {
-                            Log::error($e->getMessage() . 'помилка при відправці замовлення в Telegram');
+                    try {
+                        Log::info("Starting Telegram notification for order #{$order->id}");
+
+                        $result = $this->telegramBotService->sendOrderToTelegram($order);
+
+                        if ($result) {
+                            Log::info("Order #{$order->id} successfully sent to Telegram");
+                        } else {
+                            Log::error("Failed to send order #{$order->id} to Telegram - will not retry automatically");
+
+                            // Опціонально: відправити email адміну як резервний канал
+                            // Mail::to('admin@example.com')->send(new OrderNotification($order));
                         }
 
+                    } catch (\Exception $e) {
+                        Log::error("Exception while sending order #{$order->id} to Telegram: " . $e->getMessage(), [
+                            'order_id' => $order->id,
+                            'exception' => $e->getTraceAsString()
+                        ]);
+                    }
                 } else {
                     throw new \Exception('ТТН створено, але номер не отримано');
                 }

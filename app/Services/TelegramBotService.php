@@ -36,13 +36,13 @@ class TelegramBotService
     /**
      * Загальний метод для відправки повідомлення
      */
-    public function sendMessage(string $message, string $parseMode = 'HTML', ?string $chatId = null, int $maxRetries = 3): bool
+    public function sendMessage(string $message, string $parseMode = 'HTML', int $maxRetries = 3): bool
     {
         if (!$this->validateCredentials()) {
             return false;
         }
 
-        $targetChatId = $chatId ?? $this->chatId;
+        $targetChatId = $this->chatId;
         $attempt = 0;
 
         while ($attempt < $maxRetries) {
@@ -68,7 +68,6 @@ class TelegramBotService
                     continue;
                 }
 
-                // Інші помилки
                 throw new Exception("Telegram API error: " . $response->body());
 
             } catch (Exception $e) {
@@ -76,7 +75,7 @@ class TelegramBotService
 
                 if (str_contains($e->getMessage(), 'Too many requests') || str_contains($e->getMessage(), '429')) {
                     if ($attempt < $maxRetries) {
-                        $delay = pow(2, $attempt); // Експоненційна затримка: 2s, 4s, 8s
+                        $delay = pow(2, $attempt);
                         Log::warning("Too many requests to Telegram. Retrying in {$delay} seconds (attempt {$attempt}/{$maxRetries})");
                         sleep($delay);
                         continue;
