@@ -39,20 +39,15 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
-        if ($request->hasFile('product_image')) {
-
-            $profileImage = $request->file('product_image');
-        }
 
         $data = $request->validated();
         $data['content'] = array_map('trim', explode('|', $data['content']));
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
-
-        if ($this->productService->create($data, $profileImage ?? null)) {
-            return redirect()->route('admin.products')->with('success', 'Product created successfully.');
+        if ($this->productService->create($data)) {
+            return redirect()->route('admin.products')->with('success', 'Товар успішно створено.');
         }
-        return redirect()->back()->with('error', 'Failed to create product. Please try again.');
+        return redirect()->back()->with('error', 'Помилка при створенні продукту. Будь ласка, спробуйте ще раз.');
 
     }
 
@@ -74,28 +69,25 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request)
     {
-        if ($request->hasFile('product_image')) {
-            $productImage = $request->file('product_image');
-        }
-
         $data = $request->validated();
+
         $data['content'] = array_map('trim', explode('|', $data['content']));
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
-        if ($this->productService->update($request->product_id, $data, $productImage)) {
-            return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
+        if ($this->productService->update($request->product_id, $data)) {
+            return redirect()->route('admin.products')->with('success', 'Товар успішно оновлено.');
         }
-        return redirect()->back()->with('error', 'Failed to update product. Please try again.');
+        return redirect()->back()->with('error', 'Помилка при оновленні продукту. Будь ласка, спробуйте ще раз.');
     }
 
-    /**
+    /*
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
         if ($this->productService->destroy($id)) {
-            return redirect()->route('admin.products')->with('success', 'Product deleted successfully.');
+            return redirect()->route('admin.products')->with('success', 'Товар успішно видалено.');
         }
-        return redirect()->back()->with('error', 'Failed to delete product. Please try again.');
+        return redirect()->back()->with('error', 'Помилка при видаленні товару. Будь ласка, спробуйте ще раз.');
     }
 }
