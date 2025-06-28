@@ -222,7 +222,7 @@
 
 
                     <!-- Image Upload Field -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-1">
                             <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Зображення</label>
                             <p class="text-sm text-gray-500">Завантажте нове зображення</p>
@@ -263,8 +263,10 @@
 
 
 
+                                    <!-- <input class="flex w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm items-center h-12 text-left" id="file_input" type="file" style="text-indent: -10px;"> -->
 
-                                    <div for="image_update" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition duration-200">
+
+                                    <!-- <div for="image_update" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition duration-200">
                                         <div for="image_update" class="space-y-1 text-center">
                                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -278,7 +280,7 @@
                                             </div>
                                             <p class="text-xs text-gray-500">PNG, JPG, GIF до 10MB</p>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 <!-- <div class="flex items-center justify-center w-full">
                                     <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                         <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -294,7 +296,7 @@
 
 
 
-                                @if($errors->has('product_image'))
+                                <!--@if($errors->has('product_image'))
                                     <p class="text-sm text-red-600">{{ $errors->first('product_image') }}</p>
                                 @endif
 
@@ -314,7 +316,41 @@
                                 @endif
                             </div>
                         </div>
+                    </div> -->
+
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-1">
+                            <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Зображення</label>
+                            <p class="text-sm text-gray-500">Завантажте нове зображення</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <div class="space-y-4">
+                                <input type="file" id="file_input" name="product_image" accept="image/*" class="hidden">
+                                <label for="file_input" class="flex items-center w-full px-4 py-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-colors">
+                                    <span id="file-name" class="text-black text-left">Файл не вибрано</span>
+                                </label>
+                                @if($errors->has('product_image'))
+                                    <p class="text-sm text-red-600">{{ $errors->first('product_image') }}</p>
+                                @endif
+                                @if($product->getMedia('product_images')->isNotEmpty())
+                                    <div class="mt-4">
+                                        <p class="text-sm font-medium text-gray-700 mb-2">Поточне зображення:</p>
+                                        <div class="relative inline-block">
+                                            @php
+                                                $imageUrl = $product->getFirstMediaUrl('product_images');
+                                                $imageUrl = str_replace('http://110.172.148.57:8000', 'https://serafym.info', $imageUrl);
+                                            @endphp
+                                            <img class="w-32 h-32" src="{{ $imageUrl }}" alt="{{ $product->title }}">
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
+
+
                 </div>
 
                 <!-- Form Actions -->
@@ -357,6 +393,26 @@
 
 
 <script defer>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('file_input');
+    const fileNameSpan = document.getElementById('file-name');
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            fileNameSpan.textContent = file.name; // Відображаємо назву файлу
+            fileNameSpan.classList.remove('text-gray-500'); // Знімаємо сірий колір, якщо був
+            fileNameSpan.classList.add('text-black'); // Додаємо чорний колір
+        } else {
+            fileNameSpan.textContent = 'Файл не вибрано';
+            fileNameSpan.classList.add('text-gray-500');
+        }
+    });
+});
+</script>
+
+
+<!-- <script defer>
 document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('image_update');
     const uploadArea = fileInput.closest('.border-dashed');
@@ -457,4 +513,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-</script>
+</script> -->

@@ -13,6 +13,10 @@
     background-image: none;
 }
 
+input[type="file"]::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
 /* Перевизначаємо стиль для radio */
 [type="radio"] {
     background-image: none !important; /* Прибираємо SVG-зображення */
