@@ -1010,7 +1010,7 @@
 
                 setTimeout(() => {
                     if(window.screen.width <= 1024) {
-                        toast.classList.remove('translate-x-1/2');
+                        toast.classList.remove('gittranslate-x-1/2');
                     }else if(window.screen.width > 1024) {
                         toast.classList.add('lg:translate-x-full');
                     }
