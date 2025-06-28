@@ -42,7 +42,7 @@
                                     <div class="relative">
                                         <input
                                             id="settlement-input"
-                                            class="select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-white cursor-pointer"
+                                            class="tracking-normal select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-white cursor-pointer"
                                             type="text"
                                             placeholder="Оберіть місто..."
                                             autocomplete="off"
@@ -80,7 +80,7 @@
                                     <div class="relative">
                                         <input
                                             id="warehouse-input"
-                                            class="select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-gray-50 cursor-pointer"
+                                            class="tracking-normal select-input w-full rounded-lg p-3 sm:p-4 border-none text-sm sm:text-base lg:text-lg focus:ring-2 focus:ring-yellow-400 outline-none transition-all duration-200 text-black bg-gray-50 cursor-pointer"
                                             type="text"
                                             placeholder="Спочатку оберіть місто"
                                             autocomplete="off"
@@ -990,9 +990,9 @@
                 const icons = { success: '✓', error: '✕', info: 'ℹ' };
 
                 const toast = document.createElement('div');
-                toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 translate-x-full ${colors[type]}`;
+                toast.className = `fixed top-4 lg:right-4 right-1/2 w-5/6 lg:w-auto z-50 p-4 rounded-lg shadow-lg transition-all duration-300 lg:translate-x-full  ${colors[type]}`;
                 toast.innerHTML = `
-            <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center lg:justify-none gap-3">
                 <span class="text-lg font-bold">${icons[type]}</span>
                 <span>${message}</span>
                 <button class="ml-2 text-xl font-bold opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">×</button>
@@ -1000,9 +1000,22 @@
         `;
 
                 document.body.appendChild(toast);
-                setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+                if(window.screen.width <= 1024) {
+                    setTimeout(() => toast.classList.add('md:translate-x-1/2'), 100);
+                }
+                else if(window.screen.width > 1024) {
+                    setTimeout(() => toast.classList.remove('lg:translate-x-full'), 100);
+                }
+
+
                 setTimeout(() => {
-                    toast.classList.add('translate-x-full');
+                    if(window.screen.width <= 1024) {
+                        toast.classList.remove('md:translate-x-1/2');
+                    }else if(window.screen.width > 1024) {
+                        toast.classList.add('lg:translate-x-full');
+                    }
+
+
                     setTimeout(() => toast.remove(), 300);
                 }, 5000);
             }
