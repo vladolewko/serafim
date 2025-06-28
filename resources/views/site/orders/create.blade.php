@@ -1001,7 +1001,7 @@
 
                 document.body.appendChild(toast);
                 if(window.screen.width <= 1024) {
-                    setTimeout(() => toast.classList.add('md:translate-x-1/2'), 100);
+                    setTimeout(() => toast.classList.add('translate-x-1/2'), 100);
                 }
                 else if(window.screen.width > 1024) {
                     setTimeout(() => toast.classList.remove('lg:translate-x-full'), 100);
@@ -1010,7 +1010,7 @@
 
                 setTimeout(() => {
                     if(window.screen.width <= 1024) {
-                        toast.classList.remove('md:translate-x-1/2');
+                        toast.classList.remove('translate-x-1/2');
                     }else if(window.screen.width > 1024) {
                         toast.classList.add('lg:translate-x-full');
                     }
