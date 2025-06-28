@@ -119,6 +119,7 @@
                         </div>
                     </div>
 
+
                     <!-- Розмір -->
                     <div>
                         <label for="dimension" class="block text-sm font-semibold text-gray-700 mb-2">
