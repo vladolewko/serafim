@@ -16,11 +16,6 @@ class UpdateProductRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -36,7 +31,6 @@ class UpdateProductRequest extends FormRequest
             'appointment' => 'required|string|max:255',
             'applying' => ['required', Rule::enum(ProductApplyingEnum::class)],
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
-
         ];
     }
 }
