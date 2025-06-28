@@ -17,34 +17,47 @@ class ProductService implements ProductServiceInterface
         return Product::find($id);
     }
 
-    public function create(array $data, $profileImage = null): Product
+    public function create(array $data): Product
     {
+        $imageFile = $data['product_image'] ?? null;
+        unset($data['product_image']);
+
         $product = Product::create($data);
-        if ($profileImage) {
-            $product->addMedia($profileImage)->toMediaCollection('product_images');
+
+        if ($imageFile) {
+            if ($product->hasMedia('product_images')) {
+                $product->clearMediaCollection('product_images');
+            }
+
+            $product->addMedia($imageFile)->toMediaCollection('product_images');
         }
         return $product;
     }
 
-    public function update(int $id, array $data, $productImage): Product|null
+    public function update(int $id, array $data): Product|null
     {
         try {
             $product = Product::findOrFail($id);
+
+            $imageFile = $data['product_image'] ?? null;
+            unset($data['product_image']);
+
             $product->update($data);
 
-            if ($product->hasMedia('product_images')) {
+            if ($imageFile) {
+                if ($product->hasMedia('product_images')) {
                     $product->clearMediaCollection('product_images');
+                }
+
+                $product->addMedia($imageFile)->toMediaCollection('product_images');
             }
 
-            if (!$product->addMedia($productImage)->toMediaCollection('product_images')) {
-                throw new \Exception("Failed to update product images");
-            }
             return $product;
 
         } catch (\Exception $exception) {
+//            \Log::error('Product update failed: ' . $exception->getMessage());
             return null;
         }
-
     }
 
       public function destroy(int $id): bool
