@@ -162,8 +162,8 @@
             </button>
 
 
-            <div id="drawer-navigation" class="fixed top-0 left-0 z-40 w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-blue-500" tabindex="-1" aria-labelledby="drawer-navigation-label">
-                <h5 id="drawer-navigation-label" class="text-base font-semibold uppercase text-white">Меню</h5>
+            <div id="drawer-navigation" class="fixed top-0 left-0 z-40 w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-blue-400" tabindex="-1" aria-labelledby="drawer-navigation-label">
+                <!-- <h5 id="drawer-navigation-label" class="text-base font-semibold uppercase text-white">Меню</h5> -->
                 <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                     <span class="sr-only">Close menu</span>
@@ -171,25 +171,25 @@
               <div class="py-4 overflow-y-auto">
                   <ul class="space-y-2 font-medium">
                       <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="why_created">Про школу</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="introduction">Про школу</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="how_to_submit">Державні органи</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="how_to_submit">Державні органи</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="knowledge_pack">Комплекти знань</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="knowledge_pack">Комплекти знань</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="wt_knowledge_pack">Відеоуроки</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="wt_knowledge_pack">Відеоуроки</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="about_author">Про автора</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="about_author">Про автора</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="for_free">Безоплатна допомога</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="for_free">Безоплатна допомога</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="social">Контакти</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="social">Контакти</a>
                     </li>
                   </ul>
                </div>
