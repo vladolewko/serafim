@@ -1,5 +1,5 @@
 
-<div class="w-11/12 mx-auto flex flex-col gap-3">
+<div class="w-11/12 mx-auto flex flex-col gap-3 mb-16">
     <div class="bg-gray-300 h-[250px] w-full mt-2">posible video</div>
     <div>
         <p class="text-[20px] w-4/6 mx-auto sm:text-3xl lg:text-5xl font-bold text-center leading-[1.0]">

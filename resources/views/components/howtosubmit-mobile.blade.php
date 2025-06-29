@@ -1,9 +1,9 @@
  <div class="w-full px-4 sm:px-6 my-16">
-    <div class="mb-10 text-center">
-        <p class="text-[20px] xl:text-4xl font-bold">Кожен українець <span class="text-yellow-400">повинен розуміти</span>,
+    <div class="lg:mb-10 text-center">
+        <p class="text-[20px] leading-tight w-[95%] mx-auto xl:text-4xl font-bold">Кожен українець <span class="text-yellow-400">повинен розуміти</span>,
             як подавати Скаргу, клопотання, заяву, рапорт, позов</p>
         <!-- <p class="text-[20px] xl:text-4xl font-bold">Скаргу, клопотання, заяву, рапорт, позов</p> -->
-        <p class="text-sm text-slate-600">І комплект знань закриє це питання...</p>
+        <p class="text-sm font-bold text-slate-600">І комплект знань закриє це питання...</p>
     </div>
 
     <!-- Carousel -->
@@ -12,15 +12,15 @@
     <div id="indicators-carousel" class="relative w-full" data-carousel="static">
         <!-- Carousel wrapper -->
 
-        <div class="relative h-[400px] overflow-hidden rounded-lg md:h-[350px] xl:h-96">
+        <div class="relative h-[350px] overflow-hidden rounded-lg md:h-[350px] xl:h-96">
             <!-- Item 1 -->
 
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item="active">
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                             <img src="{{ asset('img/command.png') }}" alt="command img">
-                            <p class="underline text-center">командування</p>
-                            <p class="text-center">Першим кроком рекомендується звернутися зі скаргою до свого
+                            <p class="lg:underline font-bold text-lg text-center">командування</p>
+                            <p class="text-center text-[12px] leading-tight">Першим кроком рекомендується звернутися зі скаргою до свого
                                 безпосереднього командира або начальника.</p>
                     </div>
                 </div>
@@ -32,10 +32,10 @@
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                             <img src="{{ asset('img/ministry.png') }}" alt="ministry img">
-                            <p class="underline text-center">Міністерство оборони України</p>
+                            <p class="lg:underline font-bold text-lg text-center">Міністерство оборони України</p>
                             <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
                                                                     alt="phone img"> 1512 </p>
-                            <p class="text-center">Міноборони забезпечує цілодобову «гарячу лінію»</p>
+                            <p class="text-[12px] leading-tight text-center">Міноборони забезпечує цілодобову «гарячу лінію»</p>
                     </div>
                 </div>
             </div>
@@ -46,11 +46,11 @@
                 <div class="flex gap-2 my-16 justify-center">
                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                         <img src="{{ asset('img/commissioner.png') }}" alt="commissioner img">
-                        <p class="underline text-center">Уповноважений Верховної Ради України з прав
+                        <p class="lg:underline font-bold text-lg text-center">Уповноважений Верховної Ради України з прав
                             людини</p>
                         <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
                                                                 alt="phone img"> 0 800 50 17 </p>
-                        <p class="text-center">У випадках порушення прав людини військовослужбовці можуть
+                        <p class="text-center text-[12px] leading-tight">У випадках порушення прав людини військовослужбовці можуть
                             звертатися до Омбудсмана</p>
                     </div>
                 </div>
@@ -62,10 +62,10 @@
                 <div class="flex gap-2 my-16 justify-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                         <img src="{{ asset('img/VSP.png') }}" alt="vsp img">
-                        <p class="underline text-center">Військова служба правопорядку (ВСП)</p>
+                        <p class="lg:underline font-bold text-lg text-center">Військова служба правопорядку (ВСП)</p>
                         <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
                                                                 alt="phone img"> (044) 454-73-08 </p>
-                        <p class="text-center">У випадках порушень дисципліни або прав військовослужбовців
+                        <p class="text-[12px] leading-tight text-center">У випадках порушень дисципліни або прав військовослужбовців
                             можна звертатися до ВСП</p>
                     </div>
                 </div>

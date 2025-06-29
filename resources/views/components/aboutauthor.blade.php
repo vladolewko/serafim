@@ -14,19 +14,19 @@
                     </p>
                     <p class="text-base lg:text-lg mb-6">
                         Моя мета — не просто інформувати. Я хочу, щоб кожна людина змогла захистити себе,
-                        Україну а також інших людей від правового свавілля...
+                        Україну а також інших людей від протиправних посягань...
                     </p>
 
                     <div class="mb-6">
-                        <p class="text-base lg:text-lg">Моренець: <span
+                        <p class="text-base lg:text-lg font-bold">Моренець <span
                                 class="font-bold">Євгеній Борисович</span></p>
                         <p class="text-base lg:text-lg">Позивний: <span class="font-bold">Серафим</span></p>
                     </div>
                 </div>
                 <div class="flex flex-col font-bold text-base lg:text-xl leading-relaxed gap-3">
                     <p>Правозахисник. Доброволець. Військовослужбовець Національної гвардії України.</p>
-                    <p>Засновник serafim.info та автор комплектів знань, представлених на цьому сайті.</p>
-                    <p>Від початку ініціативи Міністерства внутрішніх справ України «Гвардія наступу» —
+                    <p class="font-normal italic">Засновник serafim.info та автор комплектів знань, представлених на цьому сайті.</p>
+                    <p class="font-normal italic">Від початку ініціативи Міністерства внутрішніх справ України «Гвардія наступу» —
                         долучився добровольцем.</p>
                 </div>
                 <div class="mt-6 lg:mt-8 italic text-base lg:text-lg">

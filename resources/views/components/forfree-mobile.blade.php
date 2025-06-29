@@ -1,7 +1,7 @@
 <div class="w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 mx-auto mt-6 sm:my-20 lg:my-60" id="for_free">
     <div class="w-full lg:w-5/6 xl:w-3/5 lg:mb-10 text-center">
-        <p class="text-xl sm:text-2xl lg:text-4xl font-bold leading-tight">Сайти із безкоштовною</p>
-        <p class="text-xl sm:text-2xl lg:text-4xl font-bold leading-tight">
+        <p class="text-2xl sm:text-2xl lg:text-4xl font-bold leading-tight">Сайти із безкоштовною</p>
+        <p class="text-[22px] sm:text-2xl lg:text-4xl font-bold leading-tight">
             юридичною допомогою <span class="text-yellow-400">(бонус)</span>
         </p>
         <p class="text-xs font-bold sm:text-xl text-slate-600">

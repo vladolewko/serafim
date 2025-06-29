@@ -16,7 +16,7 @@
                     яке, на жаль, існує навіть у формі."
                     </div>
                     <div class="div_name">
-                        <p class="text-xs sm:text-lg name">Моренець: <span
+                        <p class="text-xs sm:text-lg name font-bold">Моренець <span
                                 class="font-bold">Євгеній Борисович</span></p>
                         <p class="text-xs sm:text-lg name">Позивний: <span class="font-bold">Серафим</span></p>
                     </div>
@@ -24,7 +24,7 @@
             </div>
             <div class="flex flex-col w-full lg:w-5/12 ">
 
-                <div class="flex flex-col font-bold text-base/[1px] sm:text-2xl leading-relaxed gap-4 description">
+                <div class="flex flex-col font-[550] text-xl sm:text-2xl leading-tight gap-4 description font-['Roboto']">
                     <p>Правозахисник. Доброволець. Військовослужбовець Національної гвардії України.</p>
                     <p>Засновник serafim.info та автор комплектів знань, представлених на цьому сайті.</p>
                     <p>Від початку ініціативи Міністерства внутрішніх справ України «Гвардія наступу» —

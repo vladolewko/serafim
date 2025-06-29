@@ -1,20 +1,21 @@
 <header class="lg:pt-3 bg-blue-400 w-full">
 
     <!-- Desktop -->
-    <div class="w-11/12 lg:w-4/6 hidden lg:block mx-auto ">
+    <div class="w-11/12 lg:w-9/12 hidden lg:block mx-auto ">
         <!-- Navigation -->
         @include('components.navigation')
         <div class="text-white flex justify-center items-center gap-3 flex-wrap sm:flex-nowrap">
             <div class="text-center">
                 <p class="text-sm">
-                    авторська онлайн-школа
-                </p>
+                    Авторська онлайн-школа
+                </p class="text-sm">
+                <p>правового виховання</p>
                 <p class="text-2xl">
-                    “серафим”
+                    “Серафим”
                 </p>
-                <p class="text-sm">
-                    від солдата - для людей
-                </p>
+                <!-- <p class="text-sm">
+                    Від солдата - для людей
+                </p> -->
             </div>
 
             <img src="{{ asset('img/line_vertical.svg') }}" alt="">
@@ -170,19 +171,25 @@
               <div class="py-4 overflow-y-auto">
                   <ul class="space-y-2 font-medium">
                       <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="wt_knowledge_pack">що таке комплект знань</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="why_created">Про школу</a>
                     </li>
-                    <li>
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="knowledge_pack">обрати комплект</a>
+                    <li class="">
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="how_to_submit">Державні органи</a>
                     </li>
-                    <li>
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="about_author">про автора</a>
+                    <li class="">
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="knowledge_pack">Комплекти знань</a>
                     </li>
-                    <li>
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="social">соцмережі</a>
+                    <li class="">
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="wt_knowledge_pack">Відеоуроки</a>
                     </li>
-                    <li>
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="for_free">безкоштовно</a>
+                    <li class="">
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="about_author">Про автора</a>
+                    </li>
+                    <li class="">
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="for_free">Безоплатна допомога</a>
+                    </li>
+                    <li class="">
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 md:hover:text-blue-700 lg:p-0 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent nav-item" data-target="social">Контакти</a>
                     </li>
                   </ul>
                </div>
@@ -203,14 +210,14 @@
             <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <div class="text-right text-white">
                 <p class="text-xs">
-                    авторська онлайн-школа
+                    Авторська онлайн-школа
                 </p>
                 <p class="text-xl">
-                    “серафим”
+                    “Серафим”
                 </p>
-                <p class="text-xs">
-                    від солдата - для людей
-                </p>
+                <!-- <p class="text-xs">
+                    Від солдата - для людей
+                </p> -->
             </div>
                 <img class="h-[65px] w-[65px]" src="{{ asset('img/mobile-logo.svg') }}" alt="logo">
             </a>

@@ -20,6 +20,7 @@
                 @include('components.knowledgepack')
              </div>
 
+             <div id="how_to_submit"></div>
             <!-- How to Submit Section Desktop -->
             <div class="hidden lg:block" >
                 @include('components.howtosubmit')
@@ -52,6 +53,7 @@
             </div>
 
             <!-- Why Created Section -->
+            <div id="why_created"></div>
             <div class="lg:hidden my-32">
                 @include('components.whycreated-mobile')
             </div>
