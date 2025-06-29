@@ -28,7 +28,7 @@
                                 </div>
 
                                 <p class="text-xl/6 font-semibold text-center w-4/6">{{$product->name}}</p>
-                                <p class="text-3xl font-bold text-center my-4">{{$product->price}} грн</p>
+                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
                                 <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                     href="{{ route('product.show', $product->id) }}">переглянути</a>
                             </div>

@@ -20,7 +20,7 @@
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
                             <img src="{{ asset('img/command.png') }}" alt="command img">
                             <p class="lg:underline font-bold text-lg text-center">командування</p>
-                            <p class="text-center text-[12px] leading-tight">Першим кроком рекомендується звернутися зі скаргою до свого
+                            <p class="text-center text-[12px] leading-tight font-bold text-slate-500">Першим кроком рекомендується звернутися зі скаргою до свого
                                 безпосереднього командира або начальника.</p>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                             <p class="lg:underline font-bold text-lg text-center">Міністерство оборони України</p>
                             <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
                                                                     alt="phone img"> 1512 </p>
-                            <p class="text-[12px] leading-tight text-center">Міноборони забезпечує цілодобову «гарячу лінію»</p>
+                            <p class="text-center text-[12px] leading-tight font-bold text-slate-500">Міноборони забезпечує цілодобову «гарячу лінію»</p>
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                             людини</p>
                         <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
                                                                 alt="phone img"> 0 800 50 17 </p>
-                        <p class="text-center text-[12px] leading-tight">У випадках порушення прав людини військовослужбовці можуть
+                        <p class="text-center text-[12px] leading-tight font-bold text-slate-500">У випадках порушення прав людини військовослужбовці можуть
                             звертатися до Омбудсмана</p>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                         <p class="lg:underline font-bold text-lg text-center">Військова служба правопорядку (ВСП)</p>
                         <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
                                                                 alt="phone img"> (044) 454-73-08 </p>
-                        <p class="text-[12px] leading-tight text-center">У випадках порушень дисципліни або прав військовослужбовців
+                        <p class="text-center text-[12px] leading-tight font-bold text-slate-500">У випадках порушень дисципліни або прав військовослужбовців
                             можна звертатися до ВСП</p>
                     </div>
                 </div>

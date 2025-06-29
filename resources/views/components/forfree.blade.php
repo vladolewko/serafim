@@ -4,7 +4,7 @@
         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
             юридичною допомогою <span class="text-yellow-400">(бонус)</span>
         </p>
-        <p class="text-lg sm:text-xl text-slate-600 mt-4">
+        <p class="text-lg sm:text-xl text-slate-600 font-bold mt-4">
             сайти з безкоштовною юридичною допомогою для військовослужбовців та членів їх родин...
         </p>
     </div>

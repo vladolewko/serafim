@@ -20,14 +20,14 @@
             </div>
 
             <ul class="lg:list-disc ml-6 pr-2 mb-6">
-                <li class="text-slate-600 text-center text-[12px] sm:text-base leading-tight" id="description">
+                <li class="text-slate-600 text-center lg:text-left text-[12px] sm:text-base leading-tight" id="description">
                     Знання Конституції України, законів, прав людини та міжнародного права — це не просто
                     освіченість.
                     Це влада, безпека та свобода у щоденному житті. Ось ключові переваги:
                 </li>
             </ul>
 
-            <div class="space-y-1 lg:space-y-3 lg:w-full w-9/12 md:w-6/12 lg:mx-0 mx-auto mb-6">
+            <div class="space-y-1 lg:space-y-3 w-9/12 md:w-[45%] lg:w-full 2xl:w-5/6 mx-auto mb-6">
                 <div class="flex gap-3 items-start ">
                     <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
                     <span class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-1">Правовий захист у будь-якій ситуації</span>

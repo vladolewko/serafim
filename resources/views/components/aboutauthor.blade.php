@@ -7,7 +7,7 @@
                     <img src="{{ asset('img/serafim.png') }}" alt="serafim">
                 </div>
             </div>
-            <div class="flex flex-col w-full lg:w-5/12 text-center lg:text-left">
+            <div class="flex flex-col w-full lg:w-6/12 text-center lg:text-left">
                 <div>
                     <p class="text-2xl lg:text-4xl font-bold mb-4">
                         Про <span class="text-yellow-400">автора</span>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="flex flex-col font-bold text-base lg:text-xl leading-relaxed gap-3">
                     <p>Правозахисник. Доброволець. Військовослужбовець Національної гвардії України.</p>
-                    <p class="font-normal italic">Засновник serafim.info та автор комплектів знань, представлених на цьому сайті.</p>
+                    <p class="font-normal italic">Засновник <span class="font-bold">serafym.info</span> та автор комплектів знань, представлених на цьому сайті.</p>
                     <p class="font-normal italic">Від початку ініціативи Міністерства внутрішніх справ України «Гвардія наступу» —
                         долучився добровольцем.</p>
                 </div>

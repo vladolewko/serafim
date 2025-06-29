@@ -20,8 +20,9 @@
                 @include('components.knowledgepack')
              </div>
 
-             <div id="how_to_submit"></div>
+
             <!-- How to Submit Section Desktop -->
+            <div id="how_to_submit"></div>
             <div class="hidden lg:block" >
                 @include('components.howtosubmit')
             </div>

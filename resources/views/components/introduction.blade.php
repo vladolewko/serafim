@@ -1,11 +1,11 @@
 <div class="bg-blue-400 text-white w-full">
-    <div class="w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto">
+    <div class="w-full px-4 sm:px-0 lg:w-[76%] lg:mx-auto">
         <div class="flex flex-col lg:flex-row  py-8 lg:py-0">
-            <div class="w-full lg:w-3/6 mb-8 lg:mb-0 flex flex-col gap-9">
-                <p class="text-2xl sm:text-3xl lg:text-5xl mt-4 font-bold leading-tight">
+            <div class="w-full lg:w-[60%] mb-8 lg:mb-0 flex flex-col justify-center gap-3">
+                <p class="text-2xl sm:text-3xl lg:text-[40px] font-bold leading-tight">
                     Захищаєш Україну? Навчися <span class="text-yellow-400">захищати себе!</span>
                 </p>
-                <p class="text-lg sm:text-xl lg:text-2xl text-slate-200 my-3">
+                <p class="text-lg sm:text-xl lg:text-xl font-bold text-slate-200 my-3">
                     Комплекти перевірених юридичних знань для військових, НГУ, поліцейських і громадян.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-0">
@@ -24,7 +24,7 @@
                     </p>
                 </div>
             </div>
-            <div class="w-full pl-4 lg:w-3/6">
+            <div class="w-full pl-4 lg:w-4/6">
                 <div class="xl:justify-self-end">
         <span class="text-xl lg:text-2xl text-yellow-400 mt-4 inline-block font-semibold">
             Тематика школи
