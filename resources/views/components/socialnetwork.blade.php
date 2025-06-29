@@ -46,7 +46,7 @@
     <div class="w-full flex justify-between">
         <div >
             <p class="text-red-500">електронна скринька: </p>
-            <p class=" my-2 text-2xl text-blue-500 font-['CourierNew']">SERAFIM.NATION@GMAIL.COM</p>
+            <p class="text-[1.3rem] text-blue-500 ">SERAFIM.NATION@GMAIL.COM</p>
         </div>
         <div
             class="border border-blue-400 rounded-xl px-6 sm:px-10 py-3 font-bold w-full sm:w-10/12 lg:w-6/12 self-center text-center text-base sm:text-lg">
