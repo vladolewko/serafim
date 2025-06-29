@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-
+            <div id="introduction"></div>
             <div class="lg:hidden mb-16"> @include('components.introduction-mobile') </div>
 
             <div class="hidden lg:block"> @include('components.introduction') </div>

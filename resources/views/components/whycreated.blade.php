@@ -1,9 +1,9 @@
 <div
-    class="w-full px-4 sm:px-6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60 flex flex-col xl:flex-row justify-between gap-8 lg:gap-0">-->
+    class="w-full px-4 sm:px-6 xl:w-4/6 mx-auto my-12 sm:my-20 lg:my-60 flex flex-col xl:flex-row justify-between gap-8 lg:gap-0">
     <!-- Ліва частина -->
     <div class="w-full lg:w-5/6 lg:mx-auto xl:w-3/5">
         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
-            Навіщо я створив <span class="text-yellow-400">"serafim.info"?</span>
+            Навіщо я створив <span class="text-yellow-400">"serafym.info"?</span>
         </p>
         <p class="text-lg sm:text-xl text-slate-600 mt-4">
             Бо надто багато бачив хлопців і дівчат, які:

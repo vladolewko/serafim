@@ -3,7 +3,7 @@
     <!-- Ліва частина -->
     <div class="w-full lg:w-5/6 lg:mx-auto xl:w-3/5">
         <p class="text-[22px]  font-['Roboto'] sm:text-3xl lg:text-4xl font-bold text-center">
-            Навіщо я створив <span class="text-yellow-400">"serafim.info"?</span>
+            Навіщо я створив <span class="text-yellow-400">"serafym.info"?</span>
         </p>
         <p class="text-xs sm:text-xl font-bold text-slate-600 text-center">
             Бо надто багато бачив хлопців і дівчат, які:

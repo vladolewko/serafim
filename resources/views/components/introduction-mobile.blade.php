@@ -1,7 +1,7 @@
 
-<div class="w-11/12 mx-auto flex flex-col gap-3 mb-16">
-    <div class="bg-gray-300 h-[250px] w-full mt-2">posible video</div>
-    <div>
+<div class="w-11/12 mx-auto flex flex-col gap-3 my-20">
+    <!-- <div class="bg-gray-300 h-[250px] w-full mt-2">posible video</div> -->
+    <div class="">
         <p class="text-[20px] w-4/6 mx-auto sm:text-3xl lg:text-5xl font-bold text-center leading-[1.0]">
         Захищаєш Україну? Навчися <span class="text-yellow-400 ">захищати себе!</span>
         </p>
@@ -14,6 +14,9 @@
         class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black text-xl lg:text-xl knowledgePackBtn" data-target="knowledge_pack">
         комплект знань
     </button>
+    <a class="text-black border border-blue-400 rounded-lg w-full px-6 py-1 text-center text-lg lg:text-xl self-center sm:mx-4">
+                    відеоуроки
+    </a>
 </div>
 
 
