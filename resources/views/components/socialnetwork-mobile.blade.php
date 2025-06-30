@@ -3,7 +3,7 @@
         <p class="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
             Слідкуй в <span class="text-yellow-400">соцмережах</span>
         </p>
-        <p class="text-sm sm:text-xl text-slate-600">
+        <p class="text-[13px] font-bold sm:text-xl text-slate-600">
             Мій шлях — це не лише перемога в суді. Це приклад для тисяч. Приєднуйтесь у соцмережах.
         </p>
     </div>
@@ -42,7 +42,7 @@
 
     <div class="w-full flex justify-end">
         <div
-            class="border border-blue-400 rounded-xl px-6 sm:px-10 py-3 font-bold w-full lg:w-6/12 text-center text-base sm:text-lg">
+            class="border border-blue-400 rounded-xl px-6 sm:px-10 py-3 w-full lg:w-6/12 text-center text-[10px] sm:text-lg">
             Тут — підтримка, дієві поради і спільнота, що не здається...
         </div>
     </div>

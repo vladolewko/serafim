@@ -1,11 +1,11 @@
 <div class="bg-blue-400 text-white w-full">
-    <div class="w-full px-4 sm:px-6 lg:w-4/6 lg:mx-auto">
-        <div class="flex flex-col lg:flex-row items-center py-8 lg:py-16">
-            <div class="w-full lg:w-3/6 mb-8 lg:mb-0">
-                <p class="text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight">
+    <div class="w-full px-4 sm:px-0 lg:w-[76%] lg:mx-auto">
+        <div class="flex flex-col lg:flex-row  py-8 lg:py-0">
+            <div class="w-full lg:w-[60%] mb-8 lg:mb-0 flex flex-col justify-center gap-3">
+                <p class="text-2xl sm:text-3xl lg:text-[40px] font-bold leading-tight">
                     Захищаєш Україну? Навчися <span class="text-yellow-400">захищати себе!</span>
                 </p>
-                <p class="text-lg sm:text-xl lg:text-2xl text-slate-200 my-3 lg:my-6">
+                <p class="text-lg sm:text-xl lg:text-xl font-bold text-slate-200 my-3">
                     Комплекти перевірених юридичних знань для військових, НГУ, поліцейських і громадян.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-0">
@@ -14,22 +14,22 @@
                         комплект знань
                     </button>
                     <!-- mobile button -->
-                    <button
+                    <!-- <button
                         class="lg:hidden bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold knowledgePackBtn" data-target="knowledge_pack_mobile">
                         комплект знань
-                    </button>
+                    </button> -->
 
                     <p class="text-black text-lg lg:text-xl underline underline-offset-4 decoration-yellow-400 self-center sm:mx-4">
                         короткий ролик
                     </p>
                 </div>
             </div>
-            <div class="w-full lg:w-3/6">
+            <div class="w-full pl-4 lg:w-4/6">
                 <div class="xl:justify-self-end">
-        <span class="text-xl lg:text-2xl text-yellow-400 mt-4 lg:mt-12 inline-block font-semibold">
+        <span class="text-xl lg:text-2xl text-yellow-400 mt-4 inline-block font-semibold">
             Тематика школи
         </span>
-                    <ul class="list-disc ml-5 lg:ml-8 text-sm lg:text-base leading-relaxed w-11/12 sm:w-full lg:w-11/12 mt-2">
+                    <ul class="list-disc ml-5 lg:ml-8 text-sm lg:text-sm leading-relaxed w-11/12 sm:w-full lg:w-11/12 mt-2">
                         <li>Взаємодія з державними органами влади та засобами масової інформації (ЗМІ)</li>
                         <li>Правовий захист військових і цивільних (СЗЧ, пільги, рапорти, переведення)</li>
                         <li>Психологічна підтримка мобілізованих, родин, повернення з війни</li>
@@ -43,7 +43,7 @@
                         class="text-xl lg:text-2xl text-yellow-400 mt-4 lg:mt-6 inline-block font-semibold">
             Мій підхід
         </span>
-                    <ul class="list-disc ml-5 lg:ml-8 mb-8 lg:mb-12 text-sm lg:text-base leading-relaxed w-11/12 sm:w-full lg:w-11/12 mt-2">
+                    <ul class="list-disc ml-5 lg:ml-8 mb-8 lg:mb-12 text-sm lg:text-sm leading-relaxed w-11/12 sm:w-full lg:w-11/12 mt-2">
                         <li>Практичність: реальні інструкці, шаблони, приклади звернень</li>
                         <li>Соціальна місія: підтримка, допомога й відновлення справедливості</li>
                     </ul>

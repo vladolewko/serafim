@@ -48,12 +48,12 @@
                                             autocomplete="off"
                                             readonly>
                                         <div id="settlement-loader"
-                                             class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 hidden">
+                                             class="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 hidden">
                                             <div
                                                 class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                                         </div>
                                         <div
-                                            class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                            class="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                                  viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -87,12 +87,12 @@
                                             readonly
                                             disabled>
                                         <div id="warehouse-loader"
-                                             class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 hidden">
+                                             class="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 hidden">
                                             <div
                                                 class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
                                         </div>
                                         <div
-                                            class="absolute right-6 sm:right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                            class="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                                  viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

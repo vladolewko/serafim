@@ -18,6 +18,7 @@ export default {
             md: "768px",
             lg: "1025px", // Змінено з 1024px на 1025px
             xl: "1280px",
+            "2xl": "1536px",
         },
         extend: {
             fontFamily: {
@@ -26,7 +27,7 @@ export default {
         },
     },
     plugins: [
-        require('flowbite/plugin')({
+        require("flowbite/plugin")({
             // Налаштування для низького пріоритету
             charts: true,
             forms: true,
@@ -40,8 +41,8 @@ export default {
             tabs: true,
             rating: true,
             timeline: true,
-            progress: true
-        })
+            progress: true,
+        }),
     ],
     // Додаємо важливість для власних стилів
     important: false,

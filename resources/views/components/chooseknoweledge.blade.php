@@ -3,7 +3,7 @@
         <div>
             <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span>
             </p>
-            <p class="text-xl text-slate-500">Замовляй свій набір та будь захищеним знанями...</p>
+            <p class="text-xl text-slate-500 font-bold">Замовляй свій курс та будь захищеним знанями...</p>
         </div>
         <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
     </div>
@@ -33,10 +33,10 @@
                                         @endif
                                     </div>
 
-                                    <p class="text-2xl/6 font-bold text-center">{{$product->name}}</p>
-                                    <p class="text-4xl text-center my-4">{{$product->price}} грн</p>
-                                    <a class="flex items-center bg-yellow-400 px-8 m-3 rounded-lg inline-block align-middle h-10 text-black text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
-                                        href="{{ route('product.show', $product->id) }}">перейти</a>
+                                    <p class="text-xl/6 font-semibold text-center w-4/6">{{$product->name}}</p>
+                                    <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
+                                    <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                        href="{{ route('product.show', $product->id) }}">переглянути</a>
 
                                 </div>
                             </div>

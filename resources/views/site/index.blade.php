@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-
+            <div id="introduction"></div>
             <div class="lg:hidden mb-16"> @include('components.introduction-mobile') </div>
 
             <div class="hidden lg:block"> @include('components.introduction') </div>
@@ -20,7 +20,9 @@
                 @include('components.knowledgepack')
              </div>
 
+
             <!-- How to Submit Section Desktop -->
+            <div id="how_to_submit"></div>
             <div class="hidden lg:block" >
                 @include('components.howtosubmit')
             </div>
@@ -52,6 +54,7 @@
             </div>
 
             <!-- Why Created Section -->
+            <div id="why_created"></div>
             <div class="lg:hidden my-32">
                 @include('components.whycreated-mobile')
             </div>
