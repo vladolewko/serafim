@@ -547,31 +547,6 @@ class NovaPostService
         }
     }
 
-//    /**
-//     * Розрахунок загального об'єму
-//     */
-//    private function calculateTotalVolume(string $dimensions, int $quantity): float
-//    {
-//        if (empty($dimensions)) {
-//            return 0.004 * $quantity; // стандартний об'єм НП
-//        }
-//
-//        $dimensionParts = preg_split('/\s+на\s+/i', trim($dimensions));
-//
-//        if (count($dimensionParts) !== 3) {
-//            return 0.004 * $quantity;
-//        }
-//
-//        $length = (float)trim($dimensionParts[0]);  // в см
-//        $width = (float)trim($dimensionParts[1]);   // в см
-//        $height = (float)trim($dimensionParts[2]);  // в см
-//
-//        // Об'ємна вага НП = (L x W x H) / 4000
-//        $volumeWeightPerItem = ($length * $width * $height) / 4000;
-//
-//        return $volumeWeightPerItem * $quantity;
-//    }
-
     /**
      * Генерація опису товару
      */
@@ -687,7 +662,7 @@ class NovaPostService
     /**
      * Отримання інформації про відділення/поштомат
      */
-    private function getWarehouseInfo(string $warehouseRef): ?array
+    public function getWarehouseInfo(string $warehouseRef): ?array
     {
         try {
             $response = $this->makeRequest('AddressGeneral', 'getWarehouses', [

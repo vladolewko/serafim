@@ -7,6 +7,7 @@ use App\Http\Requests\ChooseSettlementRequest;
 use App\Http\Requests\SetWarehouseRequest;
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
+use App\Services\KeyCrmService;
 use App\Services\NovaPostService;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\OrderService;
@@ -22,17 +23,19 @@ class OrderController extends Controller
     protected $productService;
     protected $wayForPayService;
     protected $orderService;
-
+    protected $keyCrmService;
     public function __construct(
         NovaPostService $novaPostService,
         ProductServiceInterface $productService,
         WayForPayService $wayForPayService,
-        OrderService $orderService
+        OrderService $orderService,
+        KeyCrmService $keyCrmService,
     ) {
         $this->novaPostService = $novaPostService;
         $this->productService = $productService;
         $this->wayForPayService = $wayForPayService;
         $this->orderService = $orderService;
+        $this->keyCrmService = $keyCrmService;
     }
 
     /**
@@ -235,7 +238,6 @@ class OrderController extends Controller
             $result = $this->orderService->processOrder($validated, $cart, $data);
 
             if ($result['success']) {
-
                 return $this->successResponse($result);
             } else {
                 return $this->errorResponse($result['message'], $result);
@@ -328,5 +330,13 @@ class OrderController extends Controller
             'error' => $message,
             'timestamp' => now()->toISOString()
         ], $data), $status);
+    }
+
+    public function sendOrderToCrm()
+    {
+        $order = Order::findOrFail(1);
+        $order->payment_type = 'card';
+        //        dd($order);
+        dd($this->keyCrmService->sendOrderToCrm($order));
     }
 }

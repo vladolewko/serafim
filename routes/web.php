@@ -41,6 +41,8 @@ Route::middleware(AdminMiddleware::class)->group(function () {Route::get('/admin
 });
 
 Route::get('/test/create-ttn/{orderReference}', [OrderController::class, 'createTTNManually']);
+Route::get('/testCrm', [OrderController::class, 'sendOrderToCrm']);
+
 
 
 

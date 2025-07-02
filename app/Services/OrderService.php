@@ -11,12 +11,14 @@ class OrderService
     private $novaPostService;
     private $wayForPayService;
     private TelegramBotService $telegramBotService;
+    private KeyCrmService $keyCrmService;
 
-    public function __construct(NovaPostService $novaPostService, WayForPayService $wayForPayService, TelegramBotService $telegramBotService)
+    public function __construct(NovaPostService $novaPostService, WayForPayService $wayForPayService, TelegramBotService $telegramBotService, KeyCrmService $keyCrmService)
     {
         $this->novaPostService = $novaPostService;
         $this->wayForPayService = $wayForPayService;
         $this->telegramBotService = $telegramBotService;
+        $this->keyCrmService = $keyCrmService;
     }
 
     /**
@@ -88,6 +90,8 @@ class OrderService
 
         $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
         $order->addTTNData($ttnNumber, $ttn);
+        $this->keyCrmService->sendOrderToCrm($order);
+
 
         try {
             Log::info("Starting Telegram notification for order #{$order->id}");
@@ -109,7 +113,6 @@ class OrderService
                 'exception' => $e->getTraceAsString()
             ]);
         }
-
         Session::forget(['nova_post_data', 'cart']);
 
         return [
