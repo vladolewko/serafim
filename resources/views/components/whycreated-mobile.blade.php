@@ -23,21 +23,21 @@
         <p class="text-sm sm:text-xl text-slate-600 font-bold text-center ">Я особисто пройшов через:</p>
         <div class="w-full sm:w-10/12 lg:w-9/12">
             <div
-                class="border border-blue-400 rounded-xl px-3 sm:px-8 py-3 text-sm sm:text-lg lg:text-lg text-center">
+                class="border border-blue-400 rounded-xl w-[95%] mx-auto px-3 sm:px-8 py-3 text-sm sm:text-lg lg:text-lg text-left">
                 спроби переслідувань за правозахисну діяльність
             </div>
 
             <img class="mx-auto mt-[-5px]" src="{{ asset('img/arrow_bottom.svg') }}" alt="arrow_bottom">
 
             <div
-                class="border border-blue-400 rounded-xl px-3 sm:px-8 py-3 text-sm  sm:text-lg lg:text-lg text-left">
+                class="border border-blue-400 rounded-xl w-[95%] mx-auto px-3 sm:px-8 py-3 text-sm  sm:text-lg lg:text-lg text-left">
                 судові процеси, в яких відстояв свою честь, гідність і репутацію
             </div>
 
             <img class="mx-auto mt-[-5px]" src="{{ asset('img/arrow_bottom.svg') }}" alt="arrow_bottom">
 
             <div
-                class="border border-blue-400 rounded-xl px-3 sm:px-8 py-3 text-sm sm:text-lg lg:text-lg text-left">
+                class="border border-blue-400 rounded-xl w-[95%] mx-auto px-3 sm:px-8 py-3 text-sm sm:text-lg lg:text-lg text-left">
                 приймав участь в бойових діях на сході, де служив пліч-о-пліч з тими, кому потрібен не лише
                 автомат, а й знання
             </div>

@@ -25,7 +25,7 @@
         </div>
 
         <div class="flex flex-col items-center">
-            <a href="#">
+            <a href="https://www.facebook.com/profile.php?id=61577691222873">
                 <img src="{{ asset('img/facebook.svg') }}" alt="">
             </a>
         </div>
@@ -37,7 +37,7 @@
         </div>
 
         <div class="flex flex-col items-center">
-            <a href="#">
+            <a href="https://t.me/serafim_ngu">
                 <img src="{{ asset('img/telegram.svg') }}" alt="">
             </a>
         </div>

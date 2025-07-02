@@ -200,9 +200,9 @@
 
             <div class="flex no-wrap gap-2 justify-center sm:flex hidden">
                 <a href="https://youtube.com/@serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/youtube_footer.svg') }}" alt=""></a>
-                <a href=""><img class="w-[30px] h-[30px]" src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
+                <a href="https://www.facebook.com/profile.php?id=61577691222873"><img class="w-[30px] h-[30px]" src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
                 <a href="tiktok.com/@serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/tiktok_footer.svg') }}" alt=""></a>
-                <a href=""><img class="w-[30px] h-[30px]" src="{{ asset('img/telegram_footer.svg') }}" alt=""></a>
+                <a href="https://t.me/serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/telegram_footer.svg') }}" alt=""></a>
                 <a href="https://www.instagram.com/serafim_ngu"><img class="w-[30px] h-[30px]" src="{{ asset('img/instagram_footer.svg') }}" alt=""></a>
             </div>
 

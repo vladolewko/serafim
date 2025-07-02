@@ -29,37 +29,37 @@
 
             <div class="space-y-1 lg:space-y-3 w-9/12 md:w-[45%] lg:w-full 2xl:w-5/6 mx-auto mb-6">
                 <div class="flex gap-3 items-start ">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <span class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-1">Правовий захист у будь-якій ситуації</span>
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <span class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-1">Правовий захист у будь-якій ситуації</span>
                 </div>
                 <div class="flex gap-3 items-start">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-2">Гарантована свобода та
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <p class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-2">Гарантована свобода та
                         недоторканність</p>
                 </div>
                 <div class="flex gap-3 items-start">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-3">Можливість законного
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <p class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-3">Можливість законного
                         самозахисту</p>
                 </div>
                 <div class="flex gap-3 items-start">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-4">Контроль над державою, а
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <p class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-4">Контроль над державою, а
                         не навпаки</p>
                 </div>
                 <div class="flex gap-3 items-start">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-5">Неможливість
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <p class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-5">Неможливість
                         маніпуляцій</p>
                 </div>
                 <div class="flex gap-3  items-start">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-6">Готовність до
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <p class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-6">Готовність до
                         міжнародного захисту</p>
                 </div>
                 <div class="flex gap-3 items-start">
-                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check.svg') }}" alt="check img">
-                    <p class="text-slate-600 text-[10px] md:text-sm lg:text-base" id="argument-7">Повага і впевненість</p>
+                    <img class="w-[17px] h-[17px] lg:w-auto lg:h-auto" src="{{ asset('img/check_green.svg') }}" alt="check img">
+                    <p class="text-slate-600 text-[11px] md:text-sm lg:text-base" id="argument-7">Повага і впевненість</p>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
         <div class="border border-blue-400 rounded-lg mt-6 lg:mt-10 p-4">
             <div class="flex gap-1 lg:gap-3 w-9/12 md:w-10/12 mx-auto lg:mx-0 lg:w-full lg:gap-5 items-center justify-center">
                     <img class="w-[25px] h-[25px] lg:w-auto lg:h-auto" src="{{ asset('img/result.svg') }}" alt="result img">
-                <div class="text-slate-600 text-[8px] md:text-xs lg:text-base leading-relaxed">
+                <div class="text-slate-600 text-[11px] md:text-xs lg:text-base leading-relaxed">
                     <span class="font-bold" id="result">Результат: </span>
                     <span id="result_desc">Ти — не безправний. Ти — свідомий громадянин, який знає, як себе захистити.</span>
                 </div>
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <div class="w-full xl:w-6/12 order-1 lg:order-2 flex flex-col justify-between">
+    <div class="w-full lg:w-6/12 order-1 lg:order-2 flex flex-col justify-between">
 
 
 
@@ -91,7 +91,7 @@
 
 
 
-        <div class="flex gap-1 sm:gap-2 lg:gap-4 justify-start sm:justify-center lg:justify-start mt-2 flex-wrap">
+        <div class="flex  gap-1 sm:gap-2 lg:gap-4 justify-start sm:justify-center lg:justify-start mt-2 flex-wrap">
             @php
                 // Створюємо масиви для цін, ID та картинок
                 $prices = [];
@@ -108,7 +108,7 @@
                 }
             @endphp
             @foreach($applyings as $key => $value)
-                <div class="flex items-center gap-1 sm:gap-2 bg-blue-400 rounded-lg px-1 py-1 sm:px-2 sm:py-2 radio-div">
+                <div class="flex items-center gap-1  sm:gap-2 bg-blue-400 rounded-lg px-1 py-1 sm:px-2 sm:py-2 radio-div">
                     <input id="checkbox-{{ $key }}"
                             class="w-2 h-2 sm:w-4 sm:h-4 cursor-pointer rounded-[3px] border-none sm:rounded-md text-blue-400 bg-white"
                             name="options"
@@ -124,7 +124,7 @@
             @endforeach
         </div>
 
-        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px] lg:flex-1 rounded-lg mt-6 lg:mt-16">
+        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px]  rounded-lg mt-6 lg:mt-0 max-h-[480px] lg:max-w-[480px] xl:min-w-full">
             <img id="productImage"
                     src="/images/default-product.jpg"
                     alt="Product Image"
