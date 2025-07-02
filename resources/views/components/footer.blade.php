@@ -10,9 +10,9 @@
                 <p class="text-xs sm:text-sm">від солдата - для людей</p>
                 <div class="flex gap-2 justify-center sm:justify-start">
                     <a href="https://youtube.com/@serafim_ngu"><img src="{{ asset('img/youtube_footer.svg') }}" alt=""></a>
-                    <a href=""><img src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
+                    <a href="https://www.facebook.com/profile.php?id=61577691222873"><img src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
                     <a href="tiktok.com/@serafim_ngu"><img src="{{ asset('img/tiktok_footer.svg') }}" alt=""></a>
-                    <a href=""><img src="{{ asset('img/telegram_footer.svg') }}" alt=""></a>
+                    <a href="https://t.me/serafim_ngu"><img src="{{ asset('img/telegram_footer.svg') }}" alt=""></a>
                     <a href="https://www.instagram.com/serafim_ngu"><img src="{{ asset('img/instagram_footer.svg') }}" alt=""></a>
                 </div>
                 <a class="text-xs" href="mailto:serafim.nation@gmail.com">співпраця - <span class="underline decoration-white">serafim.nation@gmail.com</span></a>

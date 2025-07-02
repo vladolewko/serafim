@@ -24,7 +24,7 @@
             </div>
             <div class="flex flex-col w-full lg:w-5/12 ">
 
-                <div class="flex flex-col font-[550] text-xl sm:text-2xl leading-tight gap-4 description font-['Roboto']">
+                <div class="flex flex-col font-[550] text-xl sm:text-2xl leading-tight gap-4 description">
                     <p>Правозахисник. Доброволець. Військовослужбовець Національної гвардії України.</p>
                     <p class="font-normal italic">Засновник serafim.info та автор комплектів знань, представлених на цьому сайті.</p>
                     <p class="font-normal italic">Від початку ініціативи Міністерства внутрішніх справ України «Гвардія наступу» —
