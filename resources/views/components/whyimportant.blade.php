@@ -132,7 +132,7 @@
         </div>
 
         <div
-            class="flex flex-col lg:flex-row justify-between h-max lg:justify-end xl:my-2 items-center lg:gap-4 gap-2 lg:gap-5 lg:pt-20 xl:pt-16" >
+            class="flex flex-col lg:flex-row justify-between h-max lg:justify-end xl:my-2 items-center lg:gap-4 gap-2 lg:gap-5 lg:pt-20git xl:pt-16" >
             <div class="text-black text-2xl lg:text-4xl">
                 <span class="text-yellow-400" id="price">600</span> грн
             </div>

@@ -28,26 +28,8 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                             <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/national_police.png') }}" alt="">
-                            <p class="text-blue-400 text-center">Національна поліція</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
-                <div class="flex gap-2 my-16 justify-center items-center">
-                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                           <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/NAZK_logo.png') }}" alt="">
-                            <p class="text-blue-400 text-center">НАЗК</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
-                <div class="flex gap-2 my-16 justify-center items-center">
-                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
-                            <p class="text-blue-400 text-center">МВС</p>
+                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
+                            <p class="text-blue-400 text-center">ДБР</p>
                     </div>
                 </div>
             </div>
@@ -64,8 +46,35 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
-                            <p class="text-blue-400 text-center">ДБР</p>
+                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SUDY.png') }}" alt="">
+                            <p class="text-blue-400 text-center">СУДИ</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center items-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
+                            <p class="text-blue-400 text-center">МВС</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center items-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/national_police.png') }}" alt="">
+                            <p class="text-blue-400 text-center">Національна поліція</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center items-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/NAZK_logo.png') }}" alt="">
+                            <p class="text-blue-400 text-center">НАЗК</p>
                     </div>
                 </div>
             </div>
@@ -82,17 +91,8 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                             <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/ministry.png') }}" alt="">
-                            <p class="text-blue-400 text-center">Міністерство оборони</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
-                <div class="flex gap-2 my-16 justify-center items-center">
-                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SUDY.png') }}" alt="">
-                        <p class="text-blue-400 text-center">СУДИ</p>
+                        <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/ministry.png') }}" alt="">
+                        <p class="text-blue-400 text-center">Міністерство оборони</p>
                     </div>
                 </div>
             </div>
