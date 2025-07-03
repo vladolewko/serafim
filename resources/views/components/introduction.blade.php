@@ -10,7 +10,7 @@
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-0">
                     <button
-                        class="hidden lg:block bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold knowledgePackBtn" data-target="knowledge_pack">
+                        class="hidden lg:block bg-yellow-400 px-6 py-3 rounded-lg text-black text-lg lg:text-xl font-semibold knowledgePackBtn" data-target="why_important">
                         комплект знань
                     </button>
                     <!-- mobile button -->
@@ -19,8 +19,8 @@
                         комплект знань
                     </button> -->
 
-                    <p class="text-black text-lg lg:text-xl underline underline-offset-4 decoration-yellow-400 self-center sm:mx-4">
-                        короткий ролик
+                    <p class="text-black text-lg lg:text-xl underline underline-offset-4 decoration-yellow-400 self-center sm:mx-4 knowledgePackBtn cursor-pointer" data-target="knowledge_pack">
+                        відеоуроки
                     </p>
                 </div>
             </div>

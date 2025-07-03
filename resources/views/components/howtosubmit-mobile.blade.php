@@ -18,10 +18,8 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item="active">
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img src="{{ asset('img/command.png') }}" alt="command img">
-                            <p class="lg:underline font-bold text-lg text-center">командування</p>
-                            <p class="text-center text-[12px] leading-tight font-bold text-slate-500">Першим кроком рекомендується звернутися зі скаргою до свого
-                                безпосереднього командира або начальника.</p>
+                            <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/commissioner.png') }}" alt="">
+                            <p class="  text-center">Омбудсмен</p>
                     </div>
                 </div>
             </div>
@@ -31,11 +29,8 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img src="{{ asset('img/ministry.png') }}" alt="ministry img">
-                            <p class="lg:underline font-bold text-lg text-center">Міністерство оборони України</p>
-                            <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
-                                                                    alt="phone img"> 1512 </p>
-                            <p class="text-center text-[12px] leading-tight font-bold text-slate-500">Міноборони забезпечує цілодобову «гарячу лінію»</p>
+                            <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
+                            <p class="  text-center">ДБР</p>
                     </div>
                 </div>
             </div>
@@ -45,13 +40,8 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center">
                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                        <img src="{{ asset('img/commissioner.png') }}" alt="commissioner img">
-                        <p class="lg:underline font-bold text-lg text-center">Уповноважений Верховної Ради України з прав
-                            людини</p>
-                        <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
-                                                                alt="phone img"> 0 800 50 17 </p>
-                        <p class="text-center text-[12px] leading-tight font-bold text-slate-500">У випадках порушення прав людини військовослужбовці можуть
-                            звертатися до Омбудсмана</p>
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/NAZK_logo.png') }}" alt="">
+                        <p class="  text-center">НАЗК</p>
                     </div>
                 </div>
             </div>
@@ -61,12 +51,84 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                        <img src="{{ asset('img/VSP.png') }}" alt="vsp img">
-                        <p class="lg:underline font-bold text-lg text-center">Військова служба правопорядку (ВСП)</p>
-                        <p class="flex text-solate-500"><img src="{{ asset('img/phone.svg') }}"
-                                                                alt="phone img"> (044) 454-73-08 </p>
-                        <p class="text-center text-[12px] leading-tight font-bold text-slate-500">У випадках порушень дисципліни або прав військовослужбовців
-                            можна звертатися до ВСП</p>
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/SUDY.png') }}" alt="">
+                        <p class="  text-center">СУД</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/command.png') }}" alt="command img">
+                        <p class="font-bold text-base text-center">Командування</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                       <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/ministry.png') }}" alt="ministry img">
+                        <p class="font-bold text-base text-center">Міністерство оборони України</p>
+                        <a class="flex text-solate-500" href="tel:1512"> <img
+                                src="{{ asset('img/phone.svg') }}" alt="phone img"> 1512 </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/general_procoratura.png') }}" alt="procoratura img">
+                        <p class="  text-center">Генеральна прокаратура</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px]  rounded-full" src="{{ asset('img/VSP.png') }}" alt="vsp img">
+                        <p class="font-bold text-base text-center">Військова служба правопорядку (ВСП)</p>
+                        <a class="flex text-solate-500" href="tel:(044) 454-73-08"> <img
+                                src="{{ asset('img/phone.svg') }}" alt="phone img"> (044) 454-73-08 </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
+                        <p class="  text-center">МВС</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/SBU.png') }}" alt="">
+                        <p class="  text-center">СБУ</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/nabu.svg') }}" alt="">
+                        <p class="  text-center">НАБУ</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                         <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/national_police.png') }}" alt="">
+                        <p class="  text-center">Національна поліція</p>
                     </div>
                 </div>
             </div>
@@ -75,14 +137,30 @@
         <!-- Slider indicators -->
         <div
             class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-[-20px] w-full justify-center">
-            <button type="button" class="w-[25%] h-[1px] rounded-full  slide_button" aria-current="true"
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="true"
                     aria-label="Slide 1" data-carousel-slide-to="0"></button>
-            <button type="button" class="w-[25%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 2" data-carousel-slide-to="1"></button>
-            <button type="button" class="w-[25%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 3" data-carousel-slide-to="2"></button>
-            <button type="button" class="w-[25%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 4" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 5" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 6" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 7" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 8" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 9" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 10" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 11" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[8%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 12" data-carousel-slide-to="3"></button>
         </div>
         <!-- Slider controls -->
 
