@@ -136,12 +136,14 @@ class OrderService
 //        $order = $this->createPendingOrder($validated, $cart, $data, $counterparty, $orderReference);
         $order = $this->createPendingOrder($validated, $cart, $data, $orderReference);
 
-        Session::forget(['nova_post_data', 'cart']);
+        Session::forget(['cart']);
+//        Session::forget(['nova_post_data', 'cart']);
 
         return [
             'success' => true,
             'payment_type' => 'card',
-            'wayforpay_data' => $this->wayForPayService->preparePaymentData($validated, $cart, $data, $orderReference)
+//            'wayforpay_data' => $this->wayForPayService->preparePaymentData($validated, $cart, $data, $orderReference)
+            'wayforpay_data' => $this->wayForPayService->preparePaymentData($validated, $cart, $data)
         ];
     }
 
@@ -182,7 +184,7 @@ class OrderService
 //    private function createPendingOrder($validated, $cart, $data, $counterparty, $orderReference)
     private function createPendingOrder($validated, $cart, $data, $orderReference)
     {
-        $weight = $cart['product']->weight * $cart['quantity'];
+//        $weight = $cart['product']->weight * $cart['quantity'];
         $total = (int)$cart['total'];
         $deliveryCost = $data['deliveryCost'];
         $totalAmount = $total + $deliveryCost;
