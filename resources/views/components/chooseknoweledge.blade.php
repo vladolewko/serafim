@@ -1,9 +1,9 @@
   <div class="hidden lg:block lg:w-5/6 xl:w-4/6 mx-auto my-72 section">
     <div class="flex">
         <div>
-            <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань!</span>
+            <p class="text-4xl font-bold">Обери свій <span class="text-yellow-400"> курс відеоуроків!</span>
             </p>
-            <p class="text-xl text-slate-500 font-bold">Обери свій курс відеоуроків та будь захищеним знанями...</p>
+            <p class="text-xl text-slate-500 font-bold">Замовляй свій курс та будь захищеним знаннями...</p>
         </div>
         <img class="mt-3 mx-10" src="{{ asset('img/arrow_90.svg') }}" alt="arrow_90">
     </div>

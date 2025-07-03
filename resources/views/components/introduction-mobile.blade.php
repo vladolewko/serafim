@@ -11,11 +11,18 @@
     </div>
 
     <button
-        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black text-xl lg:text-xl knowledgePackBtn" data-target="why_important">
-        комплект знань
+        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl knowledgePackBtn" data-target="why_important">
+        <div class="flex items-center justify-between w-4/5">
+            <img class="" src="{{ asset('img/icon_book.png') }}" alt="">
+            <span class="mx-auto">комплекти знань</span>
+        </div>
     </button>
-    <a class="text-black border border-blue-400 rounded-lg w-full px-6 py-1 text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn" data-target="knowledge_pack">
-                    відеоуроки
+    <a class="text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn" data-target="knowledge_pack">
+        <div class="flex items-center justify-between w-4/5">
+            <img src="{{ asset('img/icon_youtube.png') }}" alt="">
+            <span class="mx-auto">відеоуроки</span>
+        </div>
+
     </a>
 </div>
 
