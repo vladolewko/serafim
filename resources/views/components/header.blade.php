@@ -222,7 +222,7 @@
             </div>
                 <img class="h-[65px] w-[65px]" src="{{ asset('img/mobile-logo.svg') }}" alt="logo">
             </a>
-            <div class="text-white w-11/12 mx-auto lg:hidden md:w-2/5">
+            <!-- <div class="text-white w-11/12 mx-auto lg:hidden md:w-2/5">
                 <p class="text-left text-base font-bold flex-1">
                     Стаття 68 Конституції України:
                 </p>
@@ -230,7 +230,7 @@
                     Кожен зобов'язаний неухильно додержуватися Конституції
                     України та законів України, не посягати на права і свободи, честь і гідність інших людей.
                 </p>
-            </div>
+            </div> -->
             <div class="hidden w-full lg:block lg:w-auto" id="navbar-default">
             <ul class="bg-gray-800 font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg lg:flex-row lg:space-x-8 rtl:space-x-reverse lg:mt-0 lg:border-0d lg:dark:bg-blue-400 dark:border-gray-700">
                 <li class="m-0">
@@ -251,6 +251,16 @@
             </ul>
             </div>
         </div>
+        <hr class="bg-white border-0 h-px mx-auto w-full">
+         <div class="text-white w-11/12 mx-auto lg:hidden py-2  md:w-3/5">
+                <p class="text-left text-base font-bold flex-1">
+                    Стаття 68 Конституції України:
+                </p>
+                <p class="text-sm/[1]">
+                    Кожен зобов'язаний неухильно додержуватися Конституції
+                    України та законів України, не посягати на права і свободи, честь і гідність інших людей.
+                </p>
+            </div>
         </nav>
 
     </div>

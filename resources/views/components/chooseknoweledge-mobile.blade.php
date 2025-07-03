@@ -1,7 +1,7 @@
 <div class="lg:w-5/6 xl:w-4/6 mx-auto section">
     <div class="flex">
         <div class="text-center mx-auto">
-            <p class="text-2xl font-bold">Обери свій <span class="text-yellow-400"> комплект знань</span>
+            <p class="text-2xl font-bold">Обери свій <span class="text-yellow-400"> курс відеоуроків</span>
             </p>
             <p class="text-xs font-bold text-slate-500 w-5/6 mx-auto">Замовляй свій курс та будь захищеним знаннями...</p>
         </div>
