@@ -10,8 +10,18 @@
 
             <div class="hidden lg:block"> @include('components.introduction') </div>
 
+            <div class="lg:hidden">
+                @include('components.goverment_agencies-mobile')
+            </div>
+            <div class="hidden lg:block">
+                @include('components.goverment_agencies')
+            </div>
+
+
+
 
             <!-- Why Important Section -->
+             <div id="why_important"></div>
              @include('components.whyimportant')
 
 
