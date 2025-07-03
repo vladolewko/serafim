@@ -7,15 +7,18 @@ use App\Services\Interfaces\ProductServiceInterface;
 use App\Models\Product;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Services\KeyCrmService;
 
 
 class ProductController extends Controller
 {
     protected $productService;
+    protected $keycrmService;
 
-    public function __construct(ProductServiceInterface $productService)
+    public function __construct(ProductServiceInterface $productService, KeycrmService $keycrmService)
     {
         $this->productService = $productService;
+        $this->keycrmService = $keycrmService;
     }
 
     public function products()
@@ -44,7 +47,9 @@ class ProductController extends Controller
         $data['content'] = array_map('trim', explode('|', $data['content']));
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
-        if ($this->productService->create($data)) {
+        $product = $this->productService->create($data);
+        if ($product) {
+
             return redirect()->route('admin.products')->with('success', 'Товар успішно створено.');
         }
         return redirect()->back()->with('error', 'Помилка при створенні продукту. Будь ласка, спробуйте ще раз.');
@@ -71,10 +76,13 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
+
         $data['content'] = array_map('trim', explode('|', $data['content']));
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
-        if ($this->productService->update($request->product_id, $data)) {
+        $product = $this->productService->update($request->product_id, $data);
+//        dd($this->keycrmService->updateProduct($product));
+        if ($product && $this->keycrmService->updateProduct($product)) {
             return redirect()->route('admin.products')->with('success', 'Товар успішно оновлено.');
         }
         return redirect()->back()->with('error', 'Помилка при оновленні продукту. Будь ласка, спробуйте ще раз.');
@@ -85,7 +93,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        if ($this->productService->destroy($id)) {
+        if ( $this->productService->destroy($id)) {
             return redirect()->route('admin.products')->with('success', 'Товар успішно видалено.');
         }
         return redirect()->back()->with('error', 'Помилка при видаленні товару. Будь ласка, спробуйте ще раз.');

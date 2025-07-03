@@ -107,7 +107,7 @@ class TelegramBotService
     private function formatOrderMessage($orderData): string
     {
         $orderId = $orderData->id;
-        $orderTTN = $orderData->ttn_number;
+//        $orderTTN = $orderData->ttn_number;
         $customerName = $orderData->customer_name;
         $customerSurname = $orderData->customer_surname;
         $customerPhone = $orderData->customer_phone;

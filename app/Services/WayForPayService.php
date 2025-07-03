@@ -23,7 +23,7 @@ class WayForPayService
     /**
      * Підготовка даних для оплати
      */
-    public function preparePaymentData($validated, $cart, $data, $orderReference)
+    public function preparePaymentData($validated, $cart, $orderReference)
     {
         $total = (int)$cart['total'];
         $deliveryCost = 0;

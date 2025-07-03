@@ -42,25 +42,27 @@ class OrderService
      */
     public function processOrder($validated, $cart, $data)
     {
-        $phoneForApi = preg_replace('/[^\d]/', '', $validated['phone']);
+//        $phoneForApi = preg_replace('/[^\d]/', '', $validated['phone']);
 
-        $counterparty = $this->novaPostService->createCounterparty([
-            'name' => trim($validated['name']),
-            'surname' => trim($validated['surname']),
-            'phone' => $phoneForApi,
-            'email' => strtolower(trim($validated['email']))
-        ]);
+//        $counterparty = $this->novaPostService->createCounterparty([
+//            'name' => trim($validated['name']),
+//            'surname' => trim($validated['surname']),
+//            'phone' => $phoneForApi,
+//            'email' => strtolower(trim($validated['email']))
+//        ]);
 
-        if (!$counterparty || empty($counterparty['Ref'])) {
-            return ['success' => false, 'message' => 'Не вдалося створити контрагента'];
-        }
+//        if (!$counterparty || empty($counterparty['Ref'])) {
+//            return ['success' => false, 'message' => 'Не вдалося створити контрагента'];
+//        }
 
         if ($validated['payment'] == 'cash') {
-            return $this->processCashOrder($validated, $cart, $data, $counterparty);
+//            return $this->processCashOrder($validated, $cart, $data, $counterparty);
+            return $this->processCashOrder($validated, $cart, $data);
         }
 
         if ($validated['payment'] == 'card') {
-            return $this->processCardOrder($validated, $cart, $data, $counterparty);
+//            return $this->processCardOrder($validated, $cart, $data, $counterparty);
+            return $this->processCardOrder($validated, $cart, $data);
         }
 
         return ['success' => false, 'message' => 'Невідомий тип оплати'];
@@ -69,55 +71,57 @@ class OrderService
     /**
      * Обробка готівкового замовлення
      */
-    private function processCashOrder($validated, $cart, $data, $counterparty)
+//    private function processCashOrder($validated, $cart, $data, $counterparty)
+    private function processCashOrder($validated, $cart, $data)
     {
-        $order = $this->createOrder($validated, $cart, $data, $counterparty, 'pending');
+//        $order = $this->createOrder($validated, $cart, $data, $counterparty, 'pending');
+        $order = $this->createOrder($validated, $cart, $data, 'pending');
 
-        $ttn = $this->novaPostService->createTTN([
-            'settlement' => $data['settlement'],
-            'warehouse' => $data['warehouse'],
-            'counterparty_ref' => $counterparty['Ref'],
-            'contact_person_ref' => $counterparty['ContactPersonRef'],
-            'phone' => preg_replace('/[^\d]/', '', $validated['phone']),
-            'name' => trim($validated['name']),
-            'surname' => trim($validated['surname']),
-        ], $cart, 'cash');
+//        $ttn = $this->novaPostService->createTTN([
+//            'settlement' => $data['settlement'],
+//            'warehouse' => $data['warehouse'],
+//            'counterparty_ref' => $counterparty['Ref'],
+//            'contact_person_ref' => $counterparty['ContactPersonRef'],
+//            'phone' => preg_replace('/[^\d]/', '', $validated['phone']),
+//            'name' => trim($validated['name']),
+//            'surname' => trim($validated['surname']),
+//        ], $cart, 'cash');
+//
+//        if (!$ttn || (isset($ttn['success']) && !$ttn['success'])) {
+//            $order->delete();
+//            return ['success' => false, 'message' => 'Не вдалося створити ТТН'];
+//        }
 
-        if (!$ttn || (isset($ttn['success']) && !$ttn['success'])) {
-            $order->delete();
-            return ['success' => false, 'message' => 'Не вдалося створити ТТН'];
-        }
-
-        $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
-        $order->addTTNData($ttnNumber, $ttn);
+//        $ttnNumber = $ttn['IntDocNumber'] ?? $ttn['Number'] ?? 'Невідомий номер';
+//        $order->addTTNData($ttnNumber, $ttn);
         $this->keyCrmService->sendOrderToCrm($order);
 
 
-        try {
-            Log::info("Starting Telegram notification for order #{$order->id}");
+//        try {
+//            Log::info("Starting Telegram notification for order #{$order->id}");
 
-            $result = $this->telegramBotService->sendOrderToTelegram($order);
+//            $this->telegramBotService->sendOrderToTelegram($order);
 
-            if ($result) {
-                Log::info("Order #{$order->id} successfully sent to Telegram");
-            } else {
-                Log::error("Failed to send order #{$order->id} to Telegram - will not retry automatically");
+//            if ($result) {
+//                Log::info("Order #{$order->id} successfully sent to Telegram");
+//            } else {
+//                Log::error("Failed to send order #{$order->id} to Telegram - will not retry automatically");
+//
+//                // Опціонально: відправити email адміну як резервний канал
+//                // Mail::to('admin@example.com')->send(new OrderNotification($order));
+//            }
 
-                // Опціонально: відправити email адміну як резервний канал
-                // Mail::to('admin@example.com')->send(new OrderNotification($order));
-            }
-
-        } catch (\Exception $e) {
-            Log::error("Exception while sending order #{$order->id} to Telegram: " . $e->getMessage(), [
-                'order_id' => $order->id,
-                'exception' => $e->getTraceAsString()
-            ]);
-        }
+//        } catch (\Exception $e) {
+//            Log::error("Exception while sending order #{$order->id} to Telegram: " . $e->getMessage(), [
+//                'order_id' => $order->id,
+//                'exception' => $e->getTraceAsString()
+//            ]);
+//        }
         Session::forget(['nova_post_data', 'cart']);
 
         return [
             'success' => true,
-            'ttn_number' => $order->ttn_number,
+//            'ttn_number' => $order->ttn_number,
             'message' => 'ТТН успішно створено'
         ];
     }
@@ -125,10 +129,12 @@ class OrderService
     /**
      * Обробка картового замовлення
      */
-    private function processCardOrder($validated, $cart, $data, $counterparty)
+//    private function processCardOrder($validated, $cart, $data, $counterparty)
+    private function processCardOrder($validated, $cart, $data)
     {
         $orderReference = Order::generateOrderReference();
-        $order = $this->createPendingOrder($validated, $cart, $data, $counterparty, $orderReference);
+//        $order = $this->createPendingOrder($validated, $cart, $data, $counterparty, $orderReference);
+        $order = $this->createPendingOrder($validated, $cart, $data, $orderReference);
 
         Session::forget(['nova_post_data', 'cart']);
 
@@ -142,7 +148,8 @@ class OrderService
     /**
      * Створення замовлення
      */
-    private function createOrder($validated, $cart, $data, $counterparty, $status = 'pending')
+//    private function createOrder($validated, $cart, $data, $counterparty, $status = 'pending')
+    private function createOrder($validated, $cart, $data, $status = 'pending')
     {
 //        $weight = $cart['product']->weight * $cart['quantity'];
         $total = (int)$cart['total'];
@@ -160,8 +167,8 @@ class OrderService
             'customer_email' => strtolower(trim($validated['email'])),
             'settlement_ref' => $data['settlement'],
             'warehouse_ref' => $data['warehouse'],
-            'counterparty_ref' => $counterparty['Ref'],
-            'contact_person_ref' => $counterparty['ContactPersonRef'],
+//            'counterparty_ref' => $counterparty['Ref'],
+//            'contact_person_ref' => $counterparty['ContactPersonRef'],
             'cart_data' => $cart,
             'product_total' => $total,
             'delivery_cost' => $deliveryCost,
@@ -172,7 +179,8 @@ class OrderService
     /**
      * Створення замовлення в очікуванні оплати
      */
-    private function createPendingOrder($validated, $cart, $data, $counterparty, $orderReference)
+//    private function createPendingOrder($validated, $cart, $data, $counterparty, $orderReference)
+    private function createPendingOrder($validated, $cart, $data, $orderReference)
     {
         $weight = $cart['product']->weight * $cart['quantity'];
         $total = (int)$cart['total'];
@@ -190,8 +198,8 @@ class OrderService
             'customer_email' => strtolower(trim($validated['email'])),
             'settlement_ref' => $data['settlement'],
             'warehouse_ref' => $data['warehouse'],
-            'counterparty_ref' => $counterparty['Ref'],
-            'contact_person_ref' => $counterparty['ContactPersonRef'],
+//            'counterparty_ref' => $counterparty['Ref'],
+//            'contact_person_ref' => $counterparty['ContactPersonRef'],
             'cart_data' => $cart,
             'product_total' => $total,
             'delivery_cost' => $deliveryCost,
@@ -218,7 +226,7 @@ class OrderService
                 'payment_date' => now()
             ]);
 
-            $this->createTTNAfterPayment($order);
+//            $this->createTTNAfterPayment($order);
         } else {
             $order->update([
                 'payment_status' => 'failed',
@@ -229,82 +237,82 @@ class OrderService
         return true;
     }
 
-    /**
-     * Створення ТТН після оплати
-     */
-    private function createTTNAfterPayment($order)
-    {
-        try {
-            if ($order->ttn_number) {
-                return;
-            }
-
-            $requiredFields = [
-                'settlement_ref' => $order->settlement_ref,
-                'warehouse_ref' => $order->warehouse_ref,
-                'counterparty_ref' => $order->counterparty_ref,
-                'contact_person_ref' => $order->contact_person_ref,
-            ];
-
-            foreach ($requiredFields as $field => $value) {
-                if (empty($value)) {
-                    throw new \Exception("Відсутнє обов'язкове поле: {$field}");
-                }
-            }
-
-            if (empty($order->cart_data)) {
-                throw new \Exception('Відсутні дані кошика');
-            }
-
-            $ttnData = [
-                'settlement' => $order->settlement_ref,
-                'warehouse' => $order->warehouse_ref,
-                'counterparty_ref' => $order->counterparty_ref,
-                'contact_person_ref' => $order->contact_person_ref,
-                'phone' => preg_replace('/[^\d]/', '', $order->customer_phone),
-                'name' => $order->customer_name,
-                'surname' => $order->customer_surname,
-            ];
-
-            $ttnResult = $this->novaPostService->createTTN($ttnData, $order->cart_data, 'card');
-
-            if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] !== false)) {
-                $ttnNumber = $ttnResult['IntDocNumber'] ?? $ttnResult['Number'] ?? null;
-
-                if ($ttnNumber) {
-                    $order->addTTNData($ttnNumber, $ttnResult);
-                    $order->update(['status' => 'processing']);
-
-                    try {
-                        Log::info("Starting Telegram notification for order #{$order->id}");
-
-                        $result = $this->telegramBotService->sendOrderToTelegram($order);
-
-                        if ($result) {
-                            Log::info("Order #{$order->id} successfully sent to Telegram");
-                        } else {
-                            Log::error("Failed to send order #{$order->id} to Telegram - will not retry automatically");
-
-                            // Опціонально: відправити email адміну як резервний канал
-                            // Mail::to('admin@example.com')->send(new OrderNotification($order));
-                        }
-
-                    } catch (\Exception $e) {
-                        Log::error("Exception while sending order #{$order->id} to Telegram: " . $e->getMessage(), [
-                            'order_id' => $order->id,
-                            'exception' => $e->getTraceAsString()
-                        ]);
-                    }
-                } else {
-                    throw new \Exception('ТТН створено, але номер не отримано');
-                }
-
-            } else {
-                throw new \Exception('Не вдалося створити ТТН: ' . json_encode($ttnResult));
-            }
-
-        } catch (\Exception $e) {
-            // Логування помилки без припинення роботи
-        }
-    }
+//    /**
+//     * Створення ТТН після оплати
+//     */
+//    private function createTTNAfterPayment($order)
+//    {
+//        try {
+//            if ($order->ttn_number) {
+//                return;
+//            }
+//
+//            $requiredFields = [
+//                'settlement_ref' => $order->settlement_ref,
+//                'warehouse_ref' => $order->warehouse_ref,
+//                'counterparty_ref' => $order->counterparty_ref,
+//                'contact_person_ref' => $order->contact_person_ref,
+//            ];
+//
+//            foreach ($requiredFields as $field => $value) {
+//                if (empty($value)) {
+//                    throw new \Exception("Відсутнє обов'язкове поле: {$field}");
+//                }
+//            }
+//
+//            if (empty($order->cart_data)) {
+//                throw new \Exception('Відсутні дані кошика');
+//            }
+//
+//            $ttnData = [
+//                'settlement' => $order->settlement_ref,
+//                'warehouse' => $order->warehouse_ref,
+//                'counterparty_ref' => $order->counterparty_ref,
+//                'contact_person_ref' => $order->contact_person_ref,
+//                'phone' => preg_replace('/[^\d]/', '', $order->customer_phone),
+//                'name' => $order->customer_name,
+//                'surname' => $order->customer_surname,
+//            ];
+//
+//            $ttnResult = $this->novaPostService->createTTN($ttnData, $order->cart_data, 'card');
+//
+//            if ($ttnResult && (!isset($ttnResult['success']) || $ttnResult['success'] !== false)) {
+//                $ttnNumber = $ttnResult['IntDocNumber'] ?? $ttnResult['Number'] ?? null;
+//
+//                if ($ttnNumber) {
+//                    $order->addTTNData($ttnNumber, $ttnResult);
+//                    $order->update(['status' => 'processing']);
+//
+//                    try {
+//                        Log::info("Starting Telegram notification for order #{$order->id}");
+//
+//                        $result = $this->telegramBotService->sendOrderToTelegram($order);
+//
+//                        if ($result) {
+//                            Log::info("Order #{$order->id} successfully sent to Telegram");
+//                        } else {
+//                            Log::error("Failed to send order #{$order->id} to Telegram - will not retry automatically");
+//
+//                            // Опціонально: відправити email адміну як резервний канал
+//                            // Mail::to('admin@example.com')->send(new OrderNotification($order));
+//                        }
+//
+//                    } catch (\Exception $e) {
+//                        Log::error("Exception while sending order #{$order->id} to Telegram: " . $e->getMessage(), [
+//                            'order_id' => $order->id,
+//                            'exception' => $e->getTraceAsString()
+//                        ]);
+//                    }
+//                } else {
+//                    throw new \Exception('ТТН створено, але номер не отримано');
+//                }
+//
+//            } else {
+//                throw new \Exception('Не вдалося створити ТТН: ' . json_encode($ttnResult));
+//            }
+//
+//        } catch (\Exception $e) {
+//            // Логування помилки без припинення роботи
+//        }
+//    }
 }

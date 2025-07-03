@@ -334,7 +334,7 @@ class OrderController extends Controller
 
     public function sendOrderToCrm()
     {
-        $order = Order::findOrFail(1);
+        $order = Order::findOrFail(7);
         $order->payment_type = 'card';
         //        dd($order);
         dd($this->keyCrmService->sendOrderToCrm($order));
