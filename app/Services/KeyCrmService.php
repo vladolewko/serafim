@@ -50,7 +50,7 @@ class KeyCrmService
             $products = [];
             if (isset($order->cart_data['product'])) {
                 // Отримайте товар з бази даних або з cart_data
-                $productSku = "PROD-" .  $order->cart_data['product']['keycrm_id'];
+                $productSku = "PROD-" .  $order->cart_data['product']['id'];
 //                dd($productSku);
 
                 if ($productSku) {
