@@ -8,12 +8,15 @@ class WayForPayService
     private $merchantAccount;
     private $merchantSecretKey;
     private $merchantDomainName;
+    private ProductService $productService;
 
-    public function __construct()
+    public function __construct(ProductService $productService)
     {
         $this->merchantAccount = config('services.wayforpay.merchant_account');
         $this->merchantSecretKey = config('services.wayforpay.secret_key');
         $this->merchantDomainName = config('services.wayforpay.url', 'https://serafym.info');
+
+        $this->productService = $productService;
 
         if (!$this->merchantAccount || !$this->merchantSecretKey) {
             throw new \Exception('WayForPay не налаштований');
@@ -23,54 +26,84 @@ class WayForPayService
     /**
      * Підготовка даних для оплати
      */
-    public function preparePaymentData($validated, $cart, $orderReference)
+    public function preparePaymentData($validated, $cart, $data)
     {
-        $total = (int)$cart['total'];
-        $deliveryCost = 0;
-        $totalAmount = $total + $deliveryCost;
+        try {
+            $total = (int)$cart['total'];
+            $deliveryCost = $data['deliveryCost'] ?? 0;
+            $totalAmount = $total + $deliveryCost;
 
-        $amount = number_format($totalAmount, 2, '.', '');
-        $currency = 'UAH';
-        $orderDate = time();
+            $amount = number_format($totalAmount, 2, '.', '');
+            $currency = 'UAH';
+            $orderDate = time();
+            $orderReference = \App\Models\Order::generateOrderReference();
 
-        $product = $cart['product'];
-        $productName = [is_array($product) ? $product['name'] : $product->name];
-        $productPrice = [number_format($total, 2, '.', '')];
-        $productCount = [$cart['quantity']];
+            // Отримуємо продукт
+            $productId = null;
+            if (isset($cart['product']['id'])) {
+                $productId = $cart['product']['id'];
+            } elseif (isset($cart['productId'])) {
+                $productId = $cart['productId'];
+            }
 
-        $signString = implode(';', [
-            $this->merchantAccount,
-            $this->merchantDomainName,
-            $orderReference,
-            $orderDate,
-            $amount,
-            $currency,
-            implode(';', $productName),
-            implode(';', $productCount),
-            implode(';', $productPrice)
-        ]);
+            if (!$productId) {
+                throw new \Exception('Product ID not found in cart');
+            }
 
-        $merchantSignature = hash_hmac('md5', $signString, $this->merchantSecretKey);
-        $callbackUrl = rtrim($this->merchantDomainName, '/') . '/api/orders/payment/callback';
+            $product = $this->productService->getById($productId);
+            if (!$product) {
+                throw new \Exception('Product not found');
+            }
 
-        return [
-            'merchantAccount' => $this->merchantAccount,
-            'merchantDomainName' => $this->merchantDomainName,
-            'orderReference' => $orderReference,
-            'orderDate' => $orderDate,
-            'amount' => $amount,
-            'currency' => $currency,
-            'productName' => $productName,
-            'productCount' => $productCount,
-            'productPrice' => $productPrice,
-            'clientFirstName' => trim($validated['name']),
-            'clientLastName' => trim($validated['surname']),
-            'clientEmail' => strtolower(trim($validated['email'])),
-            'clientPhone' => preg_replace('/[^\d]/', '', $validated['phone']),
-            'language' => 'UA',
-            'serviceUrl' => $callbackUrl,
-            'merchantSignature' => $merchantSignature
-        ];
+            // Правильно формуємо масиви даних
+            $productName = [$product->name]; // ← Масив з назвою продукту
+            $productPrice = [number_format($total, 2, '.', '')];
+            $productCount = [(string)$cart['quantity']];
+
+            // Формуємо строку для підпису
+            $signString = implode(';', [
+                $this->merchantAccount,
+                $this->merchantDomainName,
+                $orderReference,
+                $orderDate,
+                $amount,
+                $currency,
+                implode(';', $productName), // ← Тепер це правильно
+                implode(';', $productCount),
+                implode(';', $productPrice)
+            ]);
+
+            $merchantSignature = hash_hmac('md5', $signString, $this->merchantSecretKey);
+            $callbackUrl = rtrim($this->merchantDomainName, '/') . '/api/orders/payment/callback';
+
+            return [
+                'merchantAccount' => $this->merchantAccount,
+                'merchantDomainName' => $this->merchantDomainName,
+                'orderReference' => $orderReference,
+                'orderDate' => $orderDate,
+                'amount' => $amount,
+                'currency' => $currency,
+                'productName' => $productName,
+                'productCount' => $productCount,
+                'productPrice' => $productPrice,
+                'clientFirstName' => trim($validated['name']),
+                'clientLastName' => trim($validated['surname']),
+                'clientEmail' => strtolower(trim($validated['email'])),
+                'clientPhone' => preg_replace('/[^\d]/', '', $validated['phone']),
+                'language' => 'UA',
+                'serviceUrl' => $callbackUrl,
+                'merchantSignature' => $merchantSignature
+            ];
+
+        } catch (\Exception $e) {
+            \Log::error('WayForPay payment data preparation failed', [
+                'error' => $e->getMessage(),
+                'validated' => $validated,
+                'cart' => $cart,
+                'data' => $data
+            ]);
+            return null;
+        }
     }
 
     /**

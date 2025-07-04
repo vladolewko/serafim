@@ -48,9 +48,9 @@ class KeyCrmService
             $customerName = trim($order->customer_name . ' ' . $order->customer_surname);
 
             $products = [];
-            if (isset($order->cart_data['product'])) {
+            if (isset($order->cart_data['productId'])) {
                 // Отримайте товар з бази даних або з cart_data
-                $productSku = "PROD-" .  $order->cart_data['product']['id'];
+                $productSku = "PROD-" .  $order->cart_data['productId'];
 //                dd($productSku);
 
                 if ($productSku) {

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class NovaPostService
 {
     private string $apiKey;
+    private ProductService $productService;
 //    private array $requiredSenderVars = [
 //        'NOVA_POST_CITY_SENDER',
 //        'NOVA_POST_SENDER_REF',
@@ -16,9 +17,10 @@ class NovaPostService
 //        'NOVA_POST_SENDER_PHONE'
 //    ];
 
-    public function __construct()
+    public function __construct(ProductService $productService)
     {
         $this->apiKey = env('NOVA_POST_API_KEY');
+        $this->productService = $productService;
     }
 
     /**
@@ -60,14 +62,13 @@ class NovaPostService
     public function getFilteredWarehouses(string $settlementRef, array $cart): array
     {
         $warehouses = $this->getWarehousesWithRestrictions($settlementRef);
+        $product = $this->productService->getById($cart['productId']);
 
-        if (empty($cart['product']) || empty($cart['quantity'])) {
+        if (!$product || !$cart['quantity']) {
             return $warehouses;
         }
 
         $quantity = $cart['quantity'];
-        $product = is_object($cart['product']) ? $cart['product'] : (object)$cart['product'];
-
         // Розрахунок параметрів
         $totalWeight = ($product->weight ?? 0) * $quantity;
         $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
