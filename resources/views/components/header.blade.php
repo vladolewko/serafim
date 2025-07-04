@@ -19,7 +19,7 @@
 
             <img src="{{ asset('img/line_vertical.svg') }}" alt="">
 
-            <img class="bg-white rounded-full sm:h-[81px] sm:w-[81px] h-[75px] w-[75px]" src="{{ asset('img/logo_1.png') }}" alt="logo">
+            <img class="bg-white rounded-full sm:h-[81px] sm:w-[81px] h-[75px] w-[75px]" src="{{ asset('img/logo_1.webp') }}" alt="logo">
 
             <img class="h-0 w-0 sm:h-[81px] w-[1px]" src="{{ asset('img/line_vertical.svg') }}" alt="">
 
@@ -107,7 +107,7 @@
             </div>
 
 
-            <img class="rounded-full h-[50px] w-[50px] md:h-[75px] md:w-[75px] object-cover m-0 p-0" style="background-color: white" src="{{ asset('img/logo_1.png') }}" alt="logo">
+            <img class="rounded-full h-[50px] w-[50px] md:h-[75px] md:w-[75px] object-cover m-0 p-0" style="background-color: white" src="{{ asset('img/logo_1.webp') }}" alt="logo">
 
 
             <div class="hidden w-full lg:block lg:w-auto" id="navbar-default">
