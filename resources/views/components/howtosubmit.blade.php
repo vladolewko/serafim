@@ -1,9 +1,9 @@
  <div class="w-full px-4 sm:px-6 lg:w-5/6 xl:w-4/6 lg:mx-auto my-16 lg:my-72">
     <div class="mb-10">
-        <p class="text-2xl xl:text-4xl font-bold">Кожен українець <span class="text-yellow-400">повинен розуміти</span>,
-            як подавати</p>
-        <p class="text-2xl xl:text-4xl font-bold">Скаргу, клопотання, заяву, рапорт, позов</p>
-        <p class="text-xl text-slate-600 font-bold">І комплект знань закриє це питання...</p>
+        <p class="text-2xl xl:text-4xl font-bold">Кожен військовий і громадянин <span class="text-yellow-400">має знати як</span> працювати
+            </p>
+        <p class="text-2xl xl:text-4xl font-bold">з документами, кому, коли і як їх подавати....</p>
+        <!-- <p class="text-xl text-slate-600 font-bold">з документами, кому, коли і як їх подавати....</p> -->
     </div>
 
     <!-- Carousel -->
@@ -18,20 +18,16 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2  justify-center">
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/commissioner.png') }}" alt="">
-                        <p class="  text-center">Омбудсмен</p>
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/complain.png') }}" alt="">
+                        <p class="text-xl text-center">Скарга</p>
                     </div>
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
-                        <p class="  text-center">ДБР</p>
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/regulation.png') }}" alt="">
+                        <p class="text-xl text-center">Клопотання</p>
                     </div>
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/NAZK_logo.png') }}" alt="">
-                        <p class="  text-center">НАЗК</p>
-                    </div>
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/SUDY.png') }}" alt="">
-                        <p class="  text-center">СУД</p>
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/raport.png') }}" alt="">
+                        <p class="text-xl text-center">Рапорт</p>
                     </div>
                 </div>
             </div>
@@ -40,46 +36,12 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2  justify-center">
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/command.png') }}" alt="command img">
-                        <p class="font-bold text-base text-center">Командування</p>
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/treaty.png') }}" alt="command img">
+                        <p class="text-xl text-center">Заява</p>
                     </div>
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/ministry.png') }}" alt="ministry img">
-                        <p class="font-bold text-base text-center">Міністерство оборони України</p>
-                        <a class="flex text-solate-500" href="tel:1512"> <img
-                                src="{{ asset('img/phone.svg') }}" alt="phone img"> 1512 </a>
-                    </div>
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/general_procoratura.png') }}" alt="procoratura img">
-                        <p class="  text-center">Генеральна прокаратура</p>
-                    </div>
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px]  rounded-full" src="{{ asset('img/VSP.png') }}" alt="vsp img">
-                        <p class="font-bold text-base text-center">Військова служба правопорядку (ВСП)</p>
-                        <a class="flex text-solate-500" href="tel:(044) 454-73-08"> <img
-                                src="{{ asset('img/phone.svg') }}" alt="phone img"> (044) 454-73-08 </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Item 3 -->
-
-            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
-                <div class="flex gap-2  justify-center">
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
-                        <p class="  text-center">МВС</p>
-                    </div>
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/SBU.png') }}" alt="">
-                        <p class="  text-center">СБУ</p>
-                    </div>
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/nabu.svg') }}" alt="">
-                        <p class="  text-center">НАБУ</p>
-                    </div>
-                    <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/national_police.png') }}" alt="">
-                        <p class="  text-center">Національна поліція</p>
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/posov.png') }}" alt="ministry img">
+                        <p class="text-base text-center">Позов</p>
                     </div>
                 </div>
             </div>
@@ -87,12 +49,10 @@
         <!-- Slider indicators -->
         <div
             class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-[-20px] w-full justify-center">
-            <button type="button" class="w-[30%] h-[1px] rounded-full  slide_button" aria-current="true"
+            <button type="button" class="w-[50%] h-[1px] rounded-full  slide_button" aria-current="true"
                     aria-label="Slide 1" data-carousel-slide-to="0"></button>
-            <button type="button" class="w-[30%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[50%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 2" data-carousel-slide-to="1"></button>
-            <button type="button" class="w-[30%] h-[1px] rounded-full  slide_button" aria-current="false"
-                    aria-label="Slide 3" data-carousel-slide-to="2"></button>
         </div>
         <!-- Slider controls -->
 

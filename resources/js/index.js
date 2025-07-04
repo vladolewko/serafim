@@ -1,20 +1,3 @@
-// import "flowbite/dist/flowbite.min.js";
-// import "flowbite/dist/flowbite.js";
-// import "flowbite";
-
-// function smoothScrollToElement(targetId, offset = 80) {
-//     const targetElement = document.getElementById(targetId);
-//     if (!targetElement) return;
-
-//     const elementPosition = targetElement.getBoundingClientRect().top;
-//     const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-//     window.scrollTo({
-//         top: offsetPosition,
-//         behavior: "smooth",
-//     });
-// }
-
 function smoothScrollToElement(targetId, offset = 80) {
     const targetElement = document.getElementById(targetId);
     if (!targetElement) return;
@@ -79,6 +62,45 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+const introduction_block = document.getElementById("introduction");
+const hidden_introduction_btn = document.getElementById(
+    "hidden_introduction_btn"
+);
+
+function checkIntroductionPosition() {
+    const introduction_block_pos =
+        introduction_block.getBoundingClientRect().top;
+    const screenPosition = window.innerHeight;
+
+    // Перевіряємо, чи елемент вийшов за межі екрану (прокрутили вниз)
+    if (introduction_block_pos < 0) {
+        hidden_introduction_btn.classList.remove("hidden");
+    } else {
+        hidden_introduction_btn.classList.add("hidden");
+    }
+}
+
+// Викликаємо функцію при завантаженні сторінки
+checkIntroductionPosition();
+
+// Змінна для відслідковування стану анімації
+let ticking = false;
+
+function updatePosition() {
+    checkIntroductionPosition();
+    ticking = false;
+}
+
+function requestTick() {
+    if (!ticking) {
+        requestAnimationFrame(updatePosition);
+        ticking = true;
+    }
+}
+
+// Додаємо обробник події прокрутки з оптимізацією та passive listener
+window.addEventListener("scroll", requestTick, { passive: true });
 
 const radios = document.querySelectorAll('input[name="options"]');
 

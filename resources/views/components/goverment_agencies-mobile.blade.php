@@ -97,6 +97,33 @@
                 </div>
             </div>
 
+             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center items-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/command.png') }}" alt="command img">
+                        <p class="text-blue-400 text-center">Командування</p>
+                    </div>
+                </div>
+            </div>
+
+             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center items-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px]  rounded-full" src="{{ asset('img/VSP.png') }}" alt="vsp img">
+                        <p class="text-blue-400 text-center">ВСП</p>
+                    </div>
+                </div>
+            </div>
+
+             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-2 my-16 justify-center items-center">
+                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
+                        <img class="w-[150px] h-[150px]  rounded-full" src="{{ asset('img/ministry_of_veterans.png') }}" alt="ministry_veterans img">
+                        <p class="text-blue-400 text-center">Міністерство ветеранів</p>
+                    </div>
+                </div>
+            </div>
+
 
 
 
@@ -122,26 +149,32 @@
         <!-- Slider indicators -->
         <div
             class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-[-20px] w-full justify-center">
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="true"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="true"
                     aria-label="Slide 1" data-carousel-slide-to="0"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 2" data-carousel-slide-to="1"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 3" data-carousel-slide-to="2"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 4" data-carousel-slide-to="3"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 5" data-carousel-slide-to="3"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 6" data-carousel-slide-to="3"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 7" data-carousel-slide-to="3"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 8" data-carousel-slide-to="3"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 9" data-carousel-slide-to="3"></button>
-            <button type="button" class="w-[10%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 10" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 11" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 12" data-carousel-slide-to="3"></button>
+            <button type="button" class="w-[7.5%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 13" data-carousel-slide-to="3"></button>
         </div>
         <!-- Slider controls -->
 

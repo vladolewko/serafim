@@ -44,7 +44,7 @@
             </div>
             <!-- Item 2 -->
 
-            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+        <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-10  justify-center">
                     <div class="flex flex-col items-center">
             <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
@@ -73,14 +73,37 @@
 
                 </div>
             </div>
+
+            <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
+                <div class="flex gap-10  justify-center">
+
+                    <div class="flex flex-col items-center">
+                        <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/command.png') }}" alt="command img">
+                        <p class="text-blue-400 text-center">Командування</p>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <img class="w-[150px] h-[150px]  rounded-full" src="{{ asset('img/VSP.png') }}" alt="vsp img">
+                        <p class="text-blue-400 text-center">ВСП</p>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <img class="w-[150px] h-[150px]  rounded-full" src="{{ asset('img/ministry_of_veterans.png') }}" alt="ministry_veterans img">
+                        <p class="text-blue-400 text-center">Міністерство ветеранів</p>
+                    </div>
+
+                </div>
+            </div>
         </div>
         <!-- Slider indicators -->
         <div
             class="absolute z-30 flex -translate-x-1/2 space-x-0 rtl:space-x-reverse left-1/2 bottom-[-20px] w-full justify-center">
-            <button type="button" class="w-[50%] h-[1px] rounded-full  slide_button" aria-current="true"
+            <button type="button" class="w-[33%] h-[1px] rounded-full  slide_button" aria-current="true"
                     aria-label="Slide 1" data-carousel-slide-to="0"></button>
-            <button type="button" class="w-[50%] h-[1px] rounded-full  slide_button" aria-current="false"
+            <button type="button" class="w-[33%] h-[1px] rounded-full  slide_button" aria-current="false"
                     aria-label="Slide 2" data-carousel-slide-to="1"></button>
+            <button type="button" class="w-[33%] h-[1px] rounded-full  slide_button" aria-current="false"
+                    aria-label="Slide 3" data-carousel-slide-to="1"></button>
         </div>
         <!-- Slider controls -->
 
