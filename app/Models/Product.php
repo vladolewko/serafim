@@ -13,6 +13,7 @@ class Product extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+
     protected $fillable = [
         'keycrm_id',
         'name',

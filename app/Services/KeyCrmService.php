@@ -12,12 +12,14 @@ class KeyCrmService
     private $apiKey;
     private $apiUrl;
     private $novaPostService;
+    private ProductService $productService;
 
-    public function __construct(NovaPostService $novaPostService)
+    public function __construct(NovaPostService $novaPostService, ProductService $productService)
     {
         $this->apiKey = env('KEY_CRM_API_KEY');
         $this->apiUrl = env('KEY_CRM_API_URL');
         $this->novaPostService = $novaPostService;
+        $this->productService = $productService;
     }
 
     public function sendOrderToCrm(Order $order)
@@ -48,22 +50,27 @@ class KeyCrmService
             $customerName = trim($order->customer_name . ' ' . $order->customer_surname);
 
             $products = [];
-            if (isset($order->cart_data['productId'])) {
+            $product = $this->productService->getById($order->cart_data['productId']);
+//            dd($product);
+
+
+            if ($product) {
                 // Отримайте товар з бази даних або з cart_data
                 $productSku = "PROD-" .  $order->cart_data['productId'];
 //                dd($productSku);
 
                 if ($productSku) {
+
                     $products[] = [
-                        "sku" => $productSku, // або $product->sku
-                        "price" => (float)$order->cart_data['product']['price'],
-                        "purchased_price" => (float)($order->cart_data['product']['price']), // собівартість
+                        "sku" => $productSku,
+                        "price" => (float)$product->price,
+                        "purchased_price" => (float)$product->price,
                         "discount_percent" => 0,
                         "discount_amount" => 0,
                         "quantity" => $order->cart_data['quantity'],
-                        "unit_type" => "шт", // одиниця виміру
-                        "name" => $order->cart_data['product']['name'], // назва товару
-                        "picture" => $product->image_url ?? "", // URL зображення
+                        "unit_type" => "шт",
+                        "name" => $product->name,
+                        "picture" => $product->getFirstMediaUrl() ?? '',
 
                     ];
                 }
@@ -115,23 +122,11 @@ class KeyCrmService
 
             $orderResponse = $response->json();
 
-            // Зберігаємо ID замовлення в keyCRM
             $keyCrmOrderId = $orderResponse['id'] ?? null;
 
             if ($keyCrmOrderId) {
-                // Оновлюємо наше замовлення з ID keyCRM
                 $order->update(['keycrm_order_id' => $keyCrmOrderId]);
 
-                // Спробуємо автоматично створити ТТН
-                $ttnResponse = $this->createTtn($keyCrmOrderId);
-
-                if ($ttnResponse && isset($ttnResponse['tracking_number'])) {
-                    // Зберігаємо трекінг номер
-                    $order->update(['tracking_number' => $ttnResponse['tracking_number']]);
-
-                    // Можете надіслати SMS або email з трекінг номером
-//                    $this->sendTrackingNotification($order, $ttnResponse['tracking_number']);
-                }
             }
 
             return $orderResponse;
@@ -140,30 +135,6 @@ class KeyCrmService
             Log::error('KeyCRMService error: ' . $exception->getMessage(), [
                 'order_id' => $order->id ?? null,
             ]);
-            return null;
-        }
-    }
-
-// Метод для створення ТТН
-    private function createTtn($keyCrmOrderId)
-    {
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->timeout(30)
-                ->post($this->apiUrl . "/v1/order/{$keyCrmOrderId}/create-ttn", [
-                    'delivery_service' => 'nova_poshta',
-                    'auto_create' => true // для автоматичного створення
-                ]);
-
-            if ($response->successful()) {
-                return $response->json();
-            }
-
-            return null;
-        } catch (\Exception $e) {
-            Log::error('TTN creation error: ' . $e->getMessage());
             return null;
         }
     }
@@ -212,7 +183,6 @@ class KeyCrmService
         } catch (\Exception $exception) {
             Log::error('KeyCRMService createProduct error: ' . $exception->getMessage(), [
                 'product_id' => $product->id ?? null,
-                'response_body' => $response->body() ?? null
             ]);
             return null;
         }
