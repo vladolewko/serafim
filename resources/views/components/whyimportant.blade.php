@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <div class="w-full lg:w-6/12 order-1 lg:order-2 flex flex-col justify-between">
+    <div class="w-full lg:w-6/12 order-1 lg:order-2 lg:gap-[4.1rem] xl:gap-6 flex flex-col">
 
 
 
@@ -124,7 +124,7 @@
             @endforeach
         </div>
 
-        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px]  rounded-lg mt-6 lg:mt-0 max-h-[480px] lg:max-w-[480px] xl:min-w-full">
+        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px]  rounded-lg mt-6 max-h-[480px] lg:max-w-[480px] xl:min-w-full">
             <img id="productImage"
                     src="/images/default-product.jpg"
                     alt="Product Image"
@@ -132,7 +132,7 @@
         </div>
 
         <div
-            class="flex flex-col lg:flex-row justify-between h-max lg:justify-end mt-2 lg:my-2 items-center lg:gap-4 gap-2 lg:gap-5 lg:pt-24 xl:pt-16" >
+            class="flex flex-col lg:flex-row justify-between h-max lg:justify-end xl:my-2 items-center lg:gap-4 gap-2 lg:gap-5 lg:pt-20git xl:pt-16" >
             <div class="text-black text-2xl lg:text-4xl">
                 <span class="text-yellow-400" id="price">600</span> грн
             </div>

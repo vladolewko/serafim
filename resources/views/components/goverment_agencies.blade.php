@@ -28,7 +28,7 @@
 
         <div class="flex flex-col items-center">
             <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SBU.png') }}" alt="">
-             <p class="text-blue-400 text-center">СБУ</p>
+            <p class="text-blue-400 text-center">СБУ</p>
         </div>
 
         <div class="flex flex-col items-center">
