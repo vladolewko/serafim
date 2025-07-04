@@ -1,4 +1,4 @@
-<header class="lg:pt-3 bg-blue-400 w-full">
+<header class="lg:pt-3 bg-blue-400 w-full sticky lg:static top-0 z-50">
 
     <!-- Desktop -->
     <div class="w-11/12 lg:w-9/12 hidden lg:block mx-auto ">
@@ -19,15 +19,15 @@
 
             <img src="{{ asset('img/line_vertical.svg') }}" alt="">
 
-            <img class="bg-white rounded-full sm:h-[81px] sm:w-[81px] h-[75px] w-[75px]" src="{{ asset('img/logo_1.png') }}" alt="logo">
+            <img class="bg-white rounded-full sm:h-[81px] sm:w-[81px] h-[75px] w-[75px]" src="{{ asset('img/logo_1.webp') }}" alt="logo">
 
             <img class="h-0 w-0 sm:h-[81px] w-[1px]" src="{{ asset('img/line_vertical.svg') }}" alt="">
 
-            <div class="sm:w-2/6 flex items-start flex-col sm:items-start">
+            <div class="sm:w-2/6 lg:w-6/12 xl:w-[45%] 2xl:w-5/12 flex items-start flex-col sm:items-start">
                 <p class="text-left text-base font-bold flex-1">
                     Стаття 68 Конституції України:
                 </p>
-                <p class="text-[11px]/[1]">
+                <p class="text-[14px]/[1] 2xl:text-[16px]/[1]">
                     Кожен зобов'язаний неухильно додержуватися Конституції
                     України та законів України, не посягати на права і свободи, честь і гідність інших людей.
                 </p>
@@ -43,7 +43,7 @@
         <nav class="bg-blue-400">
         <div class="max-w-screen-xl gap-1 flex flex-wrap items-center justify-between mx-auto p-2" >
 
-            <button class="inline-flex items-center p-2  md:mt-0 ms-3 text-sm text-white rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2  dark:hover:bg-gray-700" type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
+            <button class="inline-flex items-center p-2  md:mt-0 text-sm text-white rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2  dark:hover:bg-gray-700" type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
             <span class="sr-only">Open sidebar</span>
                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
@@ -97,30 +97,19 @@
 
 
             <div class="text-right text-white">
-                    <p class="text-[10px] font-extrabold">
+                    <p class="text-[12px] font-extrabold">
                         Авторські курси правового виховання
                     </p>
 
-                    <p class="text-xl text-center font-bold text-yellow-400">
+                    <p class="text-2xl text-center font-bold text-yellow-400">
                         СЕРАФИМ
                     </p>
             </div>
 
 
-            <img class="rounded-full h-[65px] w-[65px] object-cover m-0 p-0" style="background-color: white" src="{{ asset('img/logo_1.png') }}" alt="logo">
+            <img class="rounded-full h-[50px] w-[50px] md:h-[75px] md:w-[75px] object-cover m-0 p-0" style="background-color: white" src="{{ asset('img/logo_1.webp') }}" alt="logo">
 
 
-
-
-            <!-- <div class="text-white w-11/12 mx-auto lg:hidden md:w-2/5">
-                <p class="text-left text-base font-bold flex-1">
-                    Стаття 68 Конституції України:
-                </p>
-                <p class="text-sm/[1]">
-                    Кожен зобов'язаний неухильно додержуватися Конституції
-                    України та законів України, не посягати на права і свободи, честь і гідність інших людей.
-                </p>
-            </div> -->
             <div class="hidden w-full lg:block lg:w-auto" id="navbar-default">
             <ul class="bg-gray-800 font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg lg:flex-row lg:space-x-8 rtl:space-x-reverse lg:mt-0 lg:border-0d lg:dark:bg-blue-400 dark:border-gray-700">
                 <li class="m-0">

@@ -6,8 +6,8 @@
             <img class="h-[100px] w-[100px] sm:h-[120px] sm:w-[120px] xl:h-[140px] xl:w-[140px]" src="{{ asset('img/logo.svg') }}" alt="">
             <img class="hidden sm:block self-center" src="{{ asset('img/line_vertical.svg') }}" alt="">
             <div class="flex flex-col gap-1 text-center sm:text-left self-center">
-                <p class="text-xl sm:text-2xl">серафим</p>
-                <p class="text-xs sm:text-sm">від солдата - для людей</p>
+                <p class="text-xl sm:text-2xl lg:text-3xl font-bold">Серфаим</p>
+                <!-- <p class="text-xs sm:text-sm">від солдата - для людей</p> -->
                 <div class="flex gap-2 justify-center sm:justify-start">
                     <a href="https://youtube.com/@serafim_ngu"><img src="{{ asset('img/youtube_footer.svg') }}" alt=""></a>
                     <a href="https://www.facebook.com/profile.php?id=61577691222873"><img src="{{ asset('img/facebook_footer.svg') }}" alt=""></a>
@@ -38,9 +38,9 @@
             <!-- Комплекти -->
             <div class="w-full sm:w-1/3  xl:w-1/3 text-white flex flex-col gap-1">
                 <p class="text-yellow-400 text-lg sm:text-xl lg:text-2xl decoration-yellow-400 decoration-4 lg:decoration-8 underline-offset-2 lg:underline-offset-4 mb-2 lg:mb-3"><u>ко</u>мплекти</p>
-                <p class="text-sm lg:text-base">Комплект громадянина</p>
-                <p class="text-sm lg:text-base">Комплект військовослужбовця</p>
-                <p class="text-sm lg:text-base">Комплект військовослужбовця НГУ</p>
+                <p class="text-sm lg:text-base">Комплект Людини</p>
+                <p class="text-sm lg:text-base">Комплект ЗСУ</p>
+                <p class="text-sm lg:text-base">Комплект НГУ</p>
                 <p class="text-sm lg:text-base">Комплект поліцейського</p>
                 <p class="text-sm lg:text-base">Зібрати власний комплект</p>
             </div>
@@ -48,11 +48,12 @@
             <!-- Куди звертатись -->
             <div class="w-full sm:w-1/3 xl:w-1/3 text-white flex flex-col gap-1">
                 <p class="text-yellow-400 text-lg sm:text-xl lg:text-2xl decoration-yellow-400 decoration-4 lg:decoration-8 underline-offset-2 lg:underline-offset-4 mb-2 lg:mb-3"><u>ку</u>ди звертатись</p>
-                <p class="text-sm lg:text-base">Міністерство оборони України</p>
-                <p class="text-sm lg:text-base">Військова служба правопорядку</p>
-                <p class="text-sm lg:text-base">Державне бюро розслідувань</p>
-                <p class="text-sm lg:text-base">Національне антикорупційне бюро</p>
+                <p class="text-sm lg:text-base">МОУ</p>
+                <p class="text-sm lg:text-base">ВСП</p>
+                <p class="text-sm lg:text-base">ДБР</p>
+                <p class="text-sm lg:text-base">НАБУ</p>
                 <p class="text-sm lg:text-base">Юридична сотня</p>
+                <p class="text-sm lg:text-base">Генеральна прокуратура</p>
                 <p class="text-sm lg:text-base">Омбудсман</p>
                 <p class="text-sm lg:text-base">НАЗК</p>
             </div>

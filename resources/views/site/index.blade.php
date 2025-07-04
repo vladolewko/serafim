@@ -5,10 +5,11 @@
 @endsection
 
 @section('content')
-            <div id="introduction"></div>
+            <div id="introduction">
             <div class="lg:hidden mb-16"> @include('components.introduction-mobile') </div>
 
             <div class="hidden lg:block"> @include('components.introduction') </div>
+            </div>
 
             <div class="lg:hidden">
                 @include('components.goverment_agencies-mobile')
@@ -342,6 +343,26 @@
         });
 
     </script>
+
+
+
+<div id="hidden_introduction_btn" class="hidden lg:hidden fixed left-1/2 -translate-x-1/2 bottom-5 flex flex-col md:flex-row gap-4 w-11/12 md:w-4/5 z-50">
+    <button
+        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl knowledgePackBtn" data-target="why_important">
+        <div class="flex items-center justify-between w-4/5">
+            <img class="" src="{{ asset('img/icon_book.png') }}" alt="">
+            <span class="mx-auto">комплекти знань</span>
+        </div>
+    </button>
+
+    <a class="bg-white text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn" data-target="knowledge_pack">
+            <div class="flex items-center justify-between w-4/5">
+                <img src="{{ asset('img/icon_youtube.png') }}" alt="">
+                <span class="mx-auto">відеоуроки</span>
+        </div>
+    </a>
+</div>
+
 
 @endsection
 @section('footer')
