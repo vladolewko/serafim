@@ -139,8 +139,46 @@ class KeyCrmService
         }
     }
 
+
     /**
-     * Створити товар у keyCRM
+     * Перевірити чи існує товар у keyCRM за SKU
+     */
+    public function findProductBySku($sku)
+    {
+        try {
+            if (empty($this->apiKey) || empty($this->apiUrl)) {
+                throw new \Exception('API credentials are not configured');
+            }
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->timeout(30)
+                ->get($this->apiUrl . '/v1/products', [
+                    'filter[sku]' => $sku
+                ]);
+
+            if (!$response->successful()) {
+                return null;
+            }
+
+            $responseData = $response->json();
+
+            // Повертаємо перший знайдений товар або null
+            return isset($responseData['data']) && count($responseData['data']) > 0
+                ? $responseData['data'][0]
+                : null;
+
+        } catch (\Exception $exception) {
+            Log::error('KeyCRMService findProductBySku error: ' . $exception->getMessage(), [
+                'sku' => $sku
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Створити товар у keyCRM з перевіркою існування
      */
     public function createProduct(Product $product)
     {
@@ -149,17 +187,28 @@ class KeyCrmService
                 throw new \Exception('API credentials are not configured');
             }
 
+            $sku = 'PROD-' . $product->id;
+
+            // Перевіряємо чи існує товар у keyCRM
+            $existingProduct = $this->findProductBySku($sku);
+
+            if ($existingProduct) {
+                // Товар існує, оновлюємо keycrm_id та викликаємо updateProduct
+                $product->update(['keycrm_id' => $existingProduct['id']]);
+                return $this->updateProduct($product);
+            }
+
             $productData = [
                 'name' => $product->name,
                 'description' => $product->description ?? '',
-                'price' => (float)$product->price, // Переводимо копійки в гривні
-                'currency_code' => 'UAH', // Вказуємо валюту
+                'pictures' => [str_replace('http://110.172.148.57:8000', 'https://serafym.info', $product->getFirstMediaUrl('product_images'))],
+                'price' => (float)$product->price,
+                'currency_code' => 'UAH',
                 'weight' => (float)$product->weight,
                 'height' => (float)$product->height,
                 'length' => (float)$product->length,
                 'width' => (float)$product->width,
-                'sku' => 'PROD-' . $product->id,
-
+                'sku' => $sku,
             ];
 
             $response = Http::withHeaders([
@@ -189,7 +238,7 @@ class KeyCrmService
     }
 
     /**
-     * Оновити товар у keyCRM
+     * Оновити товар у keyCRM з перевіркою існування
      */
     public function updateProduct(Product $product)
     {
@@ -198,21 +247,32 @@ class KeyCrmService
                 throw new \Exception('API credentials are not configured');
             }
 
+            $sku = 'PROD-' . $product->id;
+
+            // Якщо немає keycrm_id, спробуємо знайти товар за SKU
             if (!$product->keycrm_id) {
-                return $this->createProduct($product);
+                $existingProduct = $this->findProductBySku($sku);
+
+                if ($existingProduct) {
+                    // Знайшли товар, оновлюємо keycrm_id
+                    $product->update(['keycrm_id' => $existingProduct['id']]);
+                } else {
+                    // Товар не знайдено, створюємо новий
+                    return $this->createProduct($product);
+                }
             }
 
             $productData = [
                 'name' => $product->name,
                 'description' => $product->description ?? '',
-                'price' => (float)$product->price, // Переводимо копійки в гривні
-                'currency_code' => 'UAH', // Вказуємо валюту
+                'pictures' => [str_replace('http://110.172.148.57:8000', 'https://serafym.info', $product->getFirstMediaUrl('product_images'))],
+                'price' => (float)$product->price,
+                'currency_code' => 'UAH',
                 'weight' => (float)$product->weight,
                 'height' => (float)$product->height,
                 'length' => (float)$product->length,
                 'width' => (float)$product->width,
-                'sku' => 'PROD-' . $product->id,
-
+                'sku' => $sku,
             ];
 
             $response = Http::withHeaders([
@@ -232,7 +292,7 @@ class KeyCrmService
             Log::error('KeyCRMService updateProduct error: ' . $exception->getMessage(), [
                 'product_id' => $product->id ?? null,
                 'keycrm_id' => $product->keycrm_id ?? null,
-                'response_body' => $response->body() ?? null
+                'response_body' => isset($response) ? $response->body() : null
             ]);
             return null;
         }
