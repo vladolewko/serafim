@@ -33,7 +33,7 @@ class WayForPayService
             $deliveryCost = $data['deliveryCost'] ?? 0;
             $totalAmount = $total + $deliveryCost;
 
-            $amount = number_format($totalAmount, 2, '.', '');
+            $amount = number_format($total, 2, '.', '');
             $currency = 'UAH';
             $orderDate = time();
             $orderReference = \App\Models\Order::generateOrderReference();
