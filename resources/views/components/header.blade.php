@@ -42,7 +42,6 @@
 
         <nav class="bg-blue-400">
         <div class="max-w-screen-xl gap-1 flex flex-wrap items-center justify-between mx-auto p-2" >
-
             <button class="inline-flex items-center p-2  md:mt-0 text-sm text-white rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2  dark:hover:bg-gray-700" type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
             <span class="sr-only">Open sidebar</span>
                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
@@ -130,18 +129,7 @@
             </ul>
             </div>
         </div>
-        <hr class="bg-white border-0 h-px mx-auto w-full">
-         <div class="text-white w-11/12 mx-auto lg:hidden py-2  md:w-3/5">
-                <p class="text-left text-sm font-bold flex-1">
-                    Стаття 68 Конституції України:
-                </p>
-                <p class="text-[8px]/[1] md:text-xs">
-                    Кожен зобов'язаний неухильно додержуватися Конституції
-                    України та законів України, не посягати на права і свободи, честь і гідність інших людей.
-                </p>
-            </div>
         </nav>
-
     </div>
 </header>
 

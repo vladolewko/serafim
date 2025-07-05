@@ -28,11 +28,11 @@
                         відеоуроки
                     </p> -->
 
-                    <button class="text-black border border-blue-400 bg-white rounded-lg w-2/5 px-2 py-1 flex items-center justify-center text-center text-lg lg:text-xl self-center knowledgePackBtn" data-target="knowledge_pack">
-                        <div class="flex items-center justify-between gap-1 w-4/5">
+                    <button class="text-black border border-blue-400 bg-white rounded-lg w-2/5 px-2 py-1 flex items-center justify-center text-center text-lg lg:text-xl self-center knowledgePackBtn" >
+                        <a href="https://nadiya.serafym.info" class="flex items-center justify-between gap-1 w-4/5">
                             <img src="{{ asset('img/icon_youtube.png') }}" alt="">
                             <span class="mx-auto">відеоуроки</span>
-                        </div>
+                        </a>
                     </button>
 
                 </div>
