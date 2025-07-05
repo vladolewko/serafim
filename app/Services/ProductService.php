@@ -58,7 +58,6 @@ class ProductService implements ProductServiceInterface
             return $product;
 
         } catch (\Exception $exception) {
-//            \Log::error('Product update failed: ' . $exception->getMessage());
             return null;
         }
     }

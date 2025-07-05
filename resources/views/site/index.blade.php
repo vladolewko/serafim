@@ -1,5 +1,4 @@
 @extends('layouts.site')
-{{--<script src="{{ asset('js/index.js') }}"></script>--}}
 @section('header')
     @include('components.header')
 @endsection

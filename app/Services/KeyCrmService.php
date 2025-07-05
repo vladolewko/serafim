@@ -55,13 +55,9 @@ class KeyCrmService
 
             $products = [];
             $product = $this->productService->getById($order->cart_data['productId']);
-//            dd($product);
-
 
             if ($product) {
-                // Отримайте товар з бази даних або з cart_data
                 $productSku = "PROD-" .  $order->cart_data['productId'];
-//                dd($productSku);
 
                 if ($productSku) {
 
