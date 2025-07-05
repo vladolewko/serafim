@@ -51,12 +51,12 @@ class OrderController extends Controller
             session()->put('cart', [
                 'productId' => $productId,
                 'quantity' => $quantity,
-                'total' => $product->price * $quantity
-//                'total' => 5
+//                'total' => $product->price * $quantity
+                'total' => 5
             ]);
             $cart = session()->get('cart');
 
-            return view('site.orders.create', compact('cart'));
+            return view('site.order', compact('cart'));
         }
 
         return back()->with('error', 'Помилка');
@@ -220,7 +220,7 @@ class OrderController extends Controller
     /**
      * Створення замовлення
      */
-    public function createCounterparty(CreateOrderRequest $request): JsonResponse
+    public function createOrder(CreateOrderRequest $request): JsonResponse
     {
         try {
             $validated = $request->validated();
@@ -243,18 +243,6 @@ class OrderController extends Controller
             // Валідація даних доставки
             if (empty($data['settlement']) || empty($data['warehouse'])) {
                 return $this->errorResponse('Не обрано адресу доставки', [], 400);
-            }
-
-            // Розрахунок вартості доставки якщо не розрахована
-            if (!isset($data['deliveryCost'])) {
-                $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
-
-                if ($deliveryCost < 0) {
-                    return $this->errorResponse('Помилка розрахунку вартості доставки', [], 400);
-                }
-
-                $data['deliveryCost'] = $deliveryCost;
-                Session::put('nova_post_data', $data);
             }
 
             // Додаткова валідація для карткових платежів

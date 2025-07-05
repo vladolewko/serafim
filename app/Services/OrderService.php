@@ -27,14 +27,15 @@ class OrderService
     public function calculateDeliveryCost($cart, $settlementRef)
     {
         $quantity = $cart['quantity'];
-        $weight = $this->productService->getbyId($cart['productId'])->weight * $quantity;
+        $product = $this->productService->getById($cart['productId']);
+        $weight = $product->weight * $quantity;
         $total = (int)$cart['total'];
 
         if ($weight <= 0 || $total <= 0) {
             return -1;
         }
 
-        return $this->novaPostService->getServiceCosts($settlementRef, $weight, $total, $quantity);
+        return $this->novaPostService->getServiceCosts($settlementRef, $weight, $total, $product, $quantity);
     }
 
     /**

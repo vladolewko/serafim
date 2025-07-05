@@ -9,13 +9,6 @@ class NovaPostService
 {
     private string $apiKey;
     private ProductService $productService;
-//    private array $requiredSenderVars = [
-//        'NOVA_POST_CITY_SENDER',
-//        'NOVA_POST_SENDER_REF',
-//        'NOVA_POST_SENDER_ADDRESS',
-//        'NOVA_POST_CONTACT_SENDER',
-//        'NOVA_POST_SENDER_PHONE'
-//    ];
 
     public function __construct(ProductService $productService)
     {
@@ -164,26 +157,55 @@ class NovaPostService
         return $response['data'] ?? [];
     }
 
+
     /**
-     * Розрахунок вартості доставки
+     * Розрахунок вартості доставки (як у keyCRM)
      */
-    public function getServiceCosts(string $recipientCityRef, float $weight, float $total, int $quantity = 1): float
+    public function getServiceCosts(string $recipientCityRef, float $weight, float $total, $product,  int $quantity = 1): float
     {
+        // Розрахунок об'ємної ваги
+        $volumeWeight = 0;
+        if ($product && $product->length && $product->width && $product->height) {
+            $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
+        }
+
+        // Використовуємо більшу з двох ваг, але мінімум 0.5 кг
+        $finalWeight = max($weight, $volumeWeight, 0.5);
+
+        // Визначаємо тип вантажу залежно від ФІНАЛЬНОЇ ваги
+        $cargoType = $finalWeight <= 30 ? 'Parcel' : 'Cargo';
+Log::info('request data:', [
+    'CitySender' => 'e718a680-4b33-11e4-ab6d-005056801329',
+    'CityRecipient' => $recipientCityRef,
+    'Weight' => number_format($finalWeight, 1),
+    'ServiceType' => 'WarehouseWarehouse',
+    'CargoType' => $cargoType, // Тепер буде 'Cargo' для 61.5 кг
+    'SeatsAmount' => (string)$quantity,
+    'RedeliveryCalculate' => [
+        'CargoType' => 'Money',
+        'Amount' => number_format($total, 2)
+    ]
+]
+);
+
         $response = $this->makeRequest('InternetDocument', 'getDocumentPrice', [
-            'CitySender' => env('NOVA_POST_CITY_SENDER'),
+            'CitySender' => 'e718a680-4b33-11e4-ab6d-005056801329',
             'CityRecipient' => $recipientCityRef,
-            'Weight' => (string)$weight,
+            'Weight' => number_format($finalWeight, 1),
+            'Cost' =>floor($total),
             'ServiceType' => 'WarehouseWarehouse',
-            'CargoType' => 'Cargo',
-            'SeatsAmount' => $quantity,
+            'CargoType' => $cargoType, // Тепер буде 'Cargo' для 61.5 кг
+            'SeatsAmount' => (string)$quantity,
             'RedeliveryCalculate' => [
                 'CargoType' => 'Money',
-                'Amount' => $total
+                'Amount' => floor($total)
             ]
         ]);
 
+
+
         $data = $response['data'][0];
-        return $data['Cost'] + $data['CostRedelivery'];
+        return (float)$data['Cost'] + (float)$data['CostRedelivery'];
     }
 
     /**
@@ -195,15 +217,26 @@ class NovaPostService
         $width = (float)$width;
         $height = (float)$height;
 
-        // Перевірка на валідність габаритів
         if ($length <= 0 || $width <= 0 || $height <= 0) {
-            return 0.1; // мінімальна вага
+            return 0;
         }
+
 
         // Об'ємна вага = (L x W x H в см³) / 4000
         $volumeWeightPerItem = ($length * $width * $height) / 4000;
 
-        return max($volumeWeightPerItem * $quantity, 0.1); // мінімум 0.1 кг
+        // Додайте логування для дебагу
+        Log::info('Volume weight calculation', [
+            'length' => $length,
+            'width' => $width,
+            'height' => $height,
+            'volume' => $length * $width * $height,
+            'volumeWeightPerItem' => $volumeWeightPerItem,
+            'quantity' => $quantity,
+            'totalVolumeWeight' => $volumeWeightPerItem * $quantity
+        ]);
+
+        return $volumeWeightPerItem * $quantity;
     }
 
     /**
@@ -239,6 +272,10 @@ class NovaPostService
                 ]);
 
             if (!$response->successful()) {
+                Log::error('API request failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
                 throw new \Exception('API запит не вдався. HTTP код: ' . $response->status());
             }
 

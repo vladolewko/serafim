@@ -48,7 +48,7 @@ class ProductController extends Controller
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
         $product = $this->productService->create($data);
-        if ($product) {
+        if ($product && $this->keycrmService->createProduct($product)) {
 
             return redirect()->route('admin.products')->with('success', 'Товар успішно створено.');
         }
@@ -62,7 +62,6 @@ class ProductController extends Controller
     public function edit($id)
     {
         $applyings = Product::getApplyingOptions();
-//        dd($applyings);
         $product = $this->productService->getById($id);
         $product->content = implode('|', $product->content);
         $product->for_whom = implode('|', $product->for_whom);
@@ -81,7 +80,6 @@ class ProductController extends Controller
         $data['for_whom'] = array_map('trim', explode('|', $data['for_whom']));
 
         $product = $this->productService->update($request->product_id, $data);
-//        dd($this->keycrmService->updateProduct($product));
         if ($product && $this->keycrmService->updateProduct($product)) {
             return redirect()->route('admin.products')->with('success', 'Товар успішно оновлено.');
         }
