@@ -43,7 +43,7 @@ class KeyCrmService
                     $paymentData[] = [
                         "payment_method_id" => 1,
                         "payment_method" => "WayForPay",
-                        "amount" => $order->total_amount,
+                        "amount" => $order->product_total,
                         "description" => "Повна оплата замовлення",
                         "payment_date" => now()->format('Y-m-d H:i:s'),
                         "status" => "paid",

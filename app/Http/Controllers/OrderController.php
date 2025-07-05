@@ -51,8 +51,8 @@ class OrderController extends Controller
             session()->put('cart', [
                 'productId' => $productId,
                 'quantity' => $quantity,
-//                'total' => $product->price * $quantity
-                'total' => 5
+                'total' => $product->price * $quantity
+//                'total' => 5
             ]);
             $cart = session()->get('cart');
 
@@ -185,8 +185,7 @@ class OrderController extends Controller
             $settlements = $this->novaPostService->searchSettlement($data['search']);
             $warehouses = $this->novaPostService->getFilteredWarehouses($data['settlement'], $cart);
 
-//            $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
-            $deliveryCost = 2;
+            $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
             $data['deliveryCost'] = $deliveryCost;
             Session::put('nova_post_data', $data);
 
