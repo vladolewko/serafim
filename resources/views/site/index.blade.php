@@ -2,6 +2,19 @@
 {{--<script src="{{ asset('js/index.js') }}"></script>--}}
 @section('header')
     @include('components.header')
+    <hr class="bg-white border-0 h-px mx-auto w-full">
+    <div class="w-full bg-blue-400">
+        <div class="text-white w-11/12 mx-auto lg:hidden py-2  md:w-3/5">
+            <p class="text-left text-sm font-bold flex-1">
+                Стаття 68 Конституції України:
+            </p>
+            <p class="text-[9.72px]/[1] font-bold md:text-xs">
+                Кожен зобов'язаний неухильно додержуватися Конституції
+                України та законів України, не посягати на права і свободи, честь і гідність інших людей.
+            </p>
+        </div>
+    </div>
+
 @endsection
 
 @section('content')
@@ -355,7 +368,7 @@
         </div>
     </button>
 
-    <a class="bg-white text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn" data-target="knowledge_pack">
+    <a href="https://nadiya.serafym.info" class="bg-white text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn">
             <div class="flex items-center justify-between w-4/5">
                 <img src="{{ asset('img/icon_youtube.png') }}" alt="">
                 <span class="mx-auto">відеоуроки</span>

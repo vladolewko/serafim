@@ -18,15 +18,15 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2  justify-center">
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px]" src="{{ asset('img/complain.png') }}" alt="">
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/skarga.jpg') }}" alt="">
                         <p class="text-xl text-center">Скарга</p>
                     </div>
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px]" src="{{ asset('img/regulation.png') }}" alt="">
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/klopotanya.jpg') }}" alt="">
                         <p class="text-xl text-center">Клопотання</p>
                     </div>
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px]" src="{{ asset('img/raport.png') }}" alt="">
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/raport.jpg') }}" alt="">
                         <p class="text-xl text-center">Рапорт</p>
                     </div>
                 </div>
@@ -36,11 +36,11 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2  justify-center">
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px]" src="{{ asset('img/treaty.png') }}" alt="command img">
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/zajava.jpg') }}" alt="command img">
                         <p class="text-xl text-center">Заява</p>
                     </div>
                     <div class="flex flex-col items-center w-1/5 gap-1">
-                        <img class="w-[150px] h-[150px]" src="{{ asset('img/posov.png') }}" alt="ministry img">
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/posov.webp') }}" alt="posov img">
                         <p class="text-base text-center">Позов</p>
                     </div>
                 </div>

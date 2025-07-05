@@ -12,27 +12,27 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-10  justify-center">
                     <div class="flex flex-col items-center">
-                <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/general_procoratura.png') }}" alt="procoratura img">
+                <img class="w-[150px] h-[150px]" src="{{ asset('img/general_procoratura.png') }}" alt="procoratura img">
                 <p class="text-blue-400 text-center">Генеральна прокаратура</p>
              </div>
 
          <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/nabu.svg') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/nabu.svg') }}" alt="">
              <p class="text-blue-400 text-center">НАБУ</p>
         </div>
 
         <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
+            <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
              <p class="text-blue-400 text-center">ДБР</p>
         </div>
 
         <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SBU.png') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/SBU.png') }}" alt="">
             <p class="text-blue-400 text-center">СБУ</p>
         </div>
 
         <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SUDY.png') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/SUDY.png') }}" alt="">
             <p class="text-blue-400 text-center">СУДИ</p>
         </div>
 
@@ -47,27 +47,27 @@
         <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-10  justify-center">
                     <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/MVS.png') }}" alt="">
              <p class="text-blue-400 text-center">МВС</p>
         </div>
 
          <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/national_police.png') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/national_police.png') }}" alt="">
              <p class="text-blue-400 text-center">Національна поліція</p>
         </div>
 
         <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/NAZK_logo.png') }}" alt="">
+            <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/NAZK_logo.png') }}" alt="">
              <p class="text-blue-400 text-center">НАЗК</p>
         </div>
 
         <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/commissioner.png') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/commissioner.png') }}" alt="">
              <p class="text-blue-400 text-center">Омбудсмен</p>
         </div>
 
         <div class="flex flex-col items-center">
-            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/ministry.png') }}" alt="">
+            <img class="w-[150px] h-[150px] " src="{{ asset('img/ministry.png') }}" alt="">
              <p class="text-blue-400 text-center">Міністерство оборони</p>
         </div>
 

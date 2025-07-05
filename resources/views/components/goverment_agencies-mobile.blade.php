@@ -19,7 +19,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center">
                    <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                        <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/nabu.svg') }}" alt="">
+                        <img class="w-[150px] h-[150px] " src="{{ asset('img/nabu.svg') }}" alt="">
                         <p class="text-blue-400 text-center">НАБУ</p>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
+                            <img class="w-[150px] h-[150px] rounded-full" src="{{ asset('img/DBR_logo.png') }}" alt="">
                             <p class="text-blue-400 text-center">ДБР</p>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SBU.png') }}" alt="">
+                            <img class="w-[150px] h-[150px]" src="{{ asset('img/SBU.png') }}" alt="">
                             <p class="text-blue-400 text-center">СБУ</p>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/SUDY.png') }}" alt="">
+                            <img class="w-[150px] h-[150px] " src="{{ asset('img/SUDY.png') }}" alt="">
                             <p class="text-blue-400 text-center">СУДИ</p>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/MVS.png') }}" alt="">
+                            <img class="w-[150px] h-[150px] " src="{{ asset('img/MVS.png') }}" alt="">
                             <p class="text-blue-400 text-center">МВС</p>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item>
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                            <img class="w-[150px] h-[150px] border border-blue-400 rounded-full" src="{{ asset('img/national_police.png') }}" alt="">
+                            <img class="w-[150px] h-[150px] " src="{{ asset('img/national_police.png') }}" alt="">
                             <p class="text-blue-400 text-center">Національна поліція</p>
                     </div>
                 </div>
