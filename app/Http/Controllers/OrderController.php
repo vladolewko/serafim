@@ -7,6 +7,7 @@ use App\Http\Requests\ChooseSettlementRequest;
 use App\Http\Requests\SetWarehouseRequest;
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
+use App\Services\KeyCrmService;
 use App\Services\NovaPostService;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\OrderService;
@@ -22,17 +23,19 @@ class OrderController extends Controller
     protected $productService;
     protected $wayForPayService;
     protected $orderService;
-
+    protected $keyCrmService;
     public function __construct(
         NovaPostService $novaPostService,
         ProductServiceInterface $productService,
         WayForPayService $wayForPayService,
-        OrderService $orderService
+        OrderService $orderService,
+        KeyCrmService $keyCrmService,
     ) {
         $this->novaPostService = $novaPostService;
         $this->productService = $productService;
         $this->wayForPayService = $wayForPayService;
         $this->orderService = $orderService;
+        $this->keyCrmService = $keyCrmService;
     }
 
     /**
@@ -46,7 +49,7 @@ class OrderController extends Controller
 
         if ($product && $quantity && $quantity > 0) {
             session()->put('cart', [
-                'product' => $product,
+                'productId' => $productId,
                 'quantity' => $quantity,
                 'total' => $product->price * $quantity
 //                'total' => 5
@@ -121,7 +124,7 @@ class OrderController extends Controller
             // У контролері chooseSettlement:
             if (empty($warehouses)) {
                 $cart = session('cart');
-                $product = $cart['product'] ?? null;
+//                $product = $cart['product'] ?? null;
                 $quantity = $cart['quantity'] ?? 1;
 
                 if ($quantity > 1) {
@@ -171,7 +174,7 @@ class OrderController extends Controller
             }
 
             $cart = session('cart');
-            if (empty($cart) || empty($cart['product']) || empty($cart['quantity'])) {
+            if (empty($cart) || !$cart['productId'] || empty($cart['quantity'])) {
                 return $this->errorResponse(
                     'Корзина порожня. Додайте товари перед оформленням замовлення.',
                     ['redirect' => route('home')],
@@ -224,26 +227,90 @@ class OrderController extends Controller
             $cart = session()->get('cart');
             $data = Session::get('nova_post_data', []);
 
+            // Валідація корзини
             if (empty($cart)) {
                 return $this->errorResponse('Корзина порожня', [], 400);
             }
 
+            if (!isset($cart['productId']) || !isset($cart['quantity']) || !isset($cart['total'])) {
+                return $this->errorResponse('Некоректні дані корзини', [], 400);
+            }
+
+            if ($cart['quantity'] <= 0 || $cart['total'] <= 0) {
+                return $this->errorResponse('Некоректна кількість або сума товарів', [], 400);
+            }
+
+            // Валідація даних доставки
             if (empty($data['settlement']) || empty($data['warehouse'])) {
                 return $this->errorResponse('Не обрано адресу доставки', [], 400);
             }
 
+            // Розрахунок вартості доставки якщо не розрахована
+            if (!isset($data['deliveryCost'])) {
+                $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
+
+                if ($deliveryCost < 0) {
+                    return $this->errorResponse('Помилка розрахунку вартості доставки', [], 400);
+                }
+
+                $data['deliveryCost'] = $deliveryCost;
+                Session::put('nova_post_data', $data);
+            }
+
+            // Додаткова валідація для карткових платежів
+            if ($validated['payment'] === 'card') {
+                // Перевірка обов'язкових полів для онлайн оплати
+                if (empty($validated['email'])) {
+                    return $this->errorResponse('Email обов\'язковий для онлайн оплати', [], 400);
+                }
+
+                if (!filter_var($validated['email'], FILTER_VALIDATE_EMAIL)) {
+                    return $this->errorResponse('Некоректний email', [], 400);
+                }
+            }
+
+            // Обробка замовлення
             $result = $this->orderService->processOrder($validated, $cart, $data);
 
             if ($result['success']) {
+                // Для карткових платежів додаємо додаткову інформацію
+                if ($validated['payment'] === 'card' && isset($result['wayforpay_data'])) {
+                    $responseData = [
+                        'message' => 'Замовлення створено, перенаправлення на оплату',
+                        'payment_type' => 'card',
+                        'wayforpay_data' => $result['wayforpay_data'],
+                        'order_reference' => $result['order_reference'] ?? null
+                    ];
+
+                    return $this->successResponse($responseData);
+                }
 
                 return $this->successResponse($result);
             } else {
+                \Log::warning('Order creation failed', [
+                    'validated' => $validated,
+                    'cart' => $cart,
+                    'data' => $data,
+                    'result' => $result
+                ]);
+
                 return $this->errorResponse($result['message'], $result);
             }
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->errorResponse('Помилка валідації', $e->errors(), 422);
+
         } catch (\Exception $e) {
+            \Log::error('Order creation exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'validated' => $validated ?? null,
+                'cart' => $cart ?? null,
+                'data' => $data ?? null
+            ]);
+
             return $this->errorResponse(
-                'Сталася помилка при створенні замовлення',
+                'Сталася помилка при створенні замовлення: ' . $e->getMessage(),
                 [],
                 500
             );
@@ -270,6 +337,41 @@ class OrderController extends Controller
             return response('Error: ' . $e->getMessage(), 500);
         }
     }
+
+
+    /**
+     * Стандартна відповідь для успішних запитів
+     */
+    private function successResponse(array $data = [], int $status = 200): JsonResponse
+    {
+        return response()->json(array_merge([
+            'success' => true,
+            'timestamp' => now()->toISOString()
+        ], $data), $status);
+    }
+
+    /**
+     * Стандартна відповідь для помилок
+     */
+    private function errorResponse(string $message, array $data = [], int $status = 400): JsonResponse
+    {
+        return response()->json(array_merge([
+            'success' => false,
+            'error' => $message,
+            'timestamp' => now()->toISOString()
+        ], $data), $status);
+    }
+
+    public function sendOrderToCrm()
+    {
+        $order = Order::findOrFail(1);
+//        $order->payment_type = 'card';
+        //        dd($order);
+        dd($this->keyCrmService->sendOrderToCrm($order));
+    }
+
+
+
 
     /**
      * Статус замовлення
@@ -305,28 +407,5 @@ class OrderController extends Controller
                 500
             );
         }
-    }
-
-    /**
-     * Стандартна відповідь для успішних запитів
-     */
-    private function successResponse(array $data = [], int $status = 200): JsonResponse
-    {
-        return response()->json(array_merge([
-            'success' => true,
-            'timestamp' => now()->toISOString()
-        ], $data), $status);
-    }
-
-    /**
-     * Стандартна відповідь для помилок
-     */
-    private function errorResponse(string $message, array $data = [], int $status = 400): JsonResponse
-    {
-        return response()->json(array_merge([
-            'success' => false,
-            'error' => $message,
-            'timestamp' => now()->toISOString()
-        ], $data), $status);
     }
 }

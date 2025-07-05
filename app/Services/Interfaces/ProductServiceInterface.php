@@ -9,7 +9,7 @@ interface ProductServiceInterface
 {
     public function getAll(): Collection;
     public function getById(int $id): Product;
-    public function create(array $data): Product;
+    public function create(array $data): Product|null;
     public function update(int $id, array $data): Product|null;
     public function destroy(int $id): bool;
 }

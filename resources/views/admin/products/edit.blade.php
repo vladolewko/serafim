@@ -145,10 +145,20 @@
                             <p class="text-sm text-gray-500">Габарити товару</p>
                         </div>
                         <div class="md:col-span-2">
-                            <input type="text" id="dimension" name="dimension" value="{{ $product->dimension }}" required
+                            <input type="text" id="length" name="length" value="{{ $product->length }}" required
                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            @if($errors->has('dimension'))
-                                <p class="mt-2 text-sm text-red-600">{{ $errors->first('dimension') }}</p>
+                            @if($errors->has('length'))
+                                <p class="mt-2 text-sm text-red-600">{{ $errors->first('length') }}</p>
+                            @endif
+                            <input type="text" id="height" name="height" value="{{ $product->height }}" required
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            @if($errors->has('height'))
+                                <p class="mt-2 text-sm text-red-600">{{ $errors->first('height') }}</p>
+                            @endif
+                            <input type="text" id="width" name="width" value="{{ $product->width }}" required
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            @if($errors->has('width'))
+                                <p class="mt-2 text-sm text-red-600">{{ $errors->first('width') }}</p>
                             @endif
                         </div>
                     </div>

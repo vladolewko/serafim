@@ -126,12 +126,30 @@
                             Розмір
                             <span class="text-red-500">*</span>
                         </label>
+{{--                        <input type="text"--}}
+{{--                               id="dimension"--}}
+{{--                               name="dimension"--}}
+{{--                               required--}}
+{{--                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"--}}
+{{--                               placeholder="наприклад: 20x15x5 см">--}}
                         <input type="text"
-                               id="dimension"
-                               name="dimension"
+                               id="length"
+                               name="length"
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
-                               placeholder="наприклад: 20x15x5 см">
+                               placeholder="наприклад: 20">
+                        <input type="text"
+                               id="height"
+                               name="height"
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
+                               placeholder="наприклад: 20">
+                        <input type="text"
+                               id="width"
+                               name="width"
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
+                               placeholder="наприклад: 20">
                     </div>
 
                     <!-- Вміст -->
