@@ -37,14 +37,18 @@ class KeyCrmService
                 $deliveryServiceId = 1; // ID для наложеного платежу
             } elseif ($order->payment_type == 'card') {
                 $deliveryServiceId = 2; // ID для оплати карткою
-                $paymentData[] = [
-                    "payment_method_id" => 1,
-                    "payment_method" => "WayForPay",
-                    "amount" => $order->total_amount,
-                    "description" => "Повна оплата замовлення",
-                    "payment_date" => now()->format('Y-m-d H:i:s'),
-                    "status" => "paid",
-                ];
+
+                // Додаємо дані про оплату тільки якщо замовлення оплачено
+                if ($order->status == 'paid' || $order->payment_status == 'paid') {
+                    $paymentData[] = [
+                        "payment_method_id" => 1,
+                        "payment_method" => "WayForPay",
+                        "amount" => $order->total_amount,
+                        "description" => "Повна оплата замовлення",
+                        "payment_date" => now()->format('Y-m-d H:i:s'),
+                        "status" => "paid",
+                    ];
+                }
             }
 
             $customerName = trim($order->customer_name . ' ' . $order->customer_surname);
@@ -70,7 +74,6 @@ class KeyCrmService
                         "quantity" => $order->cart_data['quantity'],
                         "unit_type" => "шт",
                         "name" => $product->name,
-                        "picture" => $product->getFirstMediaUrl() ?? '',
 
                     ];
                 }
