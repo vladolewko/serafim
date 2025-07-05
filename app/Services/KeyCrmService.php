@@ -43,7 +43,7 @@ class KeyCrmService
                     $paymentData[] = [
                         "payment_method_id" => 1,
                         "payment_method" => "WayForPay",
-                        "amount" => $order->total_amount,
+                        "amount" => $order->product_total,
                         "description" => "Повна оплата замовлення",
                         "payment_date" => now()->format('Y-m-d H:i:s'),
                         "status" => "paid",
@@ -55,13 +55,9 @@ class KeyCrmService
 
             $products = [];
             $product = $this->productService->getById($order->cart_data['productId']);
-//            dd($product);
-
 
             if ($product) {
-                // Отримайте товар з бази даних або з cart_data
                 $productSku = "PROD-" .  $order->cart_data['productId'];
-//                dd($productSku);
 
                 if ($productSku) {
 

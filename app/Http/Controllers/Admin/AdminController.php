@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-       public function signIn(Request $request)
+    /*
+     * Trying to sign in as Admin
+     */
+    public function signIn(Request $request)
     {
         $login = $request->post('login');
         $password = $request->post('password');
@@ -21,6 +24,9 @@ class AdminController extends Controller
         return redirect()->back()->with(['error' => 'Неправильний логін або пароль']);
     }
 
+    /*
+     * Log out from admin account
+     */
     public function logOut()
     {
         Auth::logout();

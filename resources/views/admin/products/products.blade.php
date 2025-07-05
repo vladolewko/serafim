@@ -2,7 +2,6 @@
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- I have not failed. I've just found 10,000 ways that won't work. - Thomas Edison -->
 
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">

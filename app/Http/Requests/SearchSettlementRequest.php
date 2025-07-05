@@ -16,9 +16,6 @@ class SearchSettlementRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
         return [
@@ -32,9 +29,6 @@ class SearchSettlementRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     */
     public function messages(): array
     {
         return [
@@ -46,9 +40,6 @@ class SearchSettlementRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get custom attributes for validator errors.
-     */
     public function attributes(): array
     {
         return [
@@ -56,9 +47,6 @@ class SearchSettlementRequest extends FormRequest
         ];
     }
 
-    /**
-     * Handle a failed validation attempt.
-     */
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(

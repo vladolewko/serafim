@@ -54,41 +54,4 @@ class Order extends Model
 
         return $orderReference;
     }
-
-    /**
-     * Отримує замовлення за номером
-     */
-    public static function findByReference(string $orderReference): ?self
-    {
-        return self::where('order_reference', $orderReference)->first();
-    }
-
-    /**
-     * Оновлює статус оплати
-     */
-    public function updatePaymentStatus(string $status, ?array $paymentData = null): void
-    {
-        $this->payment_status = $status;
-
-        if ($status === 'paid') {
-            $this->payment_date = now();
-            $this->status = 'paid';
-        }
-
-        if ($paymentData) {
-            $currentData = $this->wayforpay_data ?? [];
-            $this->wayforpay_data = array_merge($currentData, $paymentData);
-        }
-
-        $this->save();
-    }
-
-    /**
-     * Перевіряє чи замовлення оплачене
-     */
-    public function isPaid(): bool
-    {
-        return $this->payment_status === 'paid';
-    }
-
 }

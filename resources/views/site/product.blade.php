@@ -44,10 +44,6 @@
                                     <ul class="list-disc text-slate-600 ml-6 text-sm sm:text-base space-y-1">
                                         <li>Доставка у відділення нової пошти</li>
                                         <li>Доставка в поштомат</li>
-
-
-                                        {{--<li>Доставка кур'єром нової пошти</li>--}}
-
                                     </ul>
                                 </div>
 

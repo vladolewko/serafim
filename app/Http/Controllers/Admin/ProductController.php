@@ -21,6 +21,9 @@ class ProductController extends Controller
         $this->keycrmService = $keycrmService;
     }
 
+    /*
+     * Getting all products
+     */
     public function products()
     {
         $products = $this->productService->getAll();

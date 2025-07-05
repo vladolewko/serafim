@@ -123,26 +123,21 @@
                     <!-- Розмір -->
                     <div>
                         <label for="dimension" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Розмір
+                            Розмір(довжина, ширина та висота в сантиметрах)
                             <span class="text-red-500">*</span>
                         </label>
-{{--                        <input type="text"--}}
-{{--                               id="dimension"--}}
-{{--                               name="dimension"--}}
-{{--                               required--}}
-{{--                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"--}}
-{{--                               placeholder="наприклад: 20x15x5 см">--}}
+
                         <input type="text"
                                id="length"
                                name="length"
                                required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
+                               class="w-full px-4 mb-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
                                placeholder="наприклад: 20">
                         <input type="text"
                                id="height"
                                name="height"
                                required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
+                               class="w-full px-4 mb-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
                                placeholder="наприклад: 20">
                         <input type="text"
                                id="width"
@@ -163,7 +158,7 @@
                                name="content"
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
-                               placeholder="наприклад елемент1|елемент2|елемент3|">
+                               placeholder="наприклад: елемент1|елемент2|елемент3|">
                     </div>
 
                     <!-- Для кого призначено -->
@@ -177,7 +172,7 @@
                                name="for_whom"
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
-                               placeholder="наприклад призначення1|призначення2|призначення3|">
+                               placeholder="наприклад: призначення1|призначення2|призначення3|">
                     </div>
 
                     <!-- Призначення комплекту -->
@@ -191,7 +186,7 @@
                                name="appointment"
                                required
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400"
-                               placeholder="наприклад: навчання, розвиток">
+                               placeholder="наприклад: для навчання та розвитку">
                     </div>
                     <!-- категорія -->
                     <div class="lg:col-span-2">
@@ -221,11 +216,6 @@
                             <span id="file-name" class="text-black text-left">Файл не вибрано</span>
                         </label>
                     </div>
-
-
-
-
-
                 </div>
 
                 <!-- Submit Button -->
@@ -270,109 +260,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-
-
-{{--<script defer>--}}
-{{--document.addEventListener('DOMContentLoaded', function() {--}}
-{{--    const fileInput = document.getElementById('image');--}}
-{{--    const uploadArea = fileInput.closest('.border-dashed');--}}
-
-{{--    // Функція для оновлення UI після вибору файлу--}}
-{{--    function updateUploadArea(file) {--}}
-{{--        const fileName = file.name;--}}
-{{--        const fileSize = (file.size / 1024 / 1024).toFixed(2);--}}
-{{--        const textArea = uploadArea.querySelector('.space-y-1');--}}
-
-{{--        // Перевірка розміру файлу (10MB)--}}
-{{--        if (file.size > 10 * 1024 * 1024) {--}}
-{{--            alert('Файл занадто великий! Максимальний розмір: 10MB');--}}
-{{--            return false;--}}
-{{--        }--}}
-
-{{--        textArea.innerHTML = `--}}
-{{--            <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">--}}
-{{--                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>--}}
-{{--            </svg>--}}
-{{--            <div class="text-sm text-gray-600">--}}
-{{--                <p class="font-medium text-green-600">${fileName}</p>--}}
-{{--                <p class="text-xs text-gray-500">${fileSize} MB</p>--}}
-{{--            </div>--}}
-{{--        `;--}}
-{{--        uploadArea.classList.remove('border-gray-300', 'hover:border-gray-400');--}}
-{{--        uploadArea.classList.add('border-green-300', 'bg-green-50');--}}
-{{--        return true;--}}
-{{--    }--}}
-
-{{--    // Обробка події change для input--}}
-{{--    fileInput.addEventListener('change', function(e) {--}}
-{{--        const file = e.target.files[0];--}}
-{{--        if (file) {--}}
-{{--            console.log('Файл вибрано через input:', file.name, file.type);--}}
-{{--            updateUploadArea(file);--}}
-{{--        }--}}
-{{--    });--}}
-
-{{--    // Обробка drag-and-drop подій--}}
-{{--    uploadArea.addEventListener('dragover', function(e) {--}}
-{{--        e.preventDefault();--}}
-{{--        uploadArea.classList.add('border-blue-500', 'bg-blue-50');--}}
-{{--    });--}}
-
-{{--    uploadArea.addEventListener('dragenter', function(e) {--}}
-{{--        e.preventDefault();--}}
-{{--        uploadArea.classList.add('border-blue-500', 'bg-blue-50');--}}
-{{--    });--}}
-
-{{--    uploadArea.addEventListener('dragleave', function(e) {--}}
-{{--        e.preventDefault();--}}
-{{--        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');--}}
-{{--    });--}}
-
-{{--    uploadArea.addEventListener('drop', function(e) {--}}
-{{--        e.preventDefault();--}}
-{{--        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');--}}
-
-{{--        const file = e.dataTransfer.files[0];--}}
-{{--        console.log('Файл перетягнуто:', file.name, file.type); // Для діагностики--}}
-
-{{--        // Перевірка, чи це зображення--}}
-{{--        if (file && file.type.startsWith('image/')) {--}}
-{{--            const dataTransfer = new DataTransfer();--}}
-{{--            dataTransfer.items.add(file);--}}
-{{--            fileInput.files = dataTransfer.files;--}}
-
-{{--            if (updateUploadArea(file)) {--}}
-{{--                fileInput.dispatchEvent(new Event('change')); // Викликаємо подію change--}}
-{{--            }--}}
-{{--        } else {--}}
-{{--            alert('Будь ласка, виберіть файл типу PNG, JPG або GIF');--}}
-{{--        }--}}
-{{--    });--}}
-
-{{--    // Form validation feedback--}}
-{{--    const form = document.querySelector('form');--}}
-{{--    if (form) {--}}
-{{--        const inputs = form.querySelectorAll('input[required]');--}}
-{{--        inputs.forEach(input => {--}}
-{{--            input.addEventListener('blur', function() {--}}
-{{--                if (this.value.trim() === '') {--}}
-{{--                    this.classList.add('border-red-300', 'ring-red-500');--}}
-{{--                    this.classList.remove('border-green-300');--}}
-{{--                } else {--}}
-{{--                    this.classList.remove('border-red-300', 'ring-red-500');--}}
-{{--                    this.classList.add('border-green-300');--}}
-{{--                }--}}
-{{--            });--}}
-
-{{--            input.addEventListener('input', function() {--}}
-{{--                if (this.value.trim() !== '') {--}}
-{{--                    this.classList.remove('border-red-300', 'ring-red-500');--}}
-{{--                    this.classList.add('border-green-300');--}}
-{{--                }--}}
-{{--            });--}}
-{{--        });--}}
-{{--    }--}}
-{{--});--}}
-{{--</script>--}}
 
 

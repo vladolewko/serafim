@@ -39,7 +39,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Показати форму створення замовлення
+     * Show product creation form
      */
     public function create(Request $request)
     {
@@ -51,8 +51,8 @@ class OrderController extends Controller
             session()->put('cart', [
                 'productId' => $productId,
                 'quantity' => $quantity,
-//                'total' => $product->price * $quantity
-                'total' => 5
+                'total' => $product->price * $quantity
+//                'total' => 5
             ]);
             $cart = session()->get('cart');
 
@@ -63,7 +63,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Пошук населених пунктів
+     * Searching settlements by search
      */
     public function searchSettlement(SearchSettlementRequest $request): JsonResponse
     {
@@ -98,7 +98,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Вибір населеного пункту
+     * Saving Settlement to Order Data
      */
     public function chooseSettlement(ChooseSettlementRequest $request): JsonResponse
     {
@@ -121,10 +121,8 @@ class OrderController extends Controller
             $warehouses = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart);
             $settlements = $this->novaPostService->searchSettlement($data['search']);
 
-            // У контролері chooseSettlement:
             if (empty($warehouses)) {
                 $cart = session('cart');
-//                $product = $cart['product'] ?? null;
                 $quantity = $cart['quantity'] ?? 1;
 
                 if ($quantity > 1) {
@@ -157,7 +155,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Вибір відділення
+     * Saving Warehouse to session
      */
     public function setWarehouse(SetWarehouseRequest $request): JsonResponse
     {
@@ -187,8 +185,7 @@ class OrderController extends Controller
             $settlements = $this->novaPostService->searchSettlement($data['search']);
             $warehouses = $this->novaPostService->getFilteredWarehouses($data['settlement'], $cart);
 
-//            $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
-            $deliveryCost = 2;
+            $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
             $data['deliveryCost'] = $deliveryCost;
             Session::put('nova_post_data', $data);
 
@@ -219,7 +216,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Створення замовлення
+     * Trying to create order
      */
     public function createOrder(CreateOrderRequest $request): JsonResponse
     {
@@ -276,7 +273,7 @@ class OrderController extends Controller
 
                 return $this->successResponse($result);
             } else {
-                \Log::warning('Order creation failed', [
+                Log::warning('Order creation failed', [
                     'validated' => $validated,
                     'cart' => $cart,
                     'data' => $data,
@@ -290,7 +287,7 @@ class OrderController extends Controller
             return $this->errorResponse('Помилка валідації', $e->errors(), 422);
 
         } catch (\Exception $e) {
-            \Log::error('Order creation exception', [
+            Log::error('Order creation exception', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'validated' => $validated ?? null,
@@ -307,7 +304,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Callback для оплати
+     * Callback for payment
      */
     public function paymentCallback(Request $request)
     {
@@ -329,7 +326,7 @@ class OrderController extends Controller
 
 
     /**
-     * Стандартна відповідь для успішних запитів
+     * Success response pattern
      */
     private function successResponse(array $data = [], int $status = 200): JsonResponse
     {
@@ -340,7 +337,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Стандартна відповідь для помилок
+     * error response pattern
      */
     private function errorResponse(string $message, array $data = [], int $status = 400): JsonResponse
     {
@@ -351,19 +348,9 @@ class OrderController extends Controller
         ], $data), $status);
     }
 
-    public function sendOrderToCrm()
-    {
-        $order = Order::findOrFail(1);
-//        $order->payment_type = 'card';
-        //        dd($order);
-        dd($this->keyCrmService->sendOrderToCrm($order));
-    }
-
-
-
 
     /**
-     * Статус замовлення
+     * Getting Order Status
      */
     public function getOrderStatus($orderReference): JsonResponse
     {

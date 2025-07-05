@@ -62,7 +62,6 @@ class NovaPostService
         }
 
         $quantity = $cart['quantity'];
-        // Розрахунок параметрів
         $totalWeight = ($product->weight ?? 0) * $quantity;
         $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
         $finalWeight = max($totalWeight, $volumeWeight);
@@ -179,7 +178,7 @@ Log::info('request data:', [
     'CityRecipient' => $recipientCityRef,
     'Weight' => number_format($finalWeight, 1),
     'ServiceType' => 'WarehouseWarehouse',
-    'CargoType' => $cargoType, // Тепер буде 'Cargo' для 61.5 кг
+    'CargoType' => $cargoType,
     'SeatsAmount' => (string)$quantity,
     'RedeliveryCalculate' => [
         'CargoType' => 'Money',

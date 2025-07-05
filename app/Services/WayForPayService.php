@@ -32,7 +32,7 @@ class WayForPayService
         try {
             $total = (int)$cart['total'];
             $deliveryCost = $data['deliveryCost'] ?? 0;
-            $totalAmount = $total + $deliveryCost;
+//            $totalAmount = $total + $deliveryCost;
 
             $amount = number_format($total, 2, '.', '');
             $currency = 'UAH';
