@@ -84,18 +84,6 @@ class Order extends Model
     }
 
     /**
-     * Додає дані ТТН
-     */
-    public function addTTNData($ttnNumber, $ttnData)
-    {
-        $this->update([
-            'ttn_number' => $ttnNumber,
-            'ttn_data' => json_encode($ttnData),
-            'status' => 'shipped'
-        ]);
-    }
-
-    /**
      * Перевіряє чи замовлення оплачене
      */
     public function isPaid(): bool
@@ -103,11 +91,4 @@ class Order extends Model
         return $this->payment_status === 'paid';
     }
 
-    /**
-     * Перевіряє чи замовлення готове до створення ТТН
-     */
-    public function isReadyForTTN(): bool
-    {
-        return $this->payment_type === 'cash' || $this->isPaid();
-    }
 }

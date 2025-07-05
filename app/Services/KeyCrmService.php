@@ -74,7 +74,6 @@ class KeyCrmService
                         "quantity" => $order->cart_data['quantity'],
                         "unit_type" => "шт",
                         "name" => $product->name,
-                        "picture" => $product->getFirstMediaUrl() ?? '',
 
                     ];
                 }
