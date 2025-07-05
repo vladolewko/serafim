@@ -70,12 +70,9 @@ class KeyCrmService
                         "quantity" => $order->cart_data['quantity'],
                         "unit_type" => "шт",
                         "name" => $product->name,
-
                     ];
                 }
             }
-
-            // Створіть більш читабельну адресу
             $warehouseNumber = $warehouseData['Number'];
             $warehouseAddress = $warehouseData['ShortAddress'];
             $warehouseName = "Відділення №{$warehouseNumber}";
