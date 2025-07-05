@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WayForPayService
 {
@@ -26,7 +27,7 @@ class WayForPayService
     /**
      * Підготовка даних для оплати
      */
-    public function preparePaymentData($validated, $cart, $data)
+    public function preparePaymentData($validated, $cart, $data, $orderReference = null)
     {
         try {
             $total = (int)$cart['total'];
@@ -36,7 +37,7 @@ class WayForPayService
             $amount = number_format($total, 2, '.', '');
             $currency = 'UAH';
             $orderDate = time();
-            $orderReference = \App\Models\Order::generateOrderReference();
+            $orderRef = $orderReference ?: 'ORDER_' . time() . '_' . rand(1000, 9999);
 
             // Отримуємо продукт
             $productId = null;
@@ -64,7 +65,7 @@ class WayForPayService
             $signString = implode(';', [
                 $this->merchantAccount,
                 $this->merchantDomainName,
-                $orderReference,
+                $orderRef,
                 $orderDate,
                 $amount,
                 $currency,
@@ -79,7 +80,7 @@ class WayForPayService
             return [
                 'merchantAccount' => $this->merchantAccount,
                 'merchantDomainName' => $this->merchantDomainName,
-                'orderReference' => $orderReference,
+                'orderReference' => $orderRef,
                 'orderDate' => $orderDate,
                 'amount' => $amount,
                 'currency' => $currency,
@@ -96,7 +97,7 @@ class WayForPayService
             ];
 
         } catch (\Exception $e) {
-            \Log::error('WayForPay payment data preparation failed', [
+            Log::error('WayForPay payment data preparation failed', [
                 'error' => $e->getMessage(),
                 'validated' => $validated,
                 'cart' => $cart,

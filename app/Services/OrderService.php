@@ -96,7 +96,8 @@ class OrderService
         Session::put('pending_order_id', $order->id);
         Session::forget(['cart']); // Очищаємо тільки після успішного створення
 
-        $paymentData = $this->wayForPayService->preparePaymentData($validated, $cart, $data);
+        // ВАЖЛИВО: Передайте orderReference в WayForPay
+        $paymentData = $this->wayForPayService->preparePaymentData($validated, $cart, $data, $orderReference);
 
         if (!$paymentData) {
             return ['success' => false, 'message' => 'Помилка при підготовці платіжних даних'];
