@@ -185,7 +185,7 @@ class OrderController extends Controller
             $settlements = $this->novaPostService->searchSettlement($data['search']);
             $warehouses = $this->novaPostService->getFilteredWarehouses($data['settlement'], $cart);
 
-            $deliveryCost = $this->orderService->calculateDeliveryCost($cart, $data['settlement']);
+            $deliveryCost = floor($this->orderService->calculateDeliveryCost($cart, $data['settlement']));
             $data['deliveryCost'] = $deliveryCost;
             Session::put('nova_post_data', $data);
 
