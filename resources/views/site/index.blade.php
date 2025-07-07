@@ -359,7 +359,7 @@
 
 
 
-<div id="hidden_introduction_btn" class=" fixed left-1/2 -translate-x-1/2 lg:right-0 lg:-translate-x-0  bottom-5 flex flex-col md:flex-row lg:flex-col gap-4 w-11/12 md:w-4/5 z-50">
+<div id="hidden_introduction_btn" class=" fixed left-1/2 -translate-x-1/2 lg:right-0 lg:-translate-x-0  bottom-5 flex flex-col md:flex-row lg:flex-col gap-4 w-11/12 md:w-4/5 z-40">
     <button
         class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl lg:w-1/5 self-center knowledgePackBtn" data-target="why_important">
         <div class="flex items-center justify-between w-4/5">
