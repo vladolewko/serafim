@@ -50,7 +50,7 @@
                         <div class="lg:w-3/12 xl:w-min h-full rounded-xl bg-gray-400 p-[2px] ">
                             <div class="bg-white flex flex-col items-center rounded-xl ">
                                 <div class="relative xl:h-[212px] xl:w-[212px] lg:w-[200px] lg:h-[200px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
-                                    <img class="absolute  xl:w-[212px] lg:w-[200px]  mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
+                                    <img class="absolute bottom-[-65px]  xl:w-[212px] lg:w-[200px]  mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
                                 </div>
 
                                 <p class="text-xl/6 font-semibold text-center w-11/12">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>

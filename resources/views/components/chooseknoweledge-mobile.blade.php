@@ -46,8 +46,8 @@
                         <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gray-200 p-[2px]">
                             <div class="bg-white flex flex-col items-center rounded-xl">
                                 <!-- posible img -->
-                                <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-                                    <img class="  w-[212px] mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
+                                <div class="relative h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
+                                    <img class="absolute bottom-[-65px]  w-[212px] mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
                                 </div>
 
                                 <p class="text-xl/6 font-semibold text-center w-4/6">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
