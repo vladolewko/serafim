@@ -1,9 +1,13 @@
+<div class="sticky top-0 lg:pt-3 bg-blue-400 w-full sticky top-0 z-50">
+            @include('components.navigation')
+        </div>
 <header class="lg:pt-3 bg-blue-400 w-full sticky lg:static top-0 z-50">
 
     <!-- Desktop -->
     <div class="w-11/12 lg:w-9/12 hidden lg:block mx-auto ">
         <!-- Navigation -->
-        @include('components.navigation')
+
+
         <div class="text-white flex justify-center items-center gap-3 flex-wrap sm:flex-nowrap">
             <div class="text-center">
                 <p class="text-base font-bold">
