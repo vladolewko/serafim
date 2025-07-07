@@ -47,12 +47,13 @@
                             <div class="bg-white flex flex-col items-center rounded-xl">
                                 <!-- posible img -->
                                 <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
+                                    <img class="  w-[212px] mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
                                 </div>
 
-                                <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
-                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
-                                <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
-                                    href="{{ route('product.show', $product->id) }}">переглянути</a>
+                                <p class="text-xl/6 font-semibold text-center w-4/6">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
+                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">355 грн</p>
+                                <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                     href="https://nadiya.serafym.info">переглянути</a>
                             </div>
                         </div>
                     </div>
@@ -69,7 +70,7 @@
                                 <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
                                 <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
-                                    href="{{ route('product.show', $product->id) }}">переглянути</a>
+                                    >переглянути</a>
                             </div>
                         </div>
                     </div>
@@ -86,7 +87,7 @@
                                 <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
                                 <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
-                                    href="{{ route('product.show', $product->id) }}">переглянути</a>
+                                    >переглянути</a>
                             </div>
                         </div>
                     </div>
