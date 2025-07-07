@@ -1,4 +1,4 @@
-<div class="sticky top-0 lg:pt-3 bg-blue-400 w-full sticky top-0 z-50">
+<div class="sticky top-0 lg:pt-3 bg-blue-400 w-full sticky top-0 z-50 hidden lg:block">
             @include('components.navigation')
         </div>
 <header class="lg:pt-3 bg-blue-400 w-full sticky lg:static top-0 z-50">
