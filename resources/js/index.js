@@ -81,7 +81,7 @@ function checkIntroductionPosition() {
     const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
     const introduction_block_pos =
         introduction_block.getBoundingClientRect().top;
-    const screenPosition = window.innerHeight;
+    // const screenPosition = window.innerHeight;
 
     // Перевіряємо, чи елемент вийшов за межі екрану (прокрутили вниз)
     if (
@@ -385,6 +385,7 @@ function closeModal(modalId) {
 // Додаємо обробники подій для кнопок відкриття
 modalTriggers.forEach((trigger) => {
     trigger.addEventListener("click", function () {
+        console.log("lalal");
         const triggerId = this.id;
         let modalId = "";
 
@@ -395,6 +396,12 @@ modalTriggers.forEach((trigger) => {
                 break;
             case "policy":
                 modalId = "policyModal";
+                break;
+            case "policy_order":
+                modalId = "policyModal";
+                break;
+            case "terms_order":
+                modalId = "termsModal";
                 break;
         }
 
@@ -445,37 +452,3 @@ document.querySelectorAll(".modal-content").forEach((content) => {
         }
     });
 });
-
-// Функція для перевірки позиції скролу
-// function checkScrollPosition() {
-//     // Отримуємо поточну позицію скролу
-//     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-//     // Висота вікна браузера
-//     const windowHeight = window.innerHeight;
-
-//     // Загальна висота документа
-//     const documentHeight = document.documentElement.scrollHeight;
-
-//     // Перевіряємо, чи досягнули низу (з відступом 10px)
-//     const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
-
-//     // Отримуємо елемент
-//     const hiddenBtn = document.getElementById("hidden_introduction_btn");
-
-//     // Приховуємо або показуємо елемент
-//     if (innerWidth && (isAtBottom === false || innerWidth >= 1025)) {
-//         hiddenBtn.style.display = "flex";
-//     } else {
-//         hiddenBtn.style.display = "none";
-//     }
-// }
-
-// // Додаємо обробник події скролу
-// window.addEventListener("scroll", checkScrollPosition);
-
-// // Додаємо обробник для зміни розміру вікна (опціонально)
-// window.addEventListener("resize", checkScrollPosition);
-
-// // Перевіряємо початкову позицію після завантаження сторінки
-// document.addEventListener("DOMContentLoaded", checkScrollPosition);

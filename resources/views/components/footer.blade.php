@@ -63,9 +63,9 @@
     <!-- Нижня частина -->
     <hr class="w-10/12 sm:w-8/12 xl:w-7/12 mx-auto mt-6 lg:mt-10">
     <div class="text-white my-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm lg:text-base">
-        <span id="terms" class="modal-trigger cursor-pointer">terms of use</span>
+        <span id="terms" class="flex justify-center modal-trigger cursor-pointer">terms of use</span>
         <span class="hidden sm:inline text-2xl lg:text-4xl">|</span>
-        <span id="policy" class="modal-trigger cursor-pointer">privacy policy</span>
+        <span id="policy" class="flex justify-center modal-trigger cursor-pointer">privacy policy</span>
     </div>
     <hr class="w-10/12 sm:w-8/12 xl:w-7/12 mx-auto">
 </footer>
