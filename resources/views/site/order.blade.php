@@ -9,7 +9,7 @@
                     <a href="{{ route('home') }}">головна</a>
                 </li>
                 <li class="hover:text-slate-800 cursor-pointer">
-                    <a href="{{ route('product.show', $cart['product']->id) }}">замовлення</a>
+                    <a href="{{ route('product.show', $cart['productId']) }}">замовлення</a>
                 </li>
                 <li class="text-yellow-400 text-xl sm:text-2xl font-semibold">оформлення</li>
             </ul>
@@ -269,14 +269,17 @@
     </main>
 
     <script>
+<<<<<<< HEAD:resources/views/site/orders/create.blade.php
 
         // Конфігурація роутів - винеси це в окремий об'єкт для легкого відокремлення
+=======
+>>>>>>> 89bbff490b23d8f34fc1ed6adcf1e4281e66aa8a:resources/views/site/order.blade.php
         const ORDER_CONFIG = {
             routes: {
                 searchSettlement: '{{ route("orders.searchSettlement") }}',
                 chooseSettlement: '{{ route("orders.chooseSettlement") }}',
                 setWarehouse: '{{ route("orders.setWarehouse") }}',
-                createCounterparty: '{{ route("orders.createCounterparty") }}',
+                createOrder: '{{ route("orders.createOrder") }}',
                 orderStatus: '/api/orders/status/',
                 home: '{{ route("home") }}'
             },
@@ -293,29 +296,39 @@
                 this.elements = this.initElements();
                 this.state = this.initState();
                 this.searchTimeout = null;
-
                 this.init();
             }
 
             initElements() {
                 const ids = [
-                    'settlement-input', 'settlement-dropdown', 'settlement-search', 'settlement-options', 'settlement-loader',
-                    'warehouse-input', 'warehouse-dropdown', 'warehouse-search', 'warehouse-options', 'warehouse-loader',
-                    'selected-address', 'address-text', 'change-address',
-                    'unified-order-form', 'order-form-section', 'submit-btn',
-                    'delivery-cost', 'total-amount'
+                    'settlement-input', 'settlement-dropdown', 'settlement-search',
+                    'settlement-options', 'settlement-loader', 'warehouse-input',
+                    'warehouse-dropdown', 'warehouse-search', 'warehouse-options',
+                    'warehouse-loader', 'selected-address', 'address-text',
+                    'change-address', 'unified-order-form', 'order-form-section',
+                    'submit-btn', 'delivery-cost', 'total-amount'
                 ];
 
                 return ids.reduce((els, id) => {
-                    const key = id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+                    const key = this.toCamelCase(id);
                     els[key] = document.getElementById(id);
                     return els;
                 }, {});
             }
 
+            toCamelCase(str) {
+                return str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+            }
+
             initState() {
                 return {
-                    address: { search: '', settlement: '', settlementName: '', warehouse: '', warehouseName: '' },
+                    address: {
+                        search: '',
+                        settlement: '',
+                        settlementName: '',
+                        warehouse: '',
+                        warehouseName: ''
+                    },
                     settlements: [],
                     warehouses: [],
                     filteredSettlements: [],
@@ -387,24 +400,20 @@
             formatPhoneNumber(input) {
                 let value = input.value.replace(/\D/g, '');
 
-                // Автоматично додаємо 380 якщо номер починається з 0 або порожній
                 if (value.startsWith('0')) {
                     value = '380' + value.substring(1);
                 } else if (value.length > 0 && !value.startsWith('380')) {
                     value = '380' + value;
                 }
 
-                // Обмежуємо довжину
                 value = value.substring(0, 12);
 
-                // Форматуємо
                 if (value.length > 0) {
                     let formatted = '+380';
                     if (value.length > 3) formatted += value.substring(3, 5);
                     if (value.length > 5) formatted += value.substring(5, 8);
                     if (value.length > 8) formatted += value.substring(8, 10);
                     if (value.length > 10) formatted += value.substring(10, 12);
-
                     input.value = formatted;
                 }
             }
@@ -412,7 +421,6 @@
             validatePhone(input) {
                 const value = input.value.replace(/\D/g, '');
                 const isValid = value.length === 12 && value.startsWith('380');
-
                 this.toggleFieldError(input, !isValid, 'Введіть коректний український номер телефону');
                 return isValid;
             }
@@ -427,11 +435,9 @@
                 field.classList.toggle('border-red-500', hasError);
                 field.classList.toggle('border-2', hasError);
 
-                // Видаляємо попереднє повідомлення про помилку
                 const existingError = field.parentNode.querySelector('.field-error');
                 if (existingError) existingError.remove();
 
-                // Додаємо нове повідомлення про помилку
                 if (hasError && message) {
                     const errorEl = document.createElement('div');
                     errorEl.className = 'field-error text-red-500 text-sm mt-1';
@@ -476,7 +482,9 @@
                 try {
                     const response = await this.makeRequest(ORDER_CONFIG.routes.searchSettlement, { search: searchValue });
 
-                    if (!response.success) throw new Error(response.error || 'Не вдалося знайти населені пункти');
+                    if (!response.success) {
+                        throw new Error(response.error || 'Не вдалося знайти населені пункти');
+                    }
 
                     this.state.address.search = searchValue;
                     this.state.settlements = response.settlements || [];
@@ -546,7 +554,9 @@
                 try {
                     const response = await this.makeRequest(ORDER_CONFIG.routes.chooseSettlement, { settlement: settlementRef });
 
-                    if (!response.success) throw new Error(response.error || 'Не вдалося завантажити відділення');
+                    if (!response.success) {
+                        throw new Error(response.error || 'Не вдалося завантажити відділення');
+                    }
 
                     this.state.address.settlement = settlementRef;
                     this.state.address.settlementName = settlementName;
@@ -578,7 +588,9 @@
                 try {
                     const response = await this.makeRequest(ORDER_CONFIG.routes.setWarehouse, { warehouse: warehouseRef });
 
-                    if (!response.success) throw new Error('Не вдалося розрахувати вартість доставки');
+                    if (!response.success) {
+                        throw new Error('Не вдалося розрахувати вартість доставки');
+                    }
 
                     this.state.address.warehouse = warehouseRef;
                     this.state.address.warehouseName = warehouseName;
@@ -604,11 +616,8 @@
             enableWarehouseSelect() {
                 if (!this.elements.warehouseInput) return;
 
-                Object.assign(this.elements.warehouseInput, {
-                    disabled: false,
-                    placeholder: 'Оберіть відділення або поштомат...'
-                });
-
+                this.elements.warehouseInput.disabled = false;
+                this.elements.warehouseInput.placeholder = 'Оберіть відділення або поштомат...';
                 this.elements.warehouseInput.classList.remove('bg-gray-50');
                 this.elements.warehouseInput.classList.add('bg-white');
             }
@@ -616,12 +625,9 @@
             disableWarehouseSelect() {
                 if (!this.elements.warehouseInput) return;
 
-                Object.assign(this.elements.warehouseInput, {
-                    disabled: true,
-                    placeholder: 'Спочатку оберіть місто',
-                    value: ''
-                });
-
+                this.elements.warehouseInput.disabled = true;
+                this.elements.warehouseInput.placeholder = 'Спочатку оберіть місто';
+                this.elements.warehouseInput.value = '';
                 this.elements.warehouseInput.classList.add('bg-gray-50');
                 this.elements.warehouseInput.classList.remove('bg-white');
             }
@@ -641,7 +647,13 @@
             }
 
             resetAddressSelection() {
-                this.state.address = { search: '', settlement: '', settlementName: '', warehouse: '', warehouseName: '' };
+                this.state.address = {
+                    search: '',
+                    settlement: '',
+                    settlementName: '',
+                    warehouse: '',
+                    warehouseName: ''
+                };
                 this.state.settlements = [];
                 this.state.warehouses = [];
                 this.state.filteredSettlements = [];
@@ -657,12 +669,11 @@
                 this.hideOrderForm();
                 this.toggleSubmitButton(false);
 
-                // Reset delivery costs
                 this.safeUpdateElement('deliveryCost', '0 грн');
                 this.safeUpdateElement('totalAmount', '0 грн');
             }
 
-            // Loaders and UI updates
+            // UI helper methods
             showLoader(type) {
                 this.elements[`${type}Loader`]?.classList.remove('hidden');
             }
@@ -707,8 +718,6 @@
                 const element = this.elements[elementKey];
                 if (element) {
                     element.textContent = content;
-                } else {
-                    console.warn(`Element ${elementKey} not found in DOM`);
                 }
             }
 
@@ -785,15 +794,10 @@
             }
 
             async handleCashPayment(formData) {
-                const response = await this.makeFormRequest(ORDER_CONFIG.routes.createCounterparty, formData);
+                const response = await this.makeFormRequest(ORDER_CONFIG.routes.createOrder, formData);
 
                 if (response.success) {
-                    // Замість showSuccessToastWithRedirect використовуємо новий метод
-                    this.showOrderSuccessPopup(
-                        'Замовлення успішно створено!',
-                        `ТТН: ${response.ttn_number}`,
-                        response.ttn_number
-                    );
+                    this.showOrderSuccessPopup('Замовлення успішно створено!');
                 } else {
                     throw new Error(response.message || 'Помилка створення замовлення');
                 }
@@ -802,7 +806,7 @@
             async handleCardPayment(formData) {
                 this.showInfoMessage('Підготовка до оплати...');
 
-                const response = await this.makeFormRequest(ORDER_CONFIG.routes.createCounterparty, formData);
+                const response = await this.makeFormRequest(ORDER_CONFIG.routes.createOrder, formData);
 
                 if (response.success && response.payment_type === 'card') {
                     this.initWayForPay(response.wayforpay_data);
@@ -839,11 +843,7 @@
                 try {
                     await this.checkOrderStatus(response.orderReference);
                 } catch (error) {
-                    console.error('Error after payment:', error);
-                    this.showOrderSuccessPopup(
-                        'Оплата успішна!',
-                        'Ваше замовлення буде оброблено найближчим часом.'
-                    );
+                    this.showOrderSuccessPopup('Оплата успішна!', 'Ваше замовлення буде оброблено найближчим часом.');
                 }
             }
 
@@ -862,29 +862,15 @@
                     if (response.ok) {
                         const data = await response.json();
                         if (data.success && data.order) {
-                            this.showOrderSuccessPopup(
-                                'Замовлення успішно створено!',
-                                data.order.ttn_number ? `ТТН: ${data.order.ttn_number}` : 'Замовлення обробляється.',
-                                data.order.ttn_number
-                            );
+                            this.showOrderSuccessPopup('Замовлення успішно створено!');
                         } else {
-                            this.showOrderSuccessPopup(
-                                'Оплата успішна!',
-                                'Замовлення обробляється.'
-                            );
+                            this.showOrderSuccessPopup('Оплата успішна!', 'Замовлення обробляється.');
                         }
                     } else {
-                        this.showOrderSuccessPopup(
-                            'Оплата успішна!',
-                            'Замовлення обробляється.'
-                        );
+                        this.showOrderSuccessPopup('Оплата успішна!', 'Замовлення обробляється.');
                     }
                 } catch (error) {
-                    console.error('Error checking order status:', error);
-                    this.showOrderSuccessPopup(
-                        'Оплата успішна!',
-                        'Замовлення обробляється.'
-                    );
+                    this.showOrderSuccessPopup('Оплата успішна!', 'Замовлення обробляється.');
                 }
             }
 
@@ -894,7 +880,6 @@
                     : 'Оплата не пройшла. Спробуйте ще раз або оберіть інший спосіб оплати.';
                 this.showErrorMessage(errorMessage);
             }
-
 
             resetForm() {
                 this.elements.unifiedOrderForm?.reset();
@@ -991,9 +976,9 @@
                 const icons = { success: '✓', error: '✕', info: 'ℹ' };
 
                 const toast = document.createElement('div');
-                toast.className = `fixed top-4 lg:right-4 right-1/2 w-5/6 lg:w-auto z-50 p-4 rounded-lg shadow-lg transition-all duration-300 lg:translate-x-full  ${colors[type]}`;
+                toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${colors[type]}`;
                 toast.innerHTML = `
-            <div class="flex items-center justify-center lg:justify-none gap-3">
+            <div class="flex items-center gap-3">
                 <span class="text-lg font-bold">${icons[type]}</span>
                 <span>${message}</span>
                 <button class="ml-2 text-xl font-bold opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">×</button>
@@ -1001,22 +986,10 @@
         `;
 
                 document.body.appendChild(toast);
-                if(window.screen.width <= 1024) {
-                    setTimeout(() => toast.classList.add('translate-x-1/2'), 100);
-                }
-                else if(window.screen.width > 1024) {
-                    setTimeout(() => toast.classList.remove('lg:translate-x-full'), 100);
-                }
-
+                setTimeout(() => toast.classList.remove('translate-x-full'), 100);
 
                 setTimeout(() => {
-                    if(window.screen.width <= 1024) {
-                        toast.classList.remove('gittranslate-x-1/2');
-                    }else if(window.screen.width > 1024) {
-                        toast.classList.add('lg:translate-x-full');
-                    }
-
-
+                    toast.classList.add('translate-x-full');
                     setTimeout(() => toast.remove(), 300);
                 }, 5000);
             }
@@ -1025,48 +998,34 @@
             showErrorMessage(msg) { this.showToast(msg, 'error'); }
             showInfoMessage(msg) { this.showToast(msg, 'info'); }
 
-            showOrderSuccessPopup(title, message, ttnNumber = null) {
+            showOrderSuccessPopup(title, message = 'Ваше замовлення буде оброблено найближчим часом.') {
                 const popup = document.createElement('div');
                 popup.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
-
-                const ttnInfo = ttnNumber ? `
-        <div class="bg-gray-50 rounded-lg p-4 mb-4">
-            <p class="text-sm text-gray-600 mb-2">Номер ТТН для відстеження:</p>
-            <p class="text-lg font-mono font-bold text-blue-600">${ttnNumber}</p>
-        </div>
-    ` : '';
-
                 popup.innerHTML = `
-        <div class="bg-white rounded-lg p-6 max-w-md mx-4 text-center">
-            <div class="text-green-500 text-6xl mb-4">✓</div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
-            <p class="text-gray-600 mb-4">${message}</p>
-            ${ttnInfo}
-            <button
-                id="goToHomeBtn"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-blue-300"
-            >
-                Перейти на головну
-            </button>
-        </div>
-    `;
+            <div class="bg-white rounded-lg p-6 max-w-md mx-4 text-center">
+                <div class="text-green-500 text-6xl mb-4">✓</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
+                <p class="text-gray-600 mb-4">${message}</p>
+                <button
+                    id="goToHomeBtn"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-blue-300"
+                >
+                    Перейти на головну
+                </button>
+            </div>
+        `;
 
                 document.body.appendChild(popup);
 
-                // Обробник кнопки
-                popup.querySelector('#goToHomeBtn').addEventListener('click', () => {
+                const goToHome = () => {
                     popup.remove();
                     this.resetForm();
                     window.location.href = ORDER_CONFIG.routes.home;
-                });
+                };
 
-                // Закриття по кліку на backdrop
+                popup.querySelector('#goToHomeBtn').addEventListener('click', goToHome);
                 popup.addEventListener('click', (e) => {
-                    if (e.target === popup) {
-                        popup.remove();
-                        this.resetForm();
-                        window.location.href = ORDER_CONFIG.routes.home;
-                    }
+                    if (e.target === popup) goToHome();
                 });
             }
         }

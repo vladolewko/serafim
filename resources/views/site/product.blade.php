@@ -44,10 +44,6 @@
                                     <ul class="list-disc text-slate-600 ml-6 text-sm sm:text-base space-y-1">
                                         <li>Доставка у відділення нової пошти</li>
                                         <li>Доставка в поштомат</li>
-
-
-                                        {{--<li>Доставка кур'єром нової пошти</li>--}}
-
                                     </ul>
                                 </div>
 
@@ -170,7 +166,7 @@
                             <div class="text-sm text-slate-600 space-y-2">
                                 <p>Вага: <span class="text-black font-bold">{{ $product->weight }} кг</span></p>
                                 <p>К-сть книг: <span class="text-black font-bold">{{ $product->books_quantity }} шт</span></p>
-                                <p>Розміри: <span class="text-black font-bold">{{ $product->dimension }} см</span></p>
+                                <p>Розміри: <span class="text-black font-bold">{{ $product->length }} на {{ $product->height }} на {{ $product->width }} см</span></p>
                                 <p>Призначення: <span class="text-black font-bold">{{ $product->appointment }}</span>
                                 </p>
                             </div>

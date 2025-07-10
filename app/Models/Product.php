@@ -15,12 +15,15 @@ class Product extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $fillable = [
+        'keycrm_id',
         'name',
         'description',
         'price',
         'books_quantity',
         'weight',
-        'dimension',
+        'length',
+        'width',
+        'height',
         'appointment',
         'applying',
         'content',

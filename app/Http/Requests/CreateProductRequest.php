@@ -16,11 +16,6 @@ class CreateProductRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -29,7 +24,9 @@ class CreateProductRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'books_quantity' => 'required|integer|min:1',
             'weight' => 'required|numeric|min:0',
-            'dimension' => 'required|string|max:255',
+            'length' => 'required|numeric|min:1',
+            'width' => 'required|numeric|min:1',
+            'height' => 'required|numeric|min:1',
             'content' => 'required|string|max:1000',
             'for_whom' => 'required|string|max:1000',
             'appointment' => 'required|string|max:255',

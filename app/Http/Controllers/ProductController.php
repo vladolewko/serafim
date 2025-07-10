@@ -13,7 +13,9 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-
+    /*
+     * getting all products
+     */
     public function getAll()
     {
         $products = $this->productService->getAll();
@@ -21,8 +23,6 @@ class ProductController extends Controller
 
         $productsForApplying = $products->groupBy('applying.value')
             ->map(fn($group) => $group->first());
-
-//        dd($productsForApplying);
 
 
         return view('site.index', [

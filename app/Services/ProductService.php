@@ -17,7 +17,7 @@ class ProductService implements ProductServiceInterface
         return Product::find($id);
     }
 
-    public function create(array $data): Product
+    public function create(array $data): Product|null
     {
         $imageFile = $data['product_image'] ?? null;
         unset($data['product_image']);
@@ -30,6 +30,9 @@ class ProductService implements ProductServiceInterface
             }
 
             $product->addMedia($imageFile)->toMediaCollection('product_images');
+        }
+        if(!$product) {
+            return null;
         }
         return $product;
     }
@@ -55,7 +58,6 @@ class ProductService implements ProductServiceInterface
             return $product;
 
         } catch (\Exception $exception) {
-//            \Log::error('Product update failed: ' . $exception->getMessage());
             return null;
         }
     }
