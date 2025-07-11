@@ -269,11 +269,6 @@
     </main>
 
     <script>
-<<<<<<< HEAD:resources/views/site/orders/create.blade.php
-
-        // Конфігурація роутів - винеси це в окремий об'єкт для легкого відокремлення
-=======
->>>>>>> 89bbff490b23d8f34fc1ed6adcf1e4281e66aa8a:resources/views/site/order.blade.php
         const ORDER_CONFIG = {
             routes: {
                 searchSettlement: '{{ route("orders.searchSettlement") }}',
