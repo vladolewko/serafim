@@ -1,9 +1,13 @@
+<div class="sticky top-0 lg:pt-3 bg-blue-400 w-full sticky top-0 z-50 hidden lg:block">
+            @include('components.navigation')
+        </div>
 <header class="lg:pt-3 bg-blue-400 w-full sticky lg:static top-0 z-50">
 
     <!-- Desktop -->
     <div class="w-11/12 lg:w-9/12 hidden lg:block mx-auto ">
         <!-- Navigation -->
-        @include('components.navigation')
+
+
         <div class="text-white flex justify-center items-center gap-3 flex-wrap sm:flex-nowrap">
             <div class="text-center">
                 <p class="text-base font-bold">
@@ -50,7 +54,7 @@
             </button>
 
 
-            <div id="drawer-navigation" class="fixed top-0 left-0 z-40 w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-blue-400" tabindex="-1" aria-labelledby="drawer-navigation-label">
+            <div id="drawer-navigation" class="fixed top-0 left-0 z-50 w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-blue-400" tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <!-- <h5 id="drawer-navigation-label" class="text-base font-semibold uppercase text-white">Меню</h5> -->
                 <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -68,7 +72,7 @@
                         <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="knowledge_pack">Комплекти знань</a>
                     </li>
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="wt_knowledge_pack">Відеоуроки</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" href="https://nadiya.serafym.info">Відеоуроки</a>
                     </li>
                     <li class="">
                         <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="about_author">Про автора</a>

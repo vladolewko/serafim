@@ -1,66 +1,105 @@
-function smoothScrollToElement(targetId, offset = 80) {
-    const targetElement = document.getElementById(targetId);
-    if (!targetElement) return;
+// function smoothScrollToElement(targetId, offset = 80) {
+//     const targetElement = document.getElementById(targetId);
+//     if (!targetElement) return;
 
-    const elementPosition = targetElement.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
+//     const elementPosition = targetElement.getBoundingClientRect().top;
+//     const offsetPosition = elementPosition + window.pageYOffset - offset;
 
-    window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-    });
-}
+//     window.scrollTo({
+//         top: offsetPosition,
+//         behavior: "smooth",
+//     });
+// }
 
-// Функція для перенаправлення на головну сторінку з якорем
-function navigateToHomeWithAnchor(targetId) {
-    const currentPath = window.location.pathname;
-    const homePage = "/"; // або '/index.html' залежно від вашої структури
+// // Функція для перенаправлення на головну сторінку з якорем
+// function navigateToHomeWithAnchor(targetId) {
+//     const currentPath = window.location.pathname;
+//     const homePage = "/"; // або '/index.html' залежно від вашої структури
 
-    // Якщо вже на головній сторінці
-    if (
-        currentPath === homePage ||
-        currentPath === "/index.html" ||
-        currentPath.endsWith("/")
-    ) {
-        smoothScrollToElement(targetId, 80);
-    } else {
-        // Перенаправляємо на головну сторінку з якорем
-        window.location.href = `${homePage}#${targetId}`;
-    }
-}
+//     // Якщо вже на головній сторінці
+//     if (
+//         currentPath === homePage ||
+//         currentPath === "/index.html" ||
+//         currentPath.endsWith("/")
+//     ) {
+//         smoothScrollToElement(targetId, 80);
+//     } else {
+//         // Перенаправляємо на головну сторінку з якорем
+//         window.location.href = `${homePage}#${targetId}`;
+//     }
+// }
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const navItems = document.querySelectorAll(".nav-item");
+//     const knowledgePackBtn = document.querySelectorAll(".knowledgePackBtn");
+//     const footerLinks = document.querySelectorAll(".footer-link");
+
+//     navItems.forEach((item) => {
+//         item.addEventListener("click", function () {
+//             const targetId = this.getAttribute("data-target");
+
+//             // Використовуємо основний метод
+//             smoothScrollToElement(targetId, 80);
+
+//             // Або альтернативний метод (закоментований)
+//             // smoothScrollAlternative(targetId);
+//         });
+//     });
+
+//     knowledgePackBtn.forEach((item) => {
+//         item.addEventListener("click", function () {
+//             const targetId = this.getAttribute("data-target");
+//             smoothScrollToElement(targetId, 80);
+//         });
+//     });
+
+//     footerLinks.forEach((item) => {
+//         item.addEventListener("click", function () {
+//             const targetId = this.getAttribute("data-target");
+//             if (targetId) {
+//                 navigateToHomeWithAnchor(targetId);
+//             }
+//         });
+//     });
+// });
 
 document.addEventListener("DOMContentLoaded", function () {
-    const navItems = document.querySelectorAll(".nav-item");
-    const knowledgePackBtn = document.querySelectorAll(".knowledgePackBtn");
-    const footerLinks = document.querySelectorAll(".footer-link");
+    // Обробка всіх кліків з data-target
+    document.addEventListener("click", function (e) {
+        const targetId = e.target.getAttribute("data-target");
+        if (!targetId) return;
 
-    navItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            const targetId = this.getAttribute("data-target");
+        e.preventDefault();
 
-            // Використовуємо основний метод
-            smoothScrollToElement(targetId, 80);
+        const targetElement = document.getElementById(targetId);
+        if (!targetElement) return;
 
-            // Або альтернативний метод (закоментований)
-            // smoothScrollAlternative(targetId);
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - 80;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
         });
     });
 
-    knowledgePackBtn.forEach((item) => {
-        item.addEventListener("click", function () {
-            const targetId = this.getAttribute("data-target");
-            smoothScrollToElement(targetId, 80);
-        });
-    });
-
-    footerLinks.forEach((item) => {
-        item.addEventListener("click", function () {
-            const targetId = this.getAttribute("data-target");
-            if (targetId) {
-                navigateToHomeWithAnchor(targetId);
+    // Обробка якорів з URL
+    const hash = window.location.hash;
+    if (hash) {
+        setTimeout(() => {
+            const targetElement = document.getElementById(hash.substring(1));
+            if (targetElement) {
+                const elementPosition =
+                    targetElement.getBoundingClientRect().top;
+                const offsetPosition =
+                    elementPosition + window.pageYOffset - 80;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth",
+                });
             }
-        });
-    });
+        }, 100);
+    }
 });
 
 const introduction_block = document.getElementById("introduction");
@@ -69,12 +108,26 @@ const hidden_introduction_btn = document.getElementById(
 );
 
 function checkIntroductionPosition() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Висота вікна браузера
+    const windowHeight = window.innerHeight;
+
+    // Загальна висота документа
+    const documentHeight = document.documentElement.scrollHeight;
+
+    // Перевіряємо, чи досягнули низу (з відступом 10px)
+    const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
     const introduction_block_pos =
         introduction_block.getBoundingClientRect().top;
-    const screenPosition = window.innerHeight;
+    // const screenPosition = window.innerHeight;
 
     // Перевіряємо, чи елемент вийшов за межі екрану (прокрутили вниз)
-    if (introduction_block_pos < 0) {
+    if (
+        (introduction_block_pos < 0 ||
+            introduction_block_pos > window.innerHeight) &&
+        (isAtBottom === false || innerWidth >= 1025)
+    ) {
         hidden_introduction_btn.classList.remove("hidden");
     } else {
         hidden_introduction_btn.classList.add("hidden");
@@ -343,4 +396,99 @@ const observerConfig = {
 buttons.forEach((button) => {
     button.style.backgroundColor = "blue"; // Встановлюємо початковий синій колір
     observer.observe(button, observerConfig); // Починаємо відстежувати зміни
+});
+
+const modalTriggers = document.querySelectorAll(".modal-trigger");
+const modals = document.querySelectorAll(".modal");
+const closeButtons = document.querySelectorAll(".close");
+
+// Функція для відкриття модального вікна
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add("show");
+        // Блокуємо скрол body
+        document.body.style.overflow = "hidden";
+    }
+}
+
+// Функція для закриття модального вікна
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove("show");
+        // Відновлюємо скрол body
+        document.body.style.overflow = "auto";
+    }
+}
+
+// Додаємо обробники подій для кнопок відкриття
+modalTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", function () {
+        console.log("lalal");
+        const triggerId = this.id;
+        let modalId = "";
+
+        // Визначаємо яке модальне вікно відкрити
+        switch (triggerId) {
+            case "terms":
+                modalId = "termsModal";
+                break;
+            case "policy":
+                modalId = "policyModal";
+                break;
+            case "policy_order":
+                modalId = "policyModal";
+                break;
+            case "terms_order":
+                modalId = "termsModal";
+                break;
+        }
+
+        if (modalId) {
+            openModal(modalId);
+        }
+    });
+});
+
+// Додаємо обробники для кнопок закриття
+closeButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+        const modalId = this.getAttribute("data-modal");
+        closeModal(modalId);
+    });
+});
+
+// Закриття модального вікна при кліку на фон
+modals.forEach((modal) => {
+    modal.addEventListener("click", function (e) {
+        if (e.target === this) {
+            closeModal(this.id);
+        }
+    });
+});
+
+// Закриття модального вікна при натисканні Escape
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        modals.forEach((modal) => {
+            if (modal.classList.contains("show")) {
+                closeModal(modal.id);
+            }
+        });
+    }
+});
+
+// Додаємо плавну анімацію при скролі в модальному вікні
+document.querySelectorAll(".modal-content").forEach((content) => {
+    content.addEventListener("scroll", function () {
+        const scrolled = this.scrollTop;
+        const header = this.querySelector(".modal-header");
+
+        if (scrolled > 10) {
+            header.style.boxShadow = "0 2px 10px rgba(0,0,0,0.1)";
+        } else {
+            header.style.boxShadow = "none";
+        }
+    });
 });

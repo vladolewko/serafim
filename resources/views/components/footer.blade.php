@@ -6,7 +6,7 @@
             <img class="h-[100px] w-[100px] sm:h-[120px] sm:w-[120px] xl:h-[140px] xl:w-[140px]" src="{{ asset('img/logo.svg') }}" alt="">
             <img class="hidden sm:block self-center" src="{{ asset('img/line_vertical.svg') }}" alt="">
             <div class="flex flex-col gap-1 text-center sm:text-left self-center">
-                <p class="text-xl sm:text-2xl lg:text-3xl font-bold">Серфаим</p>
+                <p class="text-xl sm:text-2xl lg:text-3xl font-bold">Серафим</p>
                 <!-- <p class="text-xs sm:text-sm">від солдата - для людей</p> -->
                 <div class="flex gap-2 justify-center sm:justify-start">
                     <a href="https://youtube.com/@serafim_ngu"><img src="{{ asset('img/youtube_footer.svg') }}" alt=""></a>
@@ -63,9 +63,9 @@
     <!-- Нижня частина -->
     <hr class="w-10/12 sm:w-8/12 xl:w-7/12 mx-auto mt-6 lg:mt-10">
     <div class="text-white my-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm lg:text-base">
-        <span>terms of use</span>
+        <span id="terms" class="flex justify-center modal-trigger cursor-pointer">terms of use</span>
         <span class="hidden sm:inline text-2xl lg:text-4xl">|</span>
-        <span>privacy policy</span>
+        <span id="policy" class="flex justify-center modal-trigger cursor-pointer">privacy policy</span>
     </div>
     <hr class="w-10/12 sm:w-8/12 xl:w-7/12 mx-auto">
 </footer>

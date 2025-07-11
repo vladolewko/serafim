@@ -18,7 +18,7 @@
             <div class="hidden duration-700 ease-in-out bg-white" data-carousel-item="active">
                 <div class="flex gap-2 my-16 justify-center items-center">
                     <div class="flex flex-col items-center md:w-2/5 w-3/5 gap-1">
-                           <img class="w-[150px] h-[150px]" src="{{ asset('img/skarga.jpg') }}" alt="">
+                        <img class="w-[150px] h-[150px]" src="{{ asset('img/skarga.jpg') }}" alt="">
                         <p class="text-xl text-center">Скарга</p>
                     </div>
                 </div>
