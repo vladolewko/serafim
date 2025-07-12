@@ -12,7 +12,7 @@ class NovaPostService
 
     public function __construct(ProductService $productService)
     {
-        $this->apiKey = env('NOVA_POST_API_KEY');
+        $this->apiKey = config('services.nova_post.api_key');
         $this->productService = $productService;
     }
 
