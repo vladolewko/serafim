@@ -98,6 +98,8 @@ class KeyCrmService
                 }
             }
 
+            Log::info('Source ID for Serafim: ' . $this->getSourceIdByAlias('serafyminfo'));
+
             $customerName = trim($order->customer_name . ' ' . $order->customer_surname);
 
             $products = [];
@@ -125,7 +127,7 @@ class KeyCrmService
             $warehouseName = "Відділення №{$warehouseNumber}";
 
             $orderData = [
-                'source_id' => 1,
+                'source_id' => $this->getSourceIdByAlias('Serafim'),
                 'buyer' => [
                     'full_name' => $customerName,
                     'phone' => $order->customer_phone,
@@ -337,6 +339,43 @@ class KeyCrmService
                 'keycrm_id' => $product->keycrm_id ?? null,
                 'response_body' => isset($response) ? $response->body() : null
             ]);
+            return null;
+        }
+    }
+
+    /**
+     * Отримати ID джерела по його alias
+     */
+    public function getSourceIdByAlias(string $alias): ?int
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->get($this->apiUrl . '/v1/order/source');
+
+            if (!$response->successful()) {
+                Log::error('KeyCRM API error: ' . $response->body());
+                return null;
+            }
+
+            $data = $response->json();
+            $sources = $data['data'] ?? $data;
+            Log::info('KeyCRM API response: ' . $response->body());
+
+            // Шукаємо джерело по alias
+            foreach ($sources as $source) {
+                if (isset($source['alias']) && $source['alias'] === $alias) {
+                    Log::info("Found source with alias '{$alias}': " . json_encode($source));
+                    return $source['id'] ?? null;
+                }
+            }
+
+            Log::warning("Source with alias '{$alias}' not found in KeyCRM");
+            return null;
+        } catch (\Exception $e) {
+            Log::error("Failed to get source ID for alias '{$alias}': " . $e->getMessage());
             return null;
         }
     }
