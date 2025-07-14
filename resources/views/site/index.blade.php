@@ -360,19 +360,19 @@
 
 <div id="hidden_introduction_btn" class=" fixed mx-auto lg:left-auto lg:right-[20px] left-0 right-0 w-11/12 lg:w-min bottom-5 flex flex-col md:flex-row lg:flex-col gap-4 md:gap-0 lg:gap-4 z-40">
     <button
-        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl  self-center knowledgePackBtn" data-target="why_important">
+        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl  self-center nav-item " data-target="why_important">
         <div class="flex items-center justify-between w-[300px]">
             <img class="" src="{{ asset('img/icon_book.png') }}" alt="">
             <span class="mx-auto">комплекти знань</span>
         </div>
     </button>
 
-    <a href="#" data-target="knowledge_pack" class="nav-item bg-white text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn">
+    <button data-target="knowledge_pack" class="nav-item bg-white text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4">
             <div class="flex items-center justify-between w-[300px]">
                 <img src="{{ asset('img/icon_youtube.png') }}" alt="">
                 <span  class="mx-auto ">відеоуроки</span>
         </div>
-    </a>
+    </button>
 </div>
 
 
