@@ -127,7 +127,7 @@ class KeyCrmService
             $warehouseName = "Відділення №{$warehouseNumber}";
 
             $orderData = [
-                'source_id' => $this->getSourceIdByAlias('Serafim'),
+                'source_id' => $this->getSourceIdByAlias('serafyminfo'),
                 'buyer' => [
                     'full_name' => $customerName,
                     'phone' => $order->customer_phone,
