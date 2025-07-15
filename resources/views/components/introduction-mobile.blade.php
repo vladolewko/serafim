@@ -11,13 +11,13 @@
     </div>
 
     <button
-        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl knowledgePackBtn" data-target="why_important">
+        class="w-full bg-yellow-400 px-6 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl nav-item" data-target="why_important">
         <div class="flex items-center justify-between w-4/5">
             <img class="" src="{{ asset('img/icon_book.png') }}" alt="">
             <span class="mx-auto">комплекти знань</span>
         </div>
     </button>
-    <a href="https://nadiya.serafym.info" class="text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4 knowledgePackBtn">
+    <a href="https://nadiya.serafym.info" class="text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4">
         <div class="flex items-center justify-between w-4/5">
             <img src="{{ asset('img/icon_youtube.png') }}" alt="">
             <span class="mx-auto">відеоуроки</span>

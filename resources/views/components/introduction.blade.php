@@ -17,7 +17,7 @@
                         </div>
                     </button> -->
                     <button
-                        class="w-5/12 bg-yellow-400 px-2 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl knowledgePackBtn" data-target="why_important">
+                        class="w-5/12 bg-yellow-400 px-2 py-1 rounded-lg text-black flex items-center justify-center text-xl lg:text-xl nav-item" data-target="why_important">
                         <div class="flex items-center justify-between gap-1 w-4/5">
                             <img class="" src="{{ asset('img/icon_book.png') }}" alt="">
                             <span class="mx-auto">комплекти знань</span>
@@ -28,7 +28,7 @@
                         відеоуроки
                     </p> -->
 
-                    <button class="text-black border border-blue-400 bg-white rounded-lg w-2/5 px-2 py-1 flex items-center justify-center text-center text-lg lg:text-xl self-center knowledgePackBtn" >
+                    <button class="text-black border border-blue-400 bg-white rounded-lg w-2/5 px-2 py-1 flex items-center justify-center text-center text-lg lg:text-xl self-center" >
                         <a href="https://nadiya.serafym.info" class="flex items-center justify-between gap-1 w-4/5">
                             <img src="{{ asset('img/icon_youtube.png') }}" alt="">
                             <span class="mx-auto">відеоуроки</span>
