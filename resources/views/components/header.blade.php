@@ -71,8 +71,9 @@
                     <li class="">
                         <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="knowledge_pack">Комплекти знань</a>
                     </li>
+                    <!-- href="https://nadiya.serafym.info" -->
                     <li class="">
-                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" href="https://nadiya.serafym.info">Відеоуроки</a>
+                        <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="knowledge_pack">Відеоуроки</a>
                     </li>
                     <li class="">
                         <a class="block py-2 px-3 text-gray-900 rounded-sm lg:border-0 lg:p-0 dark:text-white nav-item" data-target="about_author">Про автора</a>

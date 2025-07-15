@@ -23,7 +23,7 @@
                                     <img class="absolute bottom-[-65px]  w-[212px] mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
                                 </div>
 
-                                <p class="text-xl/6 font-semibold text-center w-4/6">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
+                                <p class="text-xl/6 font-semibold text-center w-5/6">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">355 грн</p>
                                 <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                      href="https://nadiya.serafym.info">переглянути</a>
