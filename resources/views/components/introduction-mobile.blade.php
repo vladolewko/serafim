@@ -17,7 +17,7 @@
             <span class="mx-auto">комплекти знань</span>
         </div>
     </button>
-    <a href="https://nadiya.serafym.info" class="text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4">
+    <a data-target="knowledge_pack" class="nav-item text-black border border-blue-400 rounded-lg w-full px-6 py-1  flex items-center justify-center text-center text-lg lg:text-xl self-center sm:mx-4">
         <div class="flex items-center justify-between w-4/5">
             <img src="{{ asset('img/icon_youtube.png') }}" alt="">
             <span class="mx-auto">відеоуроки</span>
