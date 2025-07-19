@@ -20,7 +20,7 @@
                             <div class="bg-white flex flex-col items-center rounded-xl">
                                 <!-- posible img -->
                                 <div class="relative h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-                                    <img class="absolute bottom-[-65px]  w-[212px] mx-auto" src="{{ asset('img/image-card-title.jpg') }}" alt="">
+                                    <img class="absolute  w-[212px] mx-auto" src="{{ asset('img/upakovka-online-kurs.jpg') }}" alt="">
                                 </div>
 
                                 <p class="text-xl/6 font-semibold text-center w-5/6">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
