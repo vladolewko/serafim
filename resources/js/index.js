@@ -195,6 +195,11 @@ radios.forEach((radio) => {
         console.log("Citizen selected by default");
     }
 
+    if (radio.value === "lawyer") {
+        const lawyerParentDiv = radio.closest("div");
+        lawyerParentDiv.classList.add("hidden");
+    }
+
     radio.addEventListener("change", () => {
         const parentDiv = radio.closest("div");
         const label = radio.nextElementSibling;
