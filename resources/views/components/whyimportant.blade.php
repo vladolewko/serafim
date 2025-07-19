@@ -91,7 +91,7 @@
 
 
 
-        <div class="flex  gap-1 sm:gap-2 lg:gap-4 justify-start sm:justify-center lg:justify-start mt-2 flex-wrap">
+        <div class="flex  gap-5 sm:gap-5  lg:gap-10 justify-center sm:justify-center lg:justify-start mt-2 flex-wrap">
             @php
                 // Створюємо масиви для цін, ID та картинок
                 $prices = [];
