@@ -12,7 +12,7 @@
         <div id="indicators-carousel" class="relative w-full mb-20" data-carousel="static">
         <!-- Carousel wrapper -->
 
-            <div class="relative h-56 overflow-hidden rounded-lg md:h-[500px] w-full">
+            <div class="relative h-56 overflow-hidden rounded-lg md:h-[550px] w-full">
 
             <div class="hidden duration-500 ease-in-out" data-carousel-item>
                     <div class="flex lg:gap-10 xl:gap-7 mt-10 justify-center ">
@@ -21,8 +21,8 @@
                                 <div class="relative xl:h-[212px] xl:w-[212px] lg:w-[200px] lg:h-[200px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                     <img class="absolute   xl:w-[212px] lg:w-[200px]  mx-auto" src="{{ asset('img/upakovka-online-kurs.jpg') }}" alt="">
                                 </div>
-
-                                <p class="text-xl/6 font-semibold text-center w-11/12">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
+                                <!-- Курс відео-уроків «ПОВЕРНИ НАДІЮ» -->
+                                <p class="text-base/6 font-semibold text-center w-11/12">Комплект літератури для юридичного та правового виховання військовослужбовця "9В1"</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">355 грн</p>
                                 <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                         href="https://nadiya.serafym.info">переглянути</a>
@@ -38,7 +38,7 @@
 
                                 </div>
 
-                                <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                                <p class="text-base/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
                                 <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
                                     >переглянути</a>
@@ -53,7 +53,7 @@
                                     </div>
                                 </div>
 
-                                <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                                <p class="text-base/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
                                 <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
                                     >переглянути</a>
@@ -83,7 +83,7 @@
                                         @endif
                                     </div>
 
-                                    <p class="text-xl/6 font-semibold text-center w-4/6">{{$product->name}}</p>
+                                    <p class="text-base/6 font-semibold text-center w-4/6">{{$product->name}}</p>
                                     <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
                                     <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                         href="{{ route('product.show', $product->id) }}">переглянути</a>
