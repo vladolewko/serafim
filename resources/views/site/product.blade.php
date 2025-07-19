@@ -22,7 +22,8 @@
                     <!-- Left column - Image and delivery info -->
                     <div class="w-full lg:w-6/12">
                         <!-- Product image placeholder -->
-                        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[548px] rounded-lg mb-4 overflow-hidden">
+                        <div class="bg-gray-200 w-full rounded-lg mb-4 overflow-hidden">
+{{--                        <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[548px] rounded-lg mb-4 overflow-hidden">--}}
                             @if($product->getMedia('product_images')->isNotEmpty())
                                 @php
                                     $imageUrl = $product->getFirstMediaUrl('product_images');
