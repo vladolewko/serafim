@@ -12,17 +12,16 @@
                             <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
-                            Управління товарами
+                            Управління Банерами
                         </h1>
-                        <p class="text-gray-600 mt-1">Керуйте товарами вашого магазину</p>
+                        <p class="text-gray-600 mt-1">Керуйте банерами вашого магазину</p>
                     </div>
 
                     <!-- Top Actions -->
                     <div class="flex items-center space-x-3">
-                        <a href="{{ route('admin.banners') }}"
+                        <a href="{{ route('admin.products') }}"
                            class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors duration-200">
-
-                            Банери
+                            Товари
                         </a>
                         <a href="{{ route('admin.logout') }}"
                            class="inline-flex items-center px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition-colors duration-200">
@@ -73,16 +72,16 @@
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-lg font-semibold text-gray-900">Список товарів</h2>
-                        <p class="text-sm text-gray-600 mt-1">Переглядайте та редагуйте ваші товари</p>
+                        <h2 class="text-lg font-semibold text-gray-900">Список банерів</h2>
+                        <p class="text-sm text-gray-600 mt-1">Переглядайте та редагуйте ваші банери</p>
                     </div>
 
-                    <a href="{{ route('admin.products.create') }}"
+                    <a href="{{ route('admin.banners.create') }}"
                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Створити товар
+                        Створити банер
                     </a>
                 </div>
             </div>
@@ -105,7 +104,7 @@
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                     </svg>
-                                    Назва товару
+                                    Назва банера
                                 </div>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -127,29 +126,29 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($products as $product)
+                        @foreach($banners as $banner)
                             <tr class="hover:bg-gray-50 transition-colors duration-150">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 hidden lg:block">
                                     <div class="flex items-center">
                                         <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">
-                                            {{ $product->id }}
+                                            {{ $banner->id }}
                                         </div>
-                                        #{{ $product->id }}
+                                        #{{ $banner->id }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="{{ route('admin.products.edit', $product->id) }}">
-                                        <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
-                                        <div class="text-sm text-gray-500">Товар ID: {{ $product->id }}</div>
+                                    <a href="{{ route('admin.banners.edit', $banner->id) }}">
+                                        <div class="text-sm font-medium text-gray-900">{{ $banner->title }}</div>
+                                        <div class="text-sm text-gray-500">Банер ID: {{ $banner->id }}</div>
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-bold text-green-600">
-                                        {{ $product->price }} ₴
+                                        {{ $banner->price }} ₴
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium hidden lg:block">
-                                    <a href="{{ route('admin.products.edit', $product->id) }}"
+                                    <a href="{{ route('admin.banners.edit', $banner->id) }}"
                                        class="inline-flex items-center px-3 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors duration-200 group">
                                         <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -164,20 +163,20 @@
             </div>
 
             <!-- Empty State (якщо немає товарів) -->
-            @if(count($products) === 0)
+            @if(count($banners) === 0)
                 <div class="text-center py-12">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">Немає товарів</h3>
-                    <p class="mt-1 text-sm text-gray-500">Розпочніть з створення першого товару.</p>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Немає банерів</h3>
+                    <p class="mt-1 text-sm text-gray-500">Розпочніть з створення першого банеру.</p>
                     <div class="mt-6">
-                        <a href="{{ route('admin.products.create') }}"
+                        <a href="{{ route('admin.banners.create') }}"
                            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                             </svg>
-                            Створити перший товар
+                            Створити перший банер
                         </a>
                     </div>
                 </div>

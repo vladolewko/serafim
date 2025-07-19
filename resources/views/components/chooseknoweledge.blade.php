@@ -14,6 +14,92 @@
 
             <div class="relative h-56 overflow-hidden rounded-lg md:h-[550px] w-full">
 
+            <!-- Item 1 -->
+                @foreach ($productsChunks as $perPage)
+
+                <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
+                    <div class="flex lg:gap-10 xl:gap-7 mt-10 justify-center ">
+                        @foreach($perPage as $product)
+                            @if(!isset($product->reference))
+
+                            <div
+                                class="lg:w-3/12 xl:w-min h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
+
+
+                                <div class="bg-white flex flex-col items-center rounded-xl ">
+                                    <div
+                                        class="relative xl:h-[212px] xl:w-[212px] lg:w-[200px] lg:h-[200px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
+                                        @if($product->price == 0)
+                                            <div class="absolute right-0 bg-gray-400 rounded-full">
+                                                <img class="rounded-full w-[50px] h-[50px]"
+                                                     src="{{ asset('img/sticker.png') }}" alt="">
+                                            </div>
+                                        @endif
+                                        @if($product->getMedia('product_images')->isNotEmpty())
+                                            <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('product_images') }}"
+                                                 alt="{{ $product->title }}">
+                                        @endif
+
+                                    </div>
+
+                                    @if($product->price == 0)
+                                        <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                                        <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
+                                        <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
+                                        >переглянути</a>
+                                    @else
+
+                                    <p class="text-xl/6 font-semibold text-center w-4/6">{{$product->name}}</p>
+                                    <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
+                                    <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                        href="{{ route('product.show', $product->id) }}">переглянути</a>
+                                    @endif
+
+                                </div>
+                            </div>
+                            @else
+                                <div
+                                    class="lg:w-3/12 xl:w-min h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px] ">
+
+
+                                    <div class="bg-white flex flex-col items-center rounded-xl ">
+                                        <div
+                                            class="relative xl:h-[212px] xl:w-[212px] lg:w-[200px] lg:h-[200px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
+                                            @if($product->price == 0)
+                                                <div class="absolute right-0 bg-gray-400 rounded-full">
+                                                    <img class="rounded-full w-[50px] h-[50px]"
+                                                         src="{{ asset('img/sticker.png') }}" alt="">
+                                                </div>
+                                            @endif
+                                            @if($product->getMedia('banner_images')->isNotEmpty())
+                                                <img class="w-full h-full"   src="{{ $product->getFirstMediaUrl('banner_images') }}"
+                                                     alt="{{ $product->title }}">
+                                            @endif
+
+                                        </div>
+
+                                        @if($product->price == 0)
+                                            <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                                            <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
+                                            <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
+                                            >переглянути</a>
+                                        @else
+
+                                            <p class="text-xl/6 font-semibold text-center w-4/6">{{$product->title}}</p>
+                                            <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
+                                            <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                               href="{{ $product->reference }}">переглянути</a>
+                                        @endif
+
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+
+
             <div class="hidden duration-500 ease-in-out" data-carousel-item>
                     <div class="flex lg:gap-10 xl:gap-7 mt-10 justify-center ">
                         <div class="lg:w-3/12 xl:w-min h-full rounded-xl bg-gray-400 p-[2px] ">

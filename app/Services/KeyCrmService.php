@@ -232,7 +232,7 @@ class KeyCrmService
                 throw new \Exception('API credentials are not configured');
             }
 
-            $sku = 'PROD-' . $product->id;
+            $sku = 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
 
             // Перевіряємо чи існує товар у keyCRM
             $existingProduct = $this->findProductBySku($sku);
@@ -292,7 +292,7 @@ class KeyCrmService
                 throw new \Exception('API credentials are not configured');
             }
 
-            $sku = 'PROD-' . $product->id;
+            $sku = 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
 
             // Якщо немає keycrm_id, спробуємо знайти товар за SKU
             if (!$product->keycrm_id) {

@@ -12,6 +12,7 @@
     </div>
 @endsection
 @section('content')
+
 <div class="w-full px-4 sm:px-6 lg:px-8 sm:w-5/6 mx-auto">
 
     <!-- Main title -->
@@ -31,6 +32,7 @@
                     <img class="w-full h-full" src="{{ $imageUrl }}" alt="{{ $product->title }}">
                 @endif
             </div>
+
 
             <!-- Delivery and payment info -->
             <div class="border-2 border-blue-400 rounded-lg p-4 sm:p-6">
