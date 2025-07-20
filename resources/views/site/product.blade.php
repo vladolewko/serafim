@@ -23,7 +23,7 @@
         <!-- Left column - Image and delivery info -->
         <div class="w-full lg:w-6/12">
             <!-- Product image placeholder -->
-            <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[548px] rounded-lg mb-4 overflow-hidden">
+            <div class="bg-gray-200 w-full {{ !$product->getMedia('product_images')->isNotEmpty() ? 'h-[530px]' : '' }} rounded-lg mb-4 overflow-hidden">
                 @if($product->getMedia('product_images')->isNotEmpty())
                     @php
                         $imageUrl = $product->getFirstMediaUrl('product_images');
@@ -32,7 +32,6 @@
                     <img class="w-full h-full" src="{{ $imageUrl }}" alt="{{ $product->title }}">
                 @endif
             </div>
-
 
             <!-- Delivery and payment info -->
             <div class="border-2 border-blue-400 rounded-lg p-4 sm:p-6">
@@ -73,7 +72,12 @@
             <!-- Product title and availability -->
             <div class="mb-6">
                 <h2 class="text-2xl sm:text-3xl font-bold mb-2">{{ $product->name }}</h2>
-                <p class="text-green-400 text-sm sm:text-base">в наявності</p>
+                @if($product->price == 0)
+                    <p class="text-red-400 text-sm sm:text-base">немає в наявності</p>
+
+                @else
+                    <p class="text-green-400 text-sm sm:text-base">в наявності</p>
+                @endif
             </div>
 
             <!-- Product description -->
@@ -177,12 +181,13 @@
     </div>
 </div>
 
-<div class="lg:hidden py-32" id="knowledge_pack">
+<div class="lg:hidden py-32">
     @include('components.chooseknoweledge-mobile')
 </div>
 
 
 <div class="hidden lg:block">
+
     @include('components.chooseknoweledge')
 </div>
 

@@ -23,18 +23,26 @@ class ProductController extends Controller
     {
         $products = $this->productService->getAll();
         $banners = $this->bannerService->getAll();
-        $products = $products->concat($banners);
         $applyings = Product::getApplyingOptions();
+//        dd($applyings);
 
-        $productsForApplying = $products->groupBy('applying.value')
+
+        $productsForApplying = $products->where('price', '>', 0)
+            ->groupBy('applying.value')
             ->map(fn($group) => $group->first());
 
+        $filteredApplyings = collect($applyings)
+            ->filter(fn($label, $value) => $productsForApplying->has($value))
+            ->toArray();
+//        dd($productsForApplying);
+        $products = $products->merge($banners);
+//        dd($products);
 
         return view('site.index', [
             'productsChunks' => $products->chunk(3),
             'products' => $products,
             'banners' => $banners,
-            'applyings' => $applyings,
+            'applyings' => $filteredApplyings,
             'productsForApplying' => $productsForApplying
         ]);
     }
@@ -49,6 +57,7 @@ class ProductController extends Controller
         $product = $this->productService->getById($id);
 
         $products = Product::where('id', '!=', $id)->get();
+//        dd($products);
         $banners = $this->bannerService->getAll();
 
         //dd($products);
