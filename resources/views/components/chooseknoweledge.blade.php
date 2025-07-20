@@ -30,6 +30,7 @@
                             <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                href="https://nadiya.serafym.info">переглянути</a>
 
+
                         </div>
                     </div>
                     <div class="lg:w-3/12 xl:w-min h-full rounded-xl bg-gray-400 p-[2px] ">

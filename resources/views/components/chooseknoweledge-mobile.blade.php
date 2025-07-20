@@ -49,6 +49,7 @@
                             <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
                             <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
                             >переглянути</a>
+
                         </div>
                     </div>
                 </div>
