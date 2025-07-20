@@ -102,35 +102,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-const introduction_block = document.getElementById("introduction");
-const hidden_introduction_btn = document.getElementById(
-    "hidden_introduction_btn"
-);
+// Оголошуємо змінні на початку файлу
+const introduction_block = document.querySelector("#introduction"); // або ваш селектор
+const hidden_introduction_btn = document.querySelector(
+    "#hidden-introduction-btn"
+); // або ваш селектор
 
 function checkIntroductionPosition() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    // Висота вікна браузера
     const windowHeight = window.innerHeight;
-
-    // Загальна висота документа
     const documentHeight = document.documentElement.scrollHeight;
-
-    // Перевіряємо, чи досягнули низу (з відступом 10px)
     const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
-    const introduction_block_pos =
-        introduction_block.getBoundingClientRect().top;
-    // const screenPosition = window.innerHeight;
 
-    // Перевіряємо, чи елемент вийшов за межі екрану (прокрутили вниз)
+    // Перевіряємо, чи елемент існує
+    if (!introduction_block) return;
+
+    const introduction_block_pos = introduction_block.offsetTop || 0;
+
     if (
         (introduction_block_pos < 0 ||
             introduction_block_pos > window.innerHeight) &&
         (isAtBottom === false || innerWidth >= 1025)
     ) {
-        hidden_introduction_btn.classList.remove("hidden");
+        hidden_introduction_btn?.classList.remove("hidden");
     } else {
-        hidden_introduction_btn.classList.add("hidden");
+        hidden_introduction_btn?.classList.add("hidden");
     }
 }
 

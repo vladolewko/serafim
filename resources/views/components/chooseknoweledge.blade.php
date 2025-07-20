@@ -21,8 +21,7 @@
                                 <div class="relative xl:h-[212px] xl:w-[212px] lg:w-[200px] lg:h-[200px] rounded-xl bg-gray-200  m-3 slef-center overflow-hidden">
                                     <img class="absolute   xl:w-[212px] lg:w-[200px]  mx-auto" src="{{ asset('img/upakovka-online-kurs.jpg') }}" alt="">
                                 </div>
-                                <!-- Курс відео-уроків «ПОВЕРНИ НАДІЮ» -->
-                                <p class="text-base/6 font-semibold text-center w-11/12">Комплект літератури для юридичного та правового виховання військовослужбовця "9В1"</p>
+                                <p class="text-base/6 font-semibold text-center w-11/12">Курс відео-уроків «ПОВЕРНИ НАДІЮ»</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">355 грн</p>
                                 <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                         href="https://nadiya.serafym.info">переглянути</a>
@@ -63,7 +62,8 @@
                     </div>
 
                 </div>
-            <!-- Item 1 -->
+
+                <!-- Item 1 -->
                 @foreach ($productsChunks as $perPage)
 
                 <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
