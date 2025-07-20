@@ -204,12 +204,15 @@ class KeyCrmService
                 ]);
 
             if (!$response->successful()) {
+                Log::warning('KeyCRMService findProductBySku failed', [
+                    'sku' => $sku,
+                    'status' => $response->status(),
+                    'response' => $response->body()
+                ]);
                 return null;
             }
 
             $responseData = $response->json();
-
-            // Повертаємо перший знайдений товар або null
             return isset($responseData['data']) && count($responseData['data']) > 0
                 ? $responseData['data'][0]
                 : null;
@@ -223,59 +226,184 @@ class KeyCrmService
     }
 
     /**
-     * Створити товар у keyCRM з перевіркою існування
+     * Перевірити чи існує товар у keyCRM за ID
      */
-    public function createProduct(Product $product)
+    public function findProductById($keycrmId)
     {
         try {
             if (empty($this->apiKey) || empty($this->apiUrl)) {
                 throw new \Exception('API credentials are not configured');
             }
 
-            $sku = 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->timeout(30)
+                ->get($this->apiUrl . '/v1/products/' . $keycrmId);
 
-            // Перевіряємо чи існує товар у keyCRM
-            $existingProduct = $this->findProductBySku($sku);
-
-            if ($existingProduct) {
-                // Товар існує, оновлюємо keycrm_id та викликаємо updateProduct
-                $product->update(['keycrm_id' => $existingProduct['id']]);
-                return $this->updateProduct($product);
+            if ($response->status() === 404) {
+                return null; // Товар не існує
             }
 
-            $productData = [
-                'name' => $product->name,
-                'description' => $product->description ?? '',
-                'pictures' => [str_replace('http://110.172.148.57:8000', 'https://serafym.info', $product->getFirstMediaUrl('product_images'))],
-                'price' => (float)$product->price,
-                'currency_code' => 'UAH',
-                'weight' => (float)$product->weight,
-                'height' => (float)$product->height,
-                'length' => (float)$product->length,
-                'width' => (float)$product->width,
-                'sku' => $sku,
-            ];
+            if (!$response->successful()) {
+                Log::warning('KeyCRMService findProductById failed', [
+                    'keycrm_id' => $keycrmId,
+                    'status' => $response->status(),
+                    'response' => $response->body()
+                ]);
+                return null;
+            }
+
+            return $response->json();
+
+        } catch (\Exception $exception) {
+            Log::error('KeyCRMService findProductById error: ' . $exception->getMessage(), [
+                'keycrm_id' => $keycrmId
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Генерувати унікальний SKU для товару (тільки якщо його немає)
+     */
+    private function generateSku(Product $product)
+    {
+        if ($product->sku) {
+            return $product->sku; // Використовуємо існуючий SKU
+        }
+
+        return 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
+    }
+
+    /**
+     * Підготувати дані товару для API
+     */
+    private function prepareProductData(Product $product)
+    {
+        return [
+            'name' => $product->name,
+            'description' => $product->description ?? '',
+            'pictures' => [str_replace('http://110.172.148.57:8000', 'https://serafym.info', $product->getFirstMediaUrl('product_images'))],
+            'price' => (float)$product->price,
+            'currency_code' => 'UAH',
+            'weight' => (float)$product->weight,
+            'height' => (float)$product->height,
+            'length' => (float)$product->length,
+            'width' => (float)$product->width,
+            'sku' => $product->sku,
+        ];
+    }
+    /**
+     * Знайти товар у keyCRM за назвою
+     */
+    public function findProductByName($name)
+    {
+        try {
+            if (empty($this->apiKey) || empty($this->apiUrl)) {
+                throw new \Exception('API credentials are not configured');
+            }
 
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->timeout(30)
-                ->post($this->apiUrl . '/v1/products', $productData);
+                ->get($this->apiUrl . '/v1/products', [
+                    'filter[name]' => $name
+                ]);
 
             if (!$response->successful()) {
-                $errorMessage = $response->json()['message'] ?? 'Unknown API error';
-                throw new \Exception($errorMessage);
+                Log::warning('KeyCRMService findProductByName failed', [
+                    'name' => $name,
+                    'status' => $response->status(),
+                    'response' => $response->body()
+                ]);
+                return null;
             }
 
             $responseData = $response->json();
-
-            // Зберігаємо ID товару з keyCRM в базі даних
-            $product->update(['keycrm_id' => $responseData['id'] ?? null]);
-
-            return $responseData;
+            return isset($responseData['data']) && count($responseData['data']) > 0
+                ? $responseData['data'][0]
+                : null;
 
         } catch (\Exception $exception) {
-            Log::error('KeyCRMService createProduct error: ' . $exception->getMessage(), [
+            Log::error('KeyCRMService findProductByName error: ' . $exception->getMessage(), [
+                'name' => $name
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Синхронізувати товар з KeyCRM (створити або оновити)
+     */
+    public function syncProduct(Product $product)
+    {
+        try {
+            if (empty($this->apiKey) || empty($this->apiUrl)) {
+                throw new \Exception('API credentials are not configured');
+            }
+
+            // Генеруємо SKU тільки якщо його немає
+            if (!$product->sku) {
+                $sku = $this->generateSku($product);
+                $product->update(['sku' => $sku]);
+            }
+
+            // Спробуємо знайти існуючий товар
+            $existingProduct = null;
+
+            // 1. Спочатку шукаємо за keycrm_id якщо він є
+            if ($product->keycrm_id) {
+                $existingProduct = $this->findProductById($product->keycrm_id);
+
+                // Якщо товар не знайдено за ID, очищуємо keycrm_id
+                if (!$existingProduct) {
+                    Log::info('Product not found by keycrm_id, clearing it', [
+                        'product_id' => $product->id,
+                        'keycrm_id' => $product->keycrm_id
+                    ]);
+                    $product->update(['keycrm_id' => null]);
+                }
+            }
+
+            // 2. Якщо не знайшли за ID, шукаємо за SKU
+            if (!$existingProduct) {
+                $existingProduct = $this->findProductBySku($product->sku);
+
+                // Якщо знайшли за SKU, оновлюємо keycrm_id
+                if ($existingProduct) {
+                    $product->update(['keycrm_id' => $existingProduct['id']]);
+                }
+            }
+
+            // 3. Якщо не знайшли за SKU, шукаємо за назвою
+            if (!$existingProduct) {
+                $existingProduct = $this->findProductByName($product->name);
+
+                // Якщо знайшли за назвою, оновлюємо keycrm_id та SKU
+                if ($existingProduct) {
+                    $product->update([
+                        'keycrm_id' => $existingProduct['id']
+                    ]);
+
+                    Log::info('Found existing product by name, linked to local product', [
+                        'product_id' => $product->id,
+                        'keycrm_id' => $existingProduct['id'],
+                        'name' => $product->name
+                    ]);
+                }
+            }
+
+            // Тепер або створюємо, або оновлюємо
+            if ($existingProduct) {
+                return $this->updateExistingProduct($product);
+            } else {
+                return $this->createNewProduct($product);
+            }
+
+        } catch (\Exception $exception) {
+            Log::error('KeyCRMService syncProduct error: ' . $exception->getMessage(), [
                 'product_id' => $product->id ?? null,
             ]);
             return null;
@@ -283,42 +411,16 @@ class KeyCrmService
     }
 
     /**
-     * Оновити товар у keyCRM з перевіркою існування
+     * Оновити існуючий товар у KeyCRM
      */
-    public function updateProduct(Product $product)
+    private function updateExistingProduct(Product $product)
     {
         try {
-            if (empty($this->apiKey) || empty($this->apiUrl)) {
-                throw new \Exception('API credentials are not configured');
-            }
-
-            $sku = 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
-
-            // Якщо немає keycrm_id, спробуємо знайти товар за SKU
             if (!$product->keycrm_id) {
-                $existingProduct = $this->findProductBySku($sku);
-
-                if ($existingProduct) {
-                    // Знайшли товар, оновлюємо keycrm_id
-                    $product->update(['keycrm_id' => $existingProduct['id']]);
-                } else {
-                    // Товар не знайдено, створюємо новий
-                    return $this->createProduct($product);
-                }
+                throw new \Exception('Cannot update product without keycrm_id');
             }
 
-            $productData = [
-                'name' => $product->name,
-                'description' => $product->description ?? '',
-                'pictures' => [str_replace('http://110.172.148.57:8000', 'https://serafym.info', $product->getFirstMediaUrl('product_images'))],
-                'price' => (float)$product->price,
-                'currency_code' => 'UAH',
-                'weight' => (float)$product->weight,
-                'height' => (float)$product->height,
-                'length' => (float)$product->length,
-                'width' => (float)$product->width,
-                'sku' => $sku,
-            ];
+            $productData = $this->prepareProductData($product);
 
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
@@ -328,17 +430,156 @@ class KeyCrmService
 
             if (!$response->successful()) {
                 $errorMessage = $response->json()['message'] ?? 'Unknown API error';
+
+                // Якщо товар не знайдено, спробуємо створити новий
+                if ($response->status() === 404) {
+                    Log::warning('Product not found in KeyCRM, creating new one', [
+                        'product_id' => $product->id,
+                        'keycrm_id' => $product->keycrm_id
+                    ]);
+                    $product->update(['keycrm_id' => null]);
+                    return $this->createNewProduct($product);
+                }
+
+                Log::error('KeyCRMService updateExistingProduct failed', [
+                    'product_id' => $product->id,
+                    'keycrm_id' => $product->keycrm_id,
+                    'status' => $response->status(),
+                    'error' => $errorMessage,
+                    'response' => $response->body()
+                ]);
                 throw new \Exception($errorMessage);
             }
+
+            Log::info('Product updated in KeyCRM', [
+                'product_id' => $product->id,
+                'keycrm_id' => $product->keycrm_id
+            ]);
 
             return $response->json();
 
         } catch (\Exception $exception) {
-            Log::error('KeyCRMService updateProduct error: ' . $exception->getMessage(), [
+            Log::error('KeyCRMService updateExistingProduct error: ' . $exception->getMessage(), [
                 'product_id' => $product->id ?? null,
                 'keycrm_id' => $product->keycrm_id ?? null,
-                'response_body' => isset($response) ? $response->body() : null
             ]);
+            throw $exception;
+        }
+    }
+
+    /**
+     * Створити новий товар у KeyCRM з унікальною назвою
+     */
+    private function createNewProduct(Product $product)
+    {
+        try {
+            $productData = $this->prepareProductData($product);
+            $originalName = $productData['name'];
+            $attempt = 0;
+
+            // Якщо назва вже існує, додаємо суфікс
+            while ($attempt < 10) { // Максимум 10 спроб
+                if ($attempt > 0) {
+                    $productData['name'] = $originalName . ' (' . $attempt . ')';
+
+                    // Оновлюємо назву в локальній базі даних
+                    $product->update(['name' => $productData['name']]);
+                }
+
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Content-Type' => 'application/json',
+                ])->timeout(30)
+                    ->post($this->apiUrl . '/v1/products', $productData);
+
+                if ($response->successful()) {
+                    $responseData = $response->json();
+
+                    // Зберігаємо ID товару з keyCRM в базі даних
+                    $product->update(['keycrm_id' => $responseData['id'] ?? null]);
+
+                    Log::info('Product created in KeyCRM', [
+                        'product_id' => $product->id,
+                        'keycrm_id' => $responseData['id'] ?? null,
+                        'final_name' => $productData['name'],
+                        'attempts' => $attempt + 1
+                    ]);
+
+                    return $responseData;
+                }
+
+                // Перевіряємо чи помилка через дублікат назви
+                $responseJson = $response->json();
+                if ($response->status() === 422 &&
+                    isset($responseJson['errors']['name']) &&
+                    str_contains(implode(' ', $responseJson['errors']['name']), 'has already been taken')) {
+
+                    $attempt++;
+                    continue; // Пробуємо з новою назвою
+                }
+
+                // Інша помилка - кидаємо виняток
+                $errorMessage = $responseJson['message'] ?? 'Unknown API error';
+                Log::error('KeyCRMService createNewProduct failed', [
+                    'product_id' => $product->id,
+                    'status' => $response->status(),
+                    'error' => $errorMessage,
+                    'response' => $response->body()
+                ]);
+                throw new \Exception($errorMessage);
+            }
+
+            throw new \Exception('Could not create product after 10 attempts - name conflicts');
+
+        } catch (\Exception $exception) {
+            Log::error('KeyCRMService createNewProduct error: ' . $exception->getMessage(), [
+                'product_id' => $product->id ?? null,
+            ]);
+            throw $exception;
+        }
+    }
+
+    /**
+     * Перевірити та відновити зв'язки для всіх товарів без keycrm_id
+     */
+    public function repairBrokenLinks()
+    {
+        try {
+            $productsWithoutKeycrmId = Product::whereNull('keycrm_id')
+                ->whereNotNull('sku')
+                ->get();
+
+            $repairedCount = 0;
+
+            foreach ($productsWithoutKeycrmId as $product) {
+                $existingProduct = null;
+
+                // Спочатку шукаємо за SKU
+                $existingProduct = $this->findProductBySku($product->sku);
+
+                // Якщо не знайшли за SKU, шукаємо за назвою
+                if (!$existingProduct) {
+                    $existingProduct = $this->findProductByName($product->name);
+                }
+
+                if ($existingProduct) {
+                    $product->update(['keycrm_id' => $existingProduct['id']]);
+                    $repairedCount++;
+                    Log::info('Repaired product link', [
+                        'product_id' => $product->id,
+                        'keycrm_id' => $existingProduct['id'],
+                        'matched_by' => $this->findProductBySku($product->sku) ? 'sku' : 'name'
+                    ]);
+                }
+            }
+
+            return [
+                'checked' => $productsWithoutKeycrmId->count(),
+                'repaired' => $repairedCount
+            ];
+
+        } catch (\Exception $exception) {
+            Log::error('KeyCRMService repairBrokenLinks error: ' . $exception->getMessage());
             return null;
         }
     }
