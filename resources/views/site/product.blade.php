@@ -181,7 +181,7 @@
     </div>
 </div>
 
-<div class="lg:hidden py-32" id="knowledge_pack">
+<div class="lg:hidden py-32">
     @include('components.chooseknoweledge-mobile')
 </div>
 
