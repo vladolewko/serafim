@@ -50,6 +50,7 @@
                             <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
                             >переглянути</a>
 
+
                         </div>
                     </div>
                 </div>
