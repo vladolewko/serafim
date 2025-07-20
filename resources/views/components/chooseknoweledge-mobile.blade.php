@@ -19,12 +19,10 @@
 
                         <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
                             <div class="relative bg-white flex flex-col items-center rounded-xl">
-                                @if($product->price == 0)
                                     <div class="absolute right-0 bg-gray-400 rounded-full">
                                         <img class="rounded-full w-[75px] h-[75px]"
                                              src="{{ asset('img/sticker.png') }}" alt="">
                                     </div>
-                                @endif
 
                                 <!-- posible img -->
                                 <div class="relative h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
@@ -39,8 +37,40 @@
                         </div>
                     </div>
                 </div>
+            <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
+                <div class="flex justify-center mt-10">
+                    <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gray-200 p-[2px]">
+                        <div class="bg-white flex flex-col items-center rounded-xl">
+                            <!-- posible img -->
+                            <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
+                            </div>
 
-            @endforeach
+                            <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                            <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
+                            <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
+                            >переглянути</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
+                <div class="flex justify-center mt-10">
+                    <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gray-200 p-[2px]">
+                        <div class="bg-white flex flex-col items-center rounded-xl">
+                            <!-- posible img -->
+                            <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
+                            </div>
+
+                            <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                            <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
+                            <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
+                            >переглянути</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @foreach ($banners as $index => $banner)
                 <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
                     <div class="flex justify-center mt-10">
@@ -60,7 +90,7 @@
                                     @endif
                                 </div>
 
-                                <p class="text-xl/6 font-semibold text-center w-4/6">{{$banner->titlr}}</p>
+                                <p class="text-xl/6 font-semibold text-center w-4/6">{{$banner->title}}</p>
                                 <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$banner->price}} грн</p>
                                 <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                                    href="{{ $banner->reference }}">переглянути</a>
@@ -71,39 +101,6 @@
 
             @endforeach
 
-                <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
-                    <div class="flex justify-center mt-10">
-                        <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gray-200 p-[2px]">
-                            <div class="bg-white flex flex-col items-center rounded-xl">
-                                <!-- posible img -->
-                                <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-                                </div>
-
-                                <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
-                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
-                                <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
-                                    >переглянути</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
-                    <div class="flex justify-center mt-10">
-                        <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gray-200 p-[2px]">
-                            <div class="bg-white flex flex-col items-center rounded-xl">
-                                <!-- posible img -->
-                                <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-                                </div>
-
-                                <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
-                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
-                                <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
-                                    >переглянути</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             <!-- Створюємо слайд для кожного продукту окремо -->
             @foreach ($products as $index => $product)
