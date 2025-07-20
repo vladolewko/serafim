@@ -21,7 +21,7 @@
                         <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
                             <div class="relative bg-white flex flex-col items-center rounded-xl">
                                     <div class="absolute right-0 bg-gray-400 rounded-full">
-                                        <img class="rounded-full w-[75px] h-[75px]"
+                                        <img class="rounded-full w-[75px] h-[75px] z-50"
                                              src="{{ asset('img/sticker.png') }}" alt="">
                                     </div>
 
@@ -104,6 +104,7 @@
                         </div>
                     </div>
                 </div>
+            @endforeach
 
 
             <!-- Створюємо слайд для кожного продукту окремо -->
@@ -198,8 +199,7 @@
                 class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
                 data-carousel-next>
             <span class="inline-flex items-center justify-center group-focus:outline-none">
-                <img class="w-8 h-8 text-white dark:text-gray-800 rtl:rotate-180"
-                        src="{{ asset('img/button_carousel_right.svg') }}" alt="button_carousel_right">
+                <img class="w-8 h-8 text-white dark:text-gray-800 rtl:rotate-180" src="{{ asset('img/button_carousel_right.svg') }}" alt="button_carousel_right">
                 <span class="sr-only">Next</span>
             </span>
         </button>
