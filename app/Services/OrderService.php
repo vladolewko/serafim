@@ -172,16 +172,23 @@ class OrderService
             }
 
             if ($data['transactionStatus'] === 'Approved') {
+                // Перевіряємо чи замовлення вже було оплачено
+                $wasAlreadyPaid = ($order->payment_status === 'paid');
+
                 $order->update([
                     'payment_status' => 'paid',
                     'status' => 'paid',
                     'payment_date' => now()
                 ]);
 
-                // Відправляємо в CRM тільки після успішної оплати
-                $this->keyCrmService->sendOrderToCrm($order);
+                // Відправляємо в CRM тільки якщо замовлення не було оплачено раніше
+                if (!$wasAlreadyPaid) {
+                    Log::info('Sending order to CRM for the first time', ['order_id' => $order->id]);
+                    $this->keyCrmService->sendOrderToCrm($order);
+                } else {
+                    Log::info('Order already paid, skipping CRM send', ['order_id' => $order->id]);
+                }
 
-                // Очищаємо session дані
                 Session::forget(['nova_post_data', 'pending_order_id']);
 
             } else {

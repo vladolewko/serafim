@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\Interfaces\BannerServiceInterface;
 use App\Services\Interfaces\ProductServiceInterface;
 
 class ProductController extends Controller
 {
     protected $productService;
-    public function __construct(ProductServiceInterface $productService)
+    protected $bannerService;
+    public function __construct(ProductServiceInterface $productService, BannerServiceInterface $bannerService)
     {
         $this->productService = $productService;
+        $this->bannerService = $bannerService;
     }
 
     /*
@@ -19,15 +22,19 @@ class ProductController extends Controller
     public function getAll()
     {
         $products = $this->productService->getAll();
+        $banners = $this->bannerService->getAll();
         $applyings = Product::getApplyingOptions();
+
 
         $productsForApplying = $products->groupBy('applying.value')
             ->map(fn($group) => $group->first());
-
+//        dd($productsForApplying);
+        $products = $products->merge($banners);
 
         return view('site.index', [
             'productsChunks' => $products->chunk(3),
             'products' => $products,
+            'banners' => $banners,
             'applyings' => $applyings,
             'productsForApplying' => $productsForApplying
         ]);
@@ -42,11 +49,15 @@ class ProductController extends Controller
     {
         $product = $this->productService->getById($id);
 
-        $products = Product::whereNot('id', $id)->get();
+        $products = Product::where('id', '!=', $id)->get();
+//        dd($products);
+        $banners = $this->bannerService->getAll();
+
         //dd($products);
         return view('site.product', [
             'productsChunks' => $products->chunk(3),
             'products' => $products,
+            'banners' => $banners,
             'product' => $product,
         ]);
     }

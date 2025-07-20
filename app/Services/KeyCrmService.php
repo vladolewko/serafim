@@ -14,6 +14,43 @@ class KeyCrmService
     private $novaPostService;
     private ProductService $productService;
 
+    protected $deliveryServices = [];
+    protected $paymentMethods = [];
+
+    public function getDeliveryServices()
+    {
+        if (empty($this->deliveryServices)) {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->get($this->apiUrl . '/v1/order/delivery-service');
+
+            if ($response->successful()) {
+                $this->deliveryServices = collect($response->json()['data'] ?? [])
+                    ->keyBy('name');
+            }
+        }
+
+        return $this->deliveryServices;
+    }
+
+    public function getPaymentMethods()
+    {
+        if (empty($this->paymentMethods)) {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->get($this->apiUrl . '/v1/order/payment-method');
+
+            if ($response->successful()) {
+                $this->paymentMethods = collect($response->json()['data'] ?? [])
+                    ->keyBy('name');
+            }
+        }
+
+        return $this->paymentMethods;
+    }
+
     public function __construct(NovaPostService $novaPostService, ProductService $productService)
     {
         $this->apiKey = env('KEY_CRM_API_KEY');
@@ -31,18 +68,28 @@ class KeyCrmService
 
             $warehouseData = $this->novaPostService->getWarehouseInfo($order->warehouse_ref);
 
-            $deliveryServiceId = null;
-            $paymentData = [];
-            if ($order->payment_type == 'cash') {
-                $deliveryServiceId = 1; // ID для наложеного платежу
-            } elseif ($order->payment_type == 'card') {
-                $deliveryServiceId = 2; // ID для оплати карткою
+            // Отримуємо актуальні дані з CRM
+            $deliveryServices = $this->getDeliveryServices();
+            $paymentMethods = $this->getPaymentMethods();
 
-                // Додаємо дані про оплату тільки якщо замовлення оплачено
-                if ($order->status == 'paid' || $order->payment_status == 'paid') {
+            // Знаходимо ID служби доставки Нова Пошта
+            $novaPoshtaService = $deliveryServices->first(function ($service) {
+                return stripos($service['source_name'], 'novaposhta') !== false;
+            });
+
+            $deliveryServiceId = $novaPoshtaService['id'] ?? null;
+
+            $paymentData = [];
+            if ($order->payment_type == 'card' && ($order->status == 'paid' || $order->payment_status == 'paid')) {
+                // Знаходимо ID для WayForPay
+                $wayForPayMethod = $paymentMethods->first(function ($method) {
+                    return stripos($method['name'], 'WayForPay') !== false;
+                });
+
+                if ($wayForPayMethod) {
                     $paymentData[] = [
-                        "payment_method_id" => 1,
-                        "payment_method" => "WayForPay",
+                        "payment_method_id" => $wayForPayMethod['id'],
+                        "payment_method" => $wayForPayMethod['name'],
                         "amount" => $order->product_total,
                         "description" => "Повна оплата замовлення",
                         "payment_date" => now()->format('Y-m-d H:i:s'),
@@ -50,6 +97,8 @@ class KeyCrmService
                     ];
                 }
             }
+
+            Log::info('Source ID for Serafim: ' . $this->getSourceIdByAlias('serafyminfo'));
 
             $customerName = trim($order->customer_name . ' ' . $order->customer_surname);
 
@@ -78,7 +127,7 @@ class KeyCrmService
             $warehouseName = "Відділення №{$warehouseNumber}";
 
             $orderData = [
-                'source_id' => 1,
+                'source_id' => $this->getSourceIdByAlias('serafyminfo'),
                 'buyer' => [
                     'full_name' => $customerName,
                     'phone' => $order->customer_phone,
@@ -183,7 +232,7 @@ class KeyCrmService
                 throw new \Exception('API credentials are not configured');
             }
 
-            $sku = 'PROD-' . $product->id;
+            $sku = 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
 
             // Перевіряємо чи існує товар у keyCRM
             $existingProduct = $this->findProductBySku($sku);
@@ -243,7 +292,7 @@ class KeyCrmService
                 throw new \Exception('API credentials are not configured');
             }
 
-            $sku = 'PROD-' . $product->id;
+            $sku = 'PROD-' . $product->id . '-' . date('YmdHis') . rand(100, 999);
 
             // Якщо немає keycrm_id, спробуємо знайти товар за SKU
             if (!$product->keycrm_id) {
@@ -290,6 +339,43 @@ class KeyCrmService
                 'keycrm_id' => $product->keycrm_id ?? null,
                 'response_body' => isset($response) ? $response->body() : null
             ]);
+            return null;
+        }
+    }
+
+    /**
+     * Отримати ID джерела по його alias
+     */
+    public function getSourceIdByAlias(string $alias): ?int
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->get($this->apiUrl . '/v1/order/source');
+
+            if (!$response->successful()) {
+                Log::error('KeyCRM API error: ' . $response->body());
+                return null;
+            }
+
+            $data = $response->json();
+            $sources = $data['data'] ?? $data;
+            Log::info('KeyCRM API response: ' . $response->body());
+
+            // Шукаємо джерело по alias
+            foreach ($sources as $source) {
+                if (isset($source['alias']) && $source['alias'] === $alias) {
+                    Log::info("Found source with alias '{$alias}': " . json_encode($source));
+                    return $source['id'] ?? null;
+                }
+            }
+
+            Log::warning("Source with alias '{$alias}' not found in KeyCRM");
+            return null;
+        } catch (\Exception $e) {
+            Log::error("Failed to get source ID for alias '{$alias}': " . $e->getMessage());
             return null;
         }
     }

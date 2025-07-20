@@ -39,5 +39,9 @@ return [
         'secret_key' => env('WAYFORPAY_SECRET_KEY'),
         'url' => env('WAYFORPAY_DOMAIN'),
     ],
+    'nova_post' => [
+        'api_key' => env('NOVA_POST_API_KEY'),
+        'url' => env('NOVA_POST_URL', 'https://api.novaposhta.ua/v2.0/json/'),
+        ],
 
 ];

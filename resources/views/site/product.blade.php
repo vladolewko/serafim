@@ -12,6 +12,7 @@
     </div>
 @endsection
 @section('content')
+
 <div class="w-full px-4 sm:px-6 lg:px-8 sm:w-5/6 mx-auto">
 
     <!-- Main title -->
@@ -22,7 +23,7 @@
         <!-- Left column - Image and delivery info -->
         <div class="w-full lg:w-6/12">
             <!-- Product image placeholder -->
-            <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[548px] rounded-lg mb-4 overflow-hidden">
+            <div class="bg-gray-200 w-full {{ !$product->getMedia('product_images')->isNotEmpty() ? 'h-[530px]' : '' }} rounded-lg mb-4 overflow-hidden">
                 @if($product->getMedia('product_images')->isNotEmpty())
                     @php
                         $imageUrl = $product->getFirstMediaUrl('product_images');
@@ -71,7 +72,12 @@
             <!-- Product title and availability -->
             <div class="mb-6">
                 <h2 class="text-2xl sm:text-3xl font-bold mb-2">{{ $product->name }}</h2>
-                <p class="text-green-400 text-sm sm:text-base">в наявності</p>
+                @if($product->price == 0)
+                    <p class="text-red-400 text-sm sm:text-base">немає в наявності</p>
+
+                @else
+                    <p class="text-green-400 text-sm sm:text-base">в наявності</p>
+                @endif
             </div>
 
             <!-- Product description -->
@@ -181,6 +187,7 @@
 
 
 <div class="hidden lg:block">
+
     @include('components.chooseknoweledge')
 </div>
 
