@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('keycrm_id')->nullable();
+            $table->string('sku')->unique()->nullable(); // Унікальний ідентифікатор SKU +
             $table->string('name')->unique(); // Назва комплекту +
             $table->text('description')->nullable(); // Опис комплекту +
             $table->integer('price')->default(0); // Ціна комплекту +

@@ -16,6 +16,7 @@ class Product extends Model implements HasMedia
 
     protected $fillable = [
         'keycrm_id',
+        'sku',
         'name',
         'description',
         'price',
