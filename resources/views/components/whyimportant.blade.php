@@ -104,10 +104,12 @@
                     $productIds[$applyingKey] = $product->id;
 
                     // Отримуємо URL першої картинки
-                    $productImages[$applyingKey] = $product->getFirstMediaUrl('product_images') ?: '/images/default-product.jpg';
+                    $productImages[$applyingKey] = $product->getFirstMediaUrl('product_images') ?: '';
                 }
             @endphp
             @foreach($applyings as $key => $value)
+{{--                {{$key}}--}}
+{{--                {{$value}}--}}
                 <div class="flex items-center gap-1  sm:gap-2 bg-blue-400 rounded-lg px-1 py-1 sm:px-2 sm:py-2 radio-div">
                     <input id="checkbox-{{ $key }}"
                             class="w-2 h-2 sm:w-4 sm:h-4 cursor-pointer rounded-[3px] border-none sm:rounded-md text-blue-400 bg-white"
@@ -116,7 +118,7 @@
                             value="{{ $key }}"
                             data-price="{{ $prices[$key] ?? 0 }}"
                             data-product-id="{{ $productIds[$key] ?? 0 }}"
-                            data-image-url="{{ $productImages[$key] ?? '/images/default-product.jpg' }}"
+                            data-image-url="{{ $productImages[$key] ?? '' }}"
                             data-href="{{ route('product.show', $productIds[$key] ?? 1) }}">
                     <label class="cursor-pointer text-white text-xs lg:text-[12px] 2xl:text-base"
                             for="checkbox-{{ $key }}">{{ $value }}</label>
@@ -126,7 +128,7 @@
 
         <div class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px]  rounded-lg mt-6 max-h-[480px] lg:max-w-[480px] xl:min-w-full">
             <img id="productImage"
-                    src="/images/default-product.jpg"
+                    src=""
                     alt="Product Image"
                     class="w-full h-full object-cover rounded-lg">
         </div>

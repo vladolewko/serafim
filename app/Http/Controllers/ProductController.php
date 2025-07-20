@@ -23,12 +23,13 @@ class ProductController extends Controller
     {
         $products = $this->productService->getAll();
         $banners = $this->bannerService->getAll();
-        $products = $products->concat($banners);
         $applyings = Product::getApplyingOptions();
+
 
         $productsForApplying = $products->groupBy('applying.value')
             ->map(fn($group) => $group->first());
-
+//        dd($productsForApplying);
+        $products = $products->merge($banners);
 
         return view('site.index', [
             'productsChunks' => $products->chunk(3),
@@ -49,6 +50,7 @@ class ProductController extends Controller
         $product = $this->productService->getById($id);
 
         $products = Product::where('id', '!=', $id)->get();
+//        dd($products);
         $banners = $this->bannerService->getAll();
 
         //dd($products);
