@@ -108,6 +108,8 @@
                 }
             @endphp
             @foreach($applyings as $key => $value)
+{{--                {{$key}}--}}
+{{--                {{$value}}--}}
                 <div class="flex items-center gap-1  sm:gap-2 bg-blue-400 rounded-lg px-1 py-1 sm:px-2 sm:py-2 radio-div">
                     <input id="checkbox-{{ $key }}"
                             class="w-2 h-2 sm:w-4 sm:h-4 cursor-pointer rounded-[3px] border-none sm:rounded-md text-blue-400 bg-white"
