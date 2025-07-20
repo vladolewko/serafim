@@ -30,6 +30,7 @@ class ProductController extends Controller
             ->map(fn($group) => $group->first());
 //        dd($productsForApplying);
         $products = $products->merge($banners);
+//        dd($products);
 
         return view('site.index', [
             'productsChunks' => $products->chunk(3),
