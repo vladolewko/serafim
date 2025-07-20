@@ -19,11 +19,11 @@
                     <div class="flex justify-center mt-10">
 
                         <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
-                            <div class="relative bg-white flex flex-col items-center rounded-xl">
-                                    <div class="absolute right-0 bg-gray-400 rounded-full">
-                                        <img class="rounded-full w-[75px] h-[75px] z-50"
-                                             src="{{ asset('img/sticker.png') }}" alt="">
-                                    </div>
+                            <div class="relative bg-white flex flex-col items-center rounded-xl z-0">
+{{--                                    <div class="absolute right-0 bg-gray-400 rounded-full">--}}
+{{--                                        <img class="rounded-full w-[75px] h-[75px] z-50"--}}
+{{--                                             src="{{ asset('img/sticker.png') }}" alt="">--}}
+{{--                                    </div>--}}
 
                                 <!-- posible img -->
                                 <div class="relative h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
