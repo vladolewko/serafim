@@ -38,6 +38,7 @@ Route::middleware(AdminMiddleware::class)->group(function () {
     Route::delete('/admin/products/destroy/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
     Route::get('/admin/product/{id}', [AdminProductController::class, 'edit'])->name('admin.products.edit');
 
+
     Route::get('/admin/banners', [BannerController::class, 'banners'])->name('admin.banners');
     Route::get('/admin/banners/create', [BannerController::class, 'create'])->name('admin.banners.create');
     Route::put('/admin/banners/store', [BannerController::class, 'store'])->name('admin.banners.store');
