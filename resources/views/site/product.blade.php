@@ -33,7 +33,6 @@
                 @endif
             </div>
 
-
             <!-- Delivery and payment info -->
             <div class="border-2 border-blue-400 rounded-lg p-4 sm:p-6">
                 <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 sm:gap-4">

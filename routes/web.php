@@ -44,6 +44,7 @@ Route::middleware(AdminMiddleware::class)->group(function () {
     Route::patch('/admin/banners/update', [BannerController::class, 'update'])->name('admin.banners.update');
     Route::delete('/admin/banners/destroy/{id}', [BannerController::class, 'destroy'])->name('admin.banners.destroy');
     Route::get('/admin/banner/{id}', [BannerController::class, 'edit'])->name('admin.banners.edit');
+
 });
 
 
