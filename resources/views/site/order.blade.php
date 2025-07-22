@@ -274,6 +274,8 @@
                 searchSettlement: '{{ route("orders.searchSettlement") }}',
                 chooseSettlement: '{{ route("orders.chooseSettlement") }}',
                 setWarehouse: '{{ route("orders.setWarehouse") }}',
+                loadMoreWarehouses: '{{ route("orders.loadMoreWarehouses") }}',
+                loadMoreSettlements: '{{ route("orders.loadMoreSettlements") }}',
                 createOrder: '{{ route("orders.createOrder") }}',
                 orderStatus: '/api/orders/status/',
                 home: '{{ route("home") }}'
@@ -291,6 +293,10 @@
                 this.elements = this.initElements();
                 this.state = this.initState();
                 this.searchTimeout = null;
+                this.pagination = {
+                    settlements: { currentPage: 1, hasMore: false, loading: false },
+                    warehouses: { currentPage: 1, hasMore: false, loading: false }
+                };
                 this.init();
             }
 
@@ -305,8 +311,7 @@
                 ];
 
                 return ids.reduce((els, id) => {
-                    const key = this.toCamelCase(id);
-                    els[key] = document.getElementById(id);
+                    els[this.toCamelCase(id)] = document.getElementById(id);
                     return els;
                 }, {});
             }
@@ -333,10 +338,6 @@
 
             init() {
                 this.attachEventListeners();
-                this.initializeFormState();
-            }
-
-            initializeFormState() {
                 this.hideOrderForm();
                 this.disableWarehouseSelect();
             }
@@ -351,6 +352,10 @@
                     if (!this.elements.warehouseInput.disabled) this.toggleDropdown('warehouse');
                 });
                 this.elements.warehouseSearch?.addEventListener('input', (e) => this.handleSearchInput(e, 'warehouse'));
+
+                // Scroll events
+                this.elements.settlementOptions?.addEventListener('scroll', (e) => this.handleScroll(e, 'settlements'));
+                this.elements.warehouseOptions?.addEventListener('scroll', (e) => this.handleScroll(e, 'warehouses'));
 
                 // Phone formatting
                 const phoneInput = this.elements.unifiedOrderForm?.querySelector('input[name="phone"]');
@@ -374,10 +379,85 @@
                         this.searchTimeout = setTimeout(() => this.searchSettlements(value), ORDER_CONFIG.constants.SEARCH_DELAY);
                     } else {
                         this.renderOptions('settlement', []);
+                        this.resetPagination('settlements');
                     }
                 } else if (type === 'warehouse') {
                     this.filterWarehouses(value);
                 }
+            }
+
+            handleScroll(e, type) {
+                const container = e.target;
+                const { scrollTop, scrollHeight, clientHeight } = container;
+
+                if (scrollHeight - scrollTop - clientHeight < 50) {
+                    this.loadMore(type);
+                }
+            }
+
+            async loadMore(type) {
+                const paginationType = type === 'settlements' ? 'settlements' : 'warehouses';
+                const pagination = this.pagination[paginationType];
+
+                if (!pagination.hasMore || pagination.loading) return;
+
+                pagination.loading = true;
+                this.showInfiniteLoader(type === 'settlements' ? 'settlement' : 'warehouse');
+
+                try {
+                    const nextPage = pagination.currentPage + 1;
+                    const endpoint = type === 'settlements'
+                        ? ORDER_CONFIG.routes.loadMoreSettlements
+                        : ORDER_CONFIG.routes.loadMoreWarehouses;
+
+                    const data = type === 'settlements'
+                        ? { search: this.state.address.search, page: nextPage }
+                        : { settlement: this.state.address.settlement, page: nextPage };
+
+                    const response = await this.makeRequest(endpoint, data);
+
+                    if (!response.success) {
+                        throw new Error(response.error || `Не вдалося завантажити додаткові ${type === 'settlements' ? 'населені пункти' : 'відділення'}`);
+                    }
+
+                    const newItems = response[type] || [];
+                    const stateKey = type === 'settlements' ? 'settlements' : 'warehouses';
+                    const filteredKey = type === 'settlements' ? 'filteredSettlements' : 'filteredWarehouses';
+
+                    this.state[stateKey] = [...this.state[stateKey], ...newItems];
+                    this.state[filteredKey] = [...this.state[filteredKey], ...newItems];
+
+                    pagination.currentPage = nextPage;
+                    pagination.hasMore = response.hasMore || false;
+
+                    this.appendOptions(type === 'settlements' ? 'settlement' : 'warehouse', newItems);
+
+                } catch (error) {
+                    console.error(`Error loading more ${type}:`, error);
+                    this.showErrorMessage(error.message);
+                } finally {
+                    pagination.loading = false;
+                    this.hideInfiniteLoader(type === 'settlements' ? 'settlement' : 'warehouse');
+                }
+            }
+
+            resetPagination(type) {
+                this.pagination[type] = { currentPage: 1, hasMore: false, loading: false };
+            }
+
+            showInfiniteLoader(type) {
+                const container = this.elements[`${type}Options`];
+                if (!container || container.querySelector('.infinite-loader')) return;
+
+                const loader = document.createElement('div');
+                loader.className = 'infinite-loader text-center p-2 text-gray-500';
+                loader.innerHTML = '<div class="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full"></div> Завантаження...';
+                container.appendChild(loader);
+            }
+
+            hideInfiniteLoader(type) {
+                const loader = this.elements[`${type}Options`]?.querySelector('.infinite-loader');
+                loader?.remove();
             }
 
             handleOutsideClick(e) {
@@ -431,7 +511,7 @@
                 field.classList.toggle('border-2', hasError);
 
                 const existingError = field.parentNode.querySelector('.field-error');
-                if (existingError) existingError.remove();
+                existingError?.remove();
 
                 if (hasError && message) {
                     const errorEl = document.createElement('div');
@@ -473,7 +553,9 @@
             async searchSettlements(searchValue) {
                 if (!searchValue.trim()) return;
 
+                this.resetPagination('settlements');
                 this.showLoader('settlement');
+
                 try {
                     const response = await this.makeRequest(ORDER_CONFIG.routes.searchSettlement, { search: searchValue });
 
@@ -485,9 +567,8 @@
                     this.state.settlements = response.settlements || [];
                     this.state.filteredSettlements = this.state.settlements;
 
-                    if (this.state.settlements.length === 0) {
-                        this.showInfoMessage('Населені пункти не знайдено. Спробуйте інший запит.');
-                    }
+                    this.pagination.settlements.hasMore = response.hasMore || false;
+                    this.pagination.settlements.currentPage = 1;
 
                     this.renderOptions('settlement', this.state.filteredSettlements);
                 } catch (error) {
@@ -520,13 +601,20 @@
                     const noResults = type === 'settlement'
                         ? 'Введіть назву міста для пошуку...'
                         : 'Нічого не знайдено';
-                    container.innerHTML = `<div class="no-results">${noResults}</div>`;
+                    container.innerHTML = `<div class="no-results p-3 text-center text-gray-500">${noResults}</div>`;
                     return;
                 }
 
+                this.appendOptions(type, options);
+            }
+
+            appendOptions(type, options) {
+                const container = this.elements[`${type}Options`];
+                if (!container) return;
+
                 options.forEach(option => {
                     const div = document.createElement('div');
-                    div.className = 'select-option';
+                    div.className = 'select-option p-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100';
                     div.textContent = type === 'warehouse' ? option.Description : option.Present;
                     div.addEventListener('click', () => this.selectOption(type, option));
                     container.appendChild(div);
@@ -545,6 +633,7 @@
 
             async chooseSettlement(settlementRef, settlementName) {
                 this.showLoader('settlement');
+                this.resetPagination('warehouses');
 
                 try {
                     const response = await this.makeRequest(ORDER_CONFIG.routes.chooseSettlement, { settlement: settlementRef });
@@ -562,6 +651,9 @@
 
                     this.state.warehouses = response.warehouses || [];
                     this.state.filteredWarehouses = this.state.warehouses;
+
+                    this.pagination.warehouses.hasMore = response.hasMore || false;
+                    this.pagination.warehouses.currentPage = 1;
 
                     if (this.state.warehouses.length === 0) {
                         this.showInfoMessage('У цьому місті немає доступних відділень');
@@ -611,20 +703,22 @@
             enableWarehouseSelect() {
                 if (!this.elements.warehouseInput) return;
 
-                this.elements.warehouseInput.disabled = false;
-                this.elements.warehouseInput.placeholder = 'Оберіть відділення або поштомат...';
-                this.elements.warehouseInput.classList.remove('bg-gray-50');
-                this.elements.warehouseInput.classList.add('bg-white');
+                const input = this.elements.warehouseInput;
+                input.disabled = false;
+                input.placeholder = 'Оберіть відділення або поштомат...';
+                input.classList.remove('bg-gray-50');
+                input.classList.add('bg-white');
             }
 
             disableWarehouseSelect() {
                 if (!this.elements.warehouseInput) return;
 
-                this.elements.warehouseInput.disabled = true;
-                this.elements.warehouseInput.placeholder = 'Спочатку оберіть місто';
-                this.elements.warehouseInput.value = '';
-                this.elements.warehouseInput.classList.add('bg-gray-50');
-                this.elements.warehouseInput.classList.remove('bg-white');
+                const input = this.elements.warehouseInput;
+                input.disabled = true;
+                input.placeholder = 'Спочатку оберіть місто';
+                input.value = '';
+                input.classList.add('bg-gray-50');
+                input.classList.remove('bg-white');
             }
 
             showAddressConfirmation() {
@@ -635,9 +729,7 @@
                     if (this.elements.addressText) {
                         this.elements.addressText.textContent = addressText;
                     }
-                    if (this.elements.selectedAddress) {
-                        this.elements.selectedAddress.classList.remove('hidden');
-                    }
+                    this.elements.selectedAddress?.classList.remove('hidden');
                 }
             }
 
@@ -654,6 +746,9 @@
                 this.state.filteredSettlements = [];
                 this.state.filteredWarehouses = [];
 
+                this.resetPagination('settlements');
+                this.resetPagination('warehouses');
+
                 ['settlementInput', 'warehouseInput'].forEach(input => {
                     if (this.elements[input]) this.elements[input].value = '';
                 });
@@ -664,8 +759,8 @@
                 this.hideOrderForm();
                 this.toggleSubmitButton(false);
 
-                this.safeUpdateElement('deliveryCost', '0 грн');
-                this.safeUpdateElement('totalAmount', '0 грн');
+                this.updateElement('deliveryCost', '0 грн');
+                this.updateElement('totalAmount', '0 грн');
             }
 
             // UI helper methods
@@ -681,8 +776,8 @@
                 const deliveryCost = response.deliveryCost || 0;
                 const productCosts = response.productCosts || 0;
 
-                this.safeUpdateElement('deliveryCost', `${deliveryCost} грн`);
-                this.safeUpdateElement('totalAmount', `${productCosts + deliveryCost} грн`);
+                this.updateElement('deliveryCost', `${deliveryCost} грн`);
+                this.updateElement('totalAmount', `${productCosts + deliveryCost} грн`);
             }
 
             showOrderForm() {
@@ -709,7 +804,7 @@
                 }
             }
 
-            safeUpdateElement(elementKey, content) {
+            updateElement(elementKey, content) {
                 const element = this.elements[elementKey];
                 if (element) {
                     element.textContent = content;
@@ -854,16 +949,11 @@
                         }
                     });
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.success && data.order) {
-                            this.showOrderSuccessPopup('Замовлення успішно створено!');
-                        } else {
-                            this.showOrderSuccessPopup('Оплата успішна!', 'Замовлення обробляється.');
-                        }
-                    } else {
-                        this.showOrderSuccessPopup('Оплата успішна!', 'Замовлення обробляється.');
-                    }
+                    const data = response.ok ? await response.json() : null;
+                    const message = data?.success && data?.order ? 'Замовлення успішно створено!' : 'Оплата успішна!';
+                    const submessage = data?.success && data?.order ? undefined : 'Замовлення обробляється.';
+
+                    this.showOrderSuccessPopup(message, submessage);
                 } catch (error) {
                     this.showOrderSuccessPopup('Оплата успішна!', 'Замовлення обробляється.');
                 }
@@ -990,7 +1080,7 @@
             }
 
             showSuccessMessage(msg) { this.showToast(msg, 'success'); }
-            showErrorMessage(msg) { this.showToast(msg, 'error'); }
+            showErrorMessage(msg) { this.showToast(msg, 'error');}
             showInfoMessage(msg) { this.showToast(msg, 'info'); }
 
             showOrderSuccessPopup(title, message = 'Ваше замовлення буде оброблено найближчим часом.') {
