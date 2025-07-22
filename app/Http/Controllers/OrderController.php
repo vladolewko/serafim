@@ -62,16 +62,111 @@ class OrderController extends Controller
         return back()->with('error', 'Помилка');
     }
 
-    /**
-     * Searching settlements by search
-     */
+//    /**
+//     * Searching settlements by search
+//     */
+//    public function searchSettlement(SearchSettlementRequest $request): JsonResponse
+//    {
+//        try {
+//            $search = trim($request->validated()['search']);
+//            $settlements = $this->novaPostService->searchSettlement($search);
+//
+//            if (empty($settlements)) {
+//                return $this->errorResponse(
+//                    'Населені пункти з такою назвою не знайдено. Спробуйте ввести частину назви або перевірте правильність написання.',
+//                    [
+//                        'suggestions' => 'Спробуйте ввести: "Київ", "Львів", "Одеса" або частину назви вашого міста'
+//                    ]
+//                );
+//            }
+//
+//            Session::put('nova_post_data', ['search' => $search]);
+//
+//            return $this->successResponse([
+//                'settlements' => $settlements,
+//                'addressData' => ['search' => $search],
+//                'count' => count($settlements)
+//            ]);
+//
+//        } catch (\Exception $e) {
+//            return $this->errorResponse(
+//                'Сталася помилка при пошуку населених пунктів. Спробуйте пізніше.',
+//                [],
+//                500
+//            );
+//        }
+//    }
+
+//    /**
+//     * Saving Settlement to Order Data
+//     */
+//    public function chooseSettlement(ChooseSettlementRequest $request): JsonResponse
+//    {
+//        try {
+//            $settlementRef = $request->validated()['settlement'];
+//            $data = Session::get('nova_post_data', []);
+//
+//            if (empty($data['search'])) {
+//                return $this->errorResponse(
+//                    'Спочатку виконайте пошук населеного пункту',
+//                    [],
+//                    400
+//                );
+//            }
+//
+//            $data['settlement'] = $settlementRef;
+//            Session::put('nova_post_data', $data);
+//
+//            $cart = session('cart');
+//            $warehouses = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart);
+//            $settlements = $this->novaPostService->searchSettlement($data['search']);
+//
+//            if (empty($warehouses)) {
+//                $cart = session('cart');
+//                $quantity = $cart['quantity'] ?? 1;
+//
+//                if ($quantity > 1) {
+//                    return $this->errorResponse(
+//                        "Для {$quantity} товарів доступні тільки відділення (не поштомати). У цьому населеному пункті підходящих відділень не знайдено.",
+//                        ['suggestion' => 'Спробуйте обрати інше місто або зменшіть кількість до 1']
+//                    );
+//                }
+//
+//                return $this->errorResponse(
+//                    'У цьому населеному пункті немає відділень для вашого товару',
+//                    ['suggestion' => 'Спробуйте обрати інше місто']
+//                );
+//            }
+//
+//            return $this->successResponse([
+//                'warehouses' => $warehouses,
+//                'settlements' => $settlements,
+//                'addressData' => $data,
+//                'warehouses_count' => count($warehouses)
+//            ]);
+//
+//        } catch (\Exception $e) {
+//            return $this->errorResponse(
+//                'Помилка при завантаженні відділень. Спробуйте оновити сторінку.',
+//                [],
+//                500
+//            );
+//        }
+//    }
+
+
+// У контролері
     public function searchSettlement(SearchSettlementRequest $request): JsonResponse
     {
         try {
-            $search = trim($request->validated()['search']);
-            $settlements = $this->novaPostService->searchSettlement($search);
+            $validated = $request->validated();
+            $search = trim($validated['search']);
+            $page = (int)($validated['page'] ?? 1);
+            $perPage = 20; // Зменшуємо для швидшого початкового завантаження
 
-            if (empty($settlements)) {
+            $result = $this->novaPostService->searchSettlement($search, $page, $perPage);
+
+            if (empty($result['settlements']) && $page === 1) {
                 return $this->errorResponse(
                     'Населені пункти з такою назвою не знайдено. Спробуйте ввести частину назви або перевірте правильність написання.',
                     [
@@ -80,12 +175,17 @@ class OrderController extends Controller
                 );
             }
 
-            Session::put('nova_post_data', ['search' => $search]);
+            // Зберігаємо дані пошуку тільки для першої сторінки
+            if ($page === 1) {
+                Session::put('nova_post_data', ['search' => $search]);
+            }
 
             return $this->successResponse([
-                'settlements' => $settlements,
+                'settlements' => $result['settlements'],
+                'pagination' => $result['pagination'],
                 'addressData' => ['search' => $search],
-                'count' => count($settlements)
+                'count' => $result['pagination']['total'],
+                'hasMore' => $result['pagination']['current_page'] < $result['pagination']['last_page']
             ]);
 
         } catch (\Exception $e) {
@@ -97,13 +197,14 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Saving Settlement to Order Data
-     */
     public function chooseSettlement(ChooseSettlementRequest $request): JsonResponse
     {
         try {
-            $settlementRef = $request->validated()['settlement'];
+            $validated = $request->validated();
+            $settlementRef = $validated['settlement'];
+            $page = (int)($validated['page'] ?? 1);
+            $perPage = 15; // Зменшуємо для швидшого початкового завантаження
+
             $data = Session::get('nova_post_data', []);
 
             if (empty($data['search'])) {
@@ -118,10 +219,9 @@ class OrderController extends Controller
             Session::put('nova_post_data', $data);
 
             $cart = session('cart');
-            $warehouses = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart);
-            $settlements = $this->novaPostService->searchSettlement($data['search']);
+            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage);
 
-            if (empty($warehouses)) {
+            if (empty($warehousesResult['warehouses']) && $page === 1) {
                 $cart = session('cart');
                 $quantity = $cart['quantity'] ?? 1;
 
@@ -138,16 +238,86 @@ class OrderController extends Controller
                 );
             }
 
-            return $this->successResponse([
-                'warehouses' => $warehouses,
-                'settlements' => $settlements,
+            $response = [
+                'warehouses' => $warehousesResult['warehouses'],
+                'pagination' => $warehousesResult['pagination'],
                 'addressData' => $data,
-                'warehouses_count' => count($warehouses)
-            ]);
+                'warehouses_count' => $warehousesResult['pagination']['total'],
+                'hasMore' => $warehousesResult['pagination']['current_page'] < $warehousesResult['pagination']['last_page']
+            ];
+
+            // Повертаємо дані про населені пункти тільки для першої сторінки
+            if ($page === 1) {
+                $settlements = $this->novaPostService->searchSettlement($data['search'], 1, 20);
+                $response['settlements'] = $settlements['settlements'];
+            }
+
+            return $this->successResponse($response);
 
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Помилка при завантаженні відділень. Спробуйте оновити сторінку.',
+                [],
+                500
+            );
+        }
+    }
+
+// Оновлений метод для завантаження додаткових відділень
+    public function loadMoreWarehouses(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'settlement' => 'required|string',
+                'page' => 'required|integer|min:1'
+            ]);
+
+            $settlementRef = $validated['settlement'];
+            $page = $validated['page'];
+            $perPage = 15;
+
+            $cart = session('cart');
+            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage);
+
+            return $this->successResponse([
+                'warehouses' => $warehousesResult['warehouses'],
+                'pagination' => $warehousesResult['pagination'],
+                'hasMore' => $warehousesResult['pagination']['current_page'] < $warehousesResult['pagination']['last_page']
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Помилка при завантаженні додаткових відділень.',
+                [],
+                500
+            );
+        }
+    }
+
+// Новий метод для завантаження додаткових населених пунктів
+    public function loadMoreSettlements(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'search' => 'required|string|min:2',
+                'page' => 'required|integer|min:1'
+            ]);
+
+            $search = trim($validated['search']);
+            $page = $validated['page'];
+            $perPage = 20;
+
+            $result = $this->novaPostService->searchSettlement($search, $page, $perPage);
+
+            return $this->successResponse([
+                'settlements' => $result['settlements'],
+                'pagination' => $result['pagination'],
+                'hasMore' => $result['pagination']['current_page'] < $result['pagination']['last_page']
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Помилка при завантаженні додаткових населених пунктів.',
                 [],
                 500
             );

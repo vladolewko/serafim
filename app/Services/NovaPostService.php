@@ -2,11 +2,22 @@
 
 namespace App\Services;
 
+use App\Models\NovaPoshtaSettlement;
+use App\Models\NovaPoshtaWarehouse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class NovaPostService
 {
+    private const DEFAULT_SENDER_CITY = 'e718a680-4b33-11e4-ab6d-005056801329';
+    private const MIN_WEIGHT = 0.5;
+    private const PARCEL_WEIGHT_LIMIT = 30;
+    private const POSTBOX_WEIGHT_LIMIT = 20;
+    private const POSTBOX_MAX_DIMENSION = 60;
+    private const POSTBOX_MAX_LENGTH = 40;
+    private const POSTBOX_MAX_HEIGHT = 30;
+    private const VOLUME_WEIGHT_DIVISOR = 4000;
+
     private string $apiKey;
     private ProductService $productService;
 
@@ -16,184 +27,94 @@ class NovaPostService
         $this->productService = $productService;
     }
 
-    /**
-     * Пошук населених пунктів
-     */
-    public function searchSettlement(string $search): array
+    public function searchSettlement(string $search, int $page = 1, int $perPage = 50): array
     {
-        $response = $this->makeRequest('AddressGeneral', 'searchSettlements', [
-            'CityName' => $search,
-            'Limit' => '500',
-            'Page' => '1'
-        ]);
+        $searchLower = mb_strtolower(trim($search));
 
-        return $response['data'][0]['Addresses'] ?? [];
+        $totalQuery = NovaPoshtaSettlement::where('is_active', true)
+            ->where(function ($query) use ($search) {
+                $query->where('description', 'LIKE', "%{$search}%")
+                    ->orWhere('description_ru', 'LIKE', "%{$search}%");
+            });
+
+        $total = $totalQuery->count();
+
+        $settlements = NovaPoshtaSettlement::where('is_active', true)
+            ->where(function ($query) use ($search) {
+                $query->where('description', 'LIKE', "%{$search}%")
+                    ->orWhere('description_ru', 'LIKE', "%{$search}%");
+            })
+            ->orderByRaw($this->buildSettlementSortQuery(), ["{$searchLower}%", "{$searchLower}%"])
+            ->orderBy('api_warehouses_count', 'desc')
+            ->orderBy('description')
+            ->get()
+            ->map(fn($settlement) => $this->mapSettlementData($settlement));
+
+        $offset = ($page - 1) * $perPage;
+        $paginatedSettlements = $settlements->slice($offset, $perPage)->values()->toArray();
+
+        return [
+            'settlements' => $paginatedSettlements,
+            'pagination' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'last_page' => ceil($total / $perPage),
+                'has_more' => $page < ceil($total / $perPage)
+            ]
+        ];
     }
 
-    /**
-     * Отримання відділень/поштоматів з інформацією про обмеження
-     */
-    public function getWarehousesWithRestrictions(string $settlementRef): array
+    public function getFilteredWarehouses(string $settlementRef, array $cart, int $page = 1, int $perPage = 30): array
     {
-        $warehouses = $this->getWarehouses($settlementRef);
-
-        foreach ($warehouses as &$warehouse) {
-            $warehouse['restrictions'] = [
-                'max_weight' => (float)($warehouse['TotalMaxWeightAllowed'] ?? 0),
-                'max_volume' => (float)($warehouse['MaxVolumeAllowed'] ?? 0),
-                'is_postbox' => ($warehouse['TypeOfWarehouse'] ?? 'Branch') === 'PostBox',
-                'postbox_only_single_item' => ($warehouse['TypeOfWarehouse'] ?? 'Branch') === 'PostBox'
-            ];
-        }
-
-        return $warehouses;
-    }
-
-    /**
-     * Отримання відфільтрованих відділень з урахуванням обмежень товару
-     */
-    public function getFilteredWarehouses(string $settlementRef, array $cart): array
-    {
-        $warehouses = $this->getWarehousesWithRestrictions($settlementRef);
+        $allWarehouses = $this->getAllWarehousesForFiltering($settlementRef);
         $product = $this->productService->getById($cart['productId']);
 
         if (!$product || !$cart['quantity']) {
-            return $warehouses;
+            return $this->paginateArray($allWarehouses, $page, $perPage);
         }
 
         $quantity = $cart['quantity'];
         $totalWeight = ($product->weight ?? 0) * $quantity;
         $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
         $finalWeight = max($totalWeight, $volumeWeight);
-        $cargoType = $finalWeight <= 2 ? 'Parcel' : 'Cargo';
 
-        // Якщо кількість > 1, виключаємо всі поштомати та залишаємо тільки відділення до 30кг і більше
-        if ($quantity > 1) {
-            $warehouses = array_filter($warehouses, function($warehouse) {
-                $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
-                $warehouseType = $warehouse['WarehouseType'] ?? '';
-                $typeOfWarehouse = $warehouse['TypeOfWarehouse'] ?? 'Branch';
-                $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+        $filteredWarehouses = $this->filterWarehousesByProduct($allWarehouses, $product, $quantity, $finalWeight);
+        $this->sortWarehouses($filteredWarehouses);
 
-                // Виключаємо поштомати
-                if ($categoryOfWarehouse === 'Postomat' || $typeOfWarehouse === 'PostBox') {
-                    return false;
-                }
-
-                // Виключаємо Drop-Off відділення
-                if ($warehouseType === 'DropOff') {
-                    return false;
-                }
-
-                // Залишаємо тільки відділення з максимальною вагою 30кг і більше
-                // Якщо maxWeight = 0, то це означає необмежену вагу, тому залишаємо
-                if ($maxWeight > 0 && $maxWeight < 30) {
-                    return false;
-                }
-
-                return true;
-            });
-        }
-
-        $filteredWarehouses = [];
-
-        foreach ($warehouses as $warehouse) {
-            $warehouseType = $warehouse['TypeOfWarehouse'] ?? 'Branch';
-            $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
-
-            // Жорсткі обмеження для поштоматів
-            if ($warehouseType === 'PostBox') {
-                // 1. Тільки 1 товар
-                if ($quantity > 1) {
-                    continue;
-                }
-
-                // 2. Вага до 20кг
-                if ($finalWeight > 20) {
-                    continue;
-                }
-
-                // 3. Габарити 40x30x60см
-                if (!empty($product->dimension)) {
-
-                    $dims = preg_split('/\s+на\s+/i', trim($product->dimension));
-                    if (count($dims) === 3) {
-                        $maxDim = max($product->length, $product->heigth, $product->width);
-                        if ($maxDim > 60 || $product->length > 40 || $product->height > 30) {
-                            continue;
-                        }
-                    }
-                }
-            }
-
-            // Якщо це Drop-Off відділення і вантаж важкий - пропускаємо
-            if ($maxWeight > 0 && $maxWeight <= 10 && $cargoType === 'Cargo') {
-                continue; // Drop-Off відділення не приймають важкий вантаж
-            }
-
-            // Для відділень використовуємо API дані, але з обережністю
-            // Якщо API повернув обмеження і воно менше фактичної ваги
-            if ($maxWeight > 0 && $finalWeight > $maxWeight) {
-                continue;
-            }
-
-            $filteredWarehouses[] = $warehouse;
-        }
-
-        return $filteredWarehouses;
+        return $this->paginateArray($filteredWarehouses, $page, $perPage);
     }
 
-
-    /**
-     * Отримання відділень/поштоматів
-     */
-    public function getWarehouses(string $settlementRef): array
+    public function getServiceCosts(string $recipientCityRef, float $weight, float $total, $product, int $quantity = 1): float
     {
-        $response = $this->makeRequest('AddressGeneral', 'getWarehouses', [
-            'SettlementRef' => $settlementRef,
-        ]);
-
-        return $response['data'] ?? [];
-    }
-
-
-    /**
-     * Розрахунок вартості доставки (як у keyCRM)
-     */
-    public function getServiceCosts(string $recipientCityRef, float $weight, float $total, $product,  int $quantity = 1): float
-    {
-        // Розрахунок об'ємної ваги
         $volumeWeight = 0;
         if ($product && $product->length && $product->width && $product->height) {
             $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
         }
 
-        // Використовуємо більшу з двох ваг, але мінімум 0.5 кг
-        $finalWeight = max($weight, $volumeWeight, 0.5);
+        $finalWeight = max($weight, $volumeWeight, self::MIN_WEIGHT);
+        $cargoType = $finalWeight <= self::PARCEL_WEIGHT_LIMIT ? 'Parcel' : 'Cargo';
 
-        // Визначаємо тип вантажу залежно від ФІНАЛЬНОЇ ваги
-        $cargoType = $finalWeight <= 30 ? 'Parcel' : 'Cargo';
-Log::info('request data:', [
-    'CitySender' => 'e718a680-4b33-11e4-ab6d-005056801329',
-    'CityRecipient' => $recipientCityRef,
-    'Weight' => number_format($finalWeight, 1),
-    'ServiceType' => 'WarehouseWarehouse',
-    'CargoType' => $cargoType,
-    'SeatsAmount' => (string)$quantity,
-    'RedeliveryCalculate' => [
-        'CargoType' => 'Money',
-        'Amount' => number_format($total, 2)
-    ]
-]
-);
-
-        $response = $this->makeRequest('InternetDocument', 'getDocumentPrice', [
-            'CitySender' => 'e718a680-4b33-11e4-ab6d-005056801329',
+        Log::info('Nova Poshta cost calculation request:', [
+            'CitySender' => self::DEFAULT_SENDER_CITY,
             'CityRecipient' => $recipientCityRef,
             'Weight' => number_format($finalWeight, 1),
-            'Cost' =>floor($total),
             'ServiceType' => 'WarehouseWarehouse',
-            'CargoType' => $cargoType, // Тепер буде 'Cargo' для 61.5 кг
+            'CargoType' => $cargoType,
+            'SeatsAmount' => (string)$quantity,
+            'RedeliveryCalculate' => [
+                'CargoType' => 'Money',
+                'Amount' => number_format($total, 2)
+            ]
+        ]);
+
+        $response = $this->makeRequest('InternetDocument', 'getDocumentPrice', [
+            'CitySender' => self::DEFAULT_SENDER_CITY,
+            'CityRecipient' => $recipientCityRef,
+            'Weight' => number_format($finalWeight, 1),
+            'Cost' => floor($total),
+            'ServiceType' => 'WarehouseWarehouse',
+            'CargoType' => $cargoType,
             'SeatsAmount' => (string)$quantity,
             'RedeliveryCalculate' => [
                 'CargoType' => 'Money',
@@ -201,46 +122,10 @@ Log::info('request data:', [
             ]
         ]);
 
-
-
         $data = $response['data'][0];
         return (float)$data['Cost'] + (float)$data['CostRedelivery'];
     }
 
-    /**
-     * Розрахунок об'ємної ваги за стандартами НП
-     */
-    private function calculateVolumeWeight($length, $height, $width, int $quantity): float
-    {
-        $length = (float)$length;
-        $width = (float)$width;
-        $height = (float)$height;
-
-        if ($length <= 0 || $width <= 0 || $height <= 0) {
-            return 0;
-        }
-
-
-        // Об'ємна вага = (L x W x H в см³) / 4000
-        $volumeWeightPerItem = ($length * $width * $height) / 4000;
-
-        // Додайте логування для дебагу
-        Log::info('Volume weight calculation', [
-            'length' => $length,
-            'width' => $width,
-            'height' => $height,
-            'volume' => $length * $width * $height,
-            'volumeWeightPerItem' => $volumeWeightPerItem,
-            'quantity' => $quantity,
-            'totalVolumeWeight' => $volumeWeightPerItem * $quantity
-        ]);
-
-        return $volumeWeightPerItem * $quantity;
-    }
-
-    /**
-     * Отримання інформації про відділення/поштомат
-     */
     public function getWarehouseInfo(string $warehouseRef): ?array
     {
         try {
@@ -254,10 +139,7 @@ Log::info('request data:', [
         }
     }
 
-    /**
-     * Виконання API запиту до Нової Пошти
-     */
-    private function makeRequest(string $modelName, string $calledMethod, array $methodProperties = []): array
+    public function makeRequest(string $modelName, string $calledMethod, array $methodProperties = []): array
     {
         try {
             $response = Http::timeout(30)
@@ -271,7 +153,7 @@ Log::info('request data:', [
                 ]);
 
             if (!$response->successful()) {
-                Log::error('API request failed', [
+                Log::error('Nova Poshta API request failed', [
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
@@ -291,5 +173,295 @@ Log::info('request data:', [
         } catch (\Illuminate\Http\Client\RequestException $e) {
             throw new \Exception('Помилка запиту до API Нової Пошти.');
         }
+    }
+
+    private function buildSettlementSortQuery(): string
+    {
+        return "
+            CASE
+                WHEN LOWER(description) LIKE ? OR LOWER(description_ru) LIKE ? THEN 1
+                ELSE 2
+            END,
+            CASE
+                WHEN LOWER(settlement_type_description) LIKE '%місто%' THEN 1
+                WHEN LOWER(settlement_type_description) LIKE '%селище міського типу%' OR LOWER(settlement_type_description) LIKE '%смт%' THEN 2
+                WHEN LOWER(settlement_type_description) LIKE '%селище%' THEN 3
+                ELSE 4
+            END
+        ";
+    }
+
+    private function mapSettlementData($settlement): array
+    {
+        $fullDescription = $this->formatFullSettlementName($settlement);
+        $fullDescriptionRu = $this->formatFullSettlementName($settlement, 'ru');
+
+        return [
+            'Ref' => $settlement->ref,
+            'DeliveryCity' => $settlement->ref,
+            'MainDescription' => $fullDescription,
+            'Description' => $fullDescription,
+            'DescriptionRu' => $fullDescriptionRu,
+            'Area' => $settlement->area_description,
+            'AreaDescription' => $settlement->area_description,
+            'AreaDescriptionRu' => $settlement->area_description_ru,
+            'Region' => $settlement->region_description,
+            'RegionDescription' => $settlement->region_description,
+            'RegionDescriptionRu' => $settlement->region_description_ru,
+            'SettlementType' => $settlement->settlement_type,
+            'SettlementTypeDescription' => $settlement->settlement_type_description,
+            'Delivery1' => $settlement->delivery,
+            'Conglomerates' => $settlement->conglomerates,
+            'Present' => $fullDescription,
+            'Warehouses' => $settlement->api_warehouses_count ?? 0,
+            'ParentRegionTypes' => $settlement->settlement_type,
+            'ParentRegionCode' => $settlement->ref,
+            'RegionTypes' => $settlement->settlement_type,
+            'RegionTypesCode' => $settlement->settlement_type,
+        ];
+    }
+
+    private function formatFullSettlementName($settlement, string $language = 'ua'): string
+    {
+        $parts = [];
+
+        if ($language === 'ru') {
+            $mainName = $settlement->description_ru ?? $settlement->description;
+            $regionName = $settlement->region_description_ru;
+            $areaName = $settlement->area_description_ru;
+            $settlementTypeName = $settlement->settlement_type_description_ru ?? $settlement->settlement_type_description;
+        } else {
+            $mainName = $settlement->description;
+            $regionName = $settlement->region_description;
+            $areaName = $settlement->area_description . ' область';
+            $settlementTypeName = $settlement->settlement_type_description;
+        }
+
+        if (!empty($settlementTypeName) && !str_contains(strtolower($mainName), strtolower($settlementTypeName))) {
+            $parts[] = $settlementTypeName . ' ' . $mainName;
+        } else {
+            $parts[] = $mainName;
+        }
+
+        if (!empty($regionName) && $regionName !== $areaName) {
+            $parts[] = $regionName;
+        }
+
+        if (!empty($areaName)) {
+            $parts[] = $areaName;
+        }
+
+        return implode(', ', $parts);
+    }
+
+    private function getAllWarehousesForFiltering(string $settlementRef): array
+    {
+        return NovaPoshtaWarehouse::where('settlement_ref', $settlementRef)
+            ->where('is_active', true)
+            ->get()
+            ->map(fn($warehouse) => $this->mapWarehouseData($warehouse))
+            ->toArray();
+    }
+
+    private function mapWarehouseData($warehouse): array
+    {
+        return [
+            'Ref' => $warehouse->ref,
+            'SiteKey' => $warehouse->ref,
+            'Description' => $warehouse->description,
+            'DescriptionRu' => $warehouse->description_ru,
+            'ShortAddress' => $warehouse->short_address,
+            'ShortAddressRu' => $warehouse->short_address_ru,
+            'Phone' => $warehouse->phone,
+            'TypeOfWarehouse' => $warehouse->type_of_warehouse,
+            'WarehouseType' => $warehouse->warehouse_type,
+            'CategoryOfWarehouse' => $warehouse->category_of_warehouse,
+            'TotalMaxWeightAllowed' => $warehouse->total_max_weight_allowed,
+            'MaxVolumeAllowed' => $warehouse->max_volume_allowed,
+            'PlaceMaxWeightAllowed' => $warehouse->place_max_weight_allowed,
+            'DimensionsAllowed' => $warehouse->dimensions_allowed,
+            'SettlementRef' => $warehouse->settlement_ref,
+            'CityRef' => $warehouse->city_ref,
+            'CityDescription' => $warehouse->city_description,
+            'CityDescriptionRu' => $warehouse->city_description_ru,
+            'Longitude' => $warehouse->longitude,
+            'Latitude' => $warehouse->latitude,
+            'PostFinance' => $warehouse->post_finance,
+            'BicycleParking' => $warehouse->bicycle_parking,
+            'PaymentAccess' => $warehouse->payment_access,
+            'POSTerminal' => $warehouse->pos_terminal,
+            'InternationalShipping' => $warehouse->international_shipping,
+            'SelfServiceWorkplacesCount' => $warehouse->self_service_workplaces_count,
+            'TotalMaxWeightAllowedDetails' => $warehouse->total_max_weight_allowed_details,
+            'WorkInMobileAwis' => $warehouse->work_in_mobile_awis,
+            'DirectDirection' => $warehouse->direct_direction,
+            'ReturnDirection' => $warehouse->return_direction,
+            'Reception' => $warehouse->reception,
+            'Delivery' => $warehouse->delivery,
+            'Schedule' => $warehouse->schedule,
+            'DistrictCode' => $warehouse->district_code,
+            'WarehouseStatus' => $warehouse->warehouse_status,
+            'WarehouseStatusDate' => $warehouse->warehouse_status_date,
+            'WarehouseIlluquidStatus' => $warehouse->warehouse_illiquid_status,
+            'WarehouseIlluquidStatusDate' => $warehouse->warehouse_illiquid_status_date,
+            'GeneratorEnabled' => $warehouse->generator_enabled,
+            'MailOnly' => $warehouse->mail_only,
+            'CopyWorkHours' => $warehouse->copy_work_hours,
+            'ServicesFilter' => $warehouse->services_filter,
+            'TypeOfRestrictions' => $warehouse->type_of_restrictions,
+            'sort_priority' => $this->getWarehouseSortPriority($warehouse),
+        ];
+    }
+
+    private function filterWarehousesByProduct(array $warehouses, $product, int $quantity, float $finalWeight): array
+    {
+        $cargoType = $finalWeight <= 2 ? 'Parcel' : 'Cargo';
+        $filteredWarehouses = [];
+
+        foreach ($warehouses as $warehouse) {
+            if ($quantity > 1) {
+                if ($this->shouldExcludeForMultipleQuantity($warehouse)) {
+                    continue;
+                }
+            }
+
+            $warehouseType = $warehouse['TypeOfWarehouse'] ?? 'Branch';
+            $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+
+            if ($warehouseType === 'PostBox') {
+                if ($quantity > 1 || $finalWeight > self::POSTBOX_WEIGHT_LIMIT) {
+                    continue;
+                }
+
+                if (!$this->isProductSuitableForPostBox($product)) {
+                    continue;
+                }
+            }
+
+            if ($maxWeight > 0 && $maxWeight <= 10 && $cargoType === 'Cargo') {
+                continue;
+            }
+
+            if ($maxWeight > 0 && $finalWeight > $maxWeight) {
+                continue;
+            }
+
+            $filteredWarehouses[] = $warehouse;
+        }
+
+        return $filteredWarehouses;
+    }
+
+    private function shouldExcludeForMultipleQuantity(array $warehouse): bool
+    {
+        $categoryOfWarehouse = $warehouse['CategoryOfWarehouse'] ?? '';
+        $warehouseType = $warehouse['WarehouseType'] ?? '';
+        $typeOfWarehouse = $warehouse['TypeOfWarehouse'] ?? 'Branch';
+        $maxWeight = (float)($warehouse['TotalMaxWeightAllowed'] ?? 0);
+
+        return $categoryOfWarehouse === 'Postomat' ||
+            $typeOfWarehouse === 'PostBox' ||
+            $warehouseType === 'DropOff' ||
+            ($maxWeight > 0 && $maxWeight < 30);
+    }
+
+    private function isProductSuitableForPostBox($product): bool
+    {
+        if (empty($product->dimension)) {
+            return true;
+        }
+
+        $dims = preg_split('/\s+на\s+/i', trim($product->dimension));
+        if (count($dims) !== 3) {
+            return true;
+        }
+
+        $maxDim = max($product->length, $product->height, $product->width);
+        return $maxDim <= self::POSTBOX_MAX_DIMENSION &&
+            $product->length <= self::POSTBOX_MAX_LENGTH &&
+            $product->height <= self::POSTBOX_MAX_HEIGHT;
+    }
+
+    private function sortWarehouses(array &$warehouses): void
+    {
+        usort($warehouses, fn($a, $b) => $this->compareWarehouses($a, $b));
+    }
+
+    private function getWarehouseSortPriority($warehouse): int
+    {
+        $typeOfWarehouse = $warehouse->type_of_warehouse ?? 'Branch';
+        $categoryOfWarehouse = $warehouse->category_of_warehouse ?? '';
+        $warehouseType = $warehouse->warehouse_type ?? '';
+
+        if ($typeOfWarehouse === 'Branch' && $warehouseType !== 'DropOff') {
+            return 1;
+        }
+
+        if ($warehouseType === 'DropOff') {
+            return 2;
+        }
+
+        if ($typeOfWarehouse === 'PostBox' || $categoryOfWarehouse === 'Postomat') {
+            return 3;
+        }
+
+        return 1;
+    }
+
+    private function extractWarehouseNumber(string $description): int
+    {
+        if (preg_match('/№\s*(\d+)/', $description, $matches)) {
+            return (int)$matches[1];
+        }
+
+        return 9999;
+    }
+
+    private function compareWarehouses($a, $b): int
+    {
+        $priorityA = $a['sort_priority'] ?? 1;
+        $priorityB = $b['sort_priority'] ?? 1;
+
+        if ($priorityA !== $priorityB) {
+            return $priorityA <=> $priorityB;
+        }
+
+        if ($priorityA === 1) {
+            $numberA = $this->extractWarehouseNumber($a['Description'] ?? '');
+            $numberB = $this->extractWarehouseNumber($b['Description'] ?? '');
+
+            if ($numberA !== $numberB) {
+                return $numberA <=> $numberB;
+            }
+        }
+
+        return strcmp($a['Description'] ?? '', $b['Description'] ?? '');
+    }
+
+    private function calculateVolumeWeight($length, $height, $width, $quantity): float
+    {
+        if (!$length || !$height || !$width) {
+            return 0;
+        }
+
+        return ($length * $height * $width * $quantity) / self::VOLUME_WEIGHT_DIVISOR;
+    }
+
+    private function paginateArray(array $items, int $page, int $perPage): array
+    {
+        $total = count($items);
+        $offset = ($page - 1) * $perPage;
+        $paginatedItems = array_slice($items, $offset, $perPage);
+
+        return [
+            'warehouses' => $paginatedItems,
+            'pagination' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'last_page' => ceil($total / $perPage),
+                'has_more' => $page < ceil($total / $perPage)
+            ]
+        ];
     }
 }
