@@ -14,7 +14,9 @@ class SyncNovaPoshtaDataCommand extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'novaposhta:sync {--settlements : Синхронізувати тільки населені пункти} {--warehouses : Синхронізувати тільки відділення} {--force : Примусово оновити всі записи';    /**
+    protected $signature = 'novaposhta:sync {--settlements : Синхронізувати тільки населені пункти} {--warehouses : Синхронізувати тільки відділення} {--force : Примусово оновити всі записи}';
+
+    /**
      * The console command description.
      */
     protected $description = 'Синхронізація населених пунктів та відділень з API Нової Пошти';

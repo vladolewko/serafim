@@ -12,10 +12,7 @@ require __DIR__.'/vendor/autoload.php';
 // Bootstrap Laravel and handle the command...
 $app = require_once __DIR__.'/bootstrap/app.php';
 
-// Створюємо application instance з builder
-$application = $app->create();
-
-$kernel = $application->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
 $status = $kernel->handle(
     $input = new ArgvInput,
@@ -25,3 +22,4 @@ $status = $kernel->handle(
 $kernel->terminate($input, $status);
 
 exit($status);
+
