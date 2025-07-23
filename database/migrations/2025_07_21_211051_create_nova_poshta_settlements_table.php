@@ -34,6 +34,7 @@ return new class extends Migration
             $table->index(['region_description', 'area_description'], 'np_region_area_idx');
             $table->boolean('warehouse')->default(false);
             $table->index(['warehouse', 'is_active']);
+
         });
     }
 

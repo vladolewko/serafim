@@ -65,55 +65,24 @@ class NovaPostService
         ];
     }
 
-    public function getFilteredWarehouses(string $settlementRef, array $cart, int $page = 1, int $perPage = 30, string $search = ''): array
+    public function getFilteredWarehouses(string $settlementRef, array $cart, int $page = 1, int $perPage = 30): array
     {
         $allWarehouses = $this->getAllWarehousesForFiltering($settlementRef);
         $product = $this->productService->getById($cart['productId']);
 
         if (!$product || !$cart['quantity']) {
-            $warehouses = $allWarehouses;
-        } else {
-            $quantity = $cart['quantity'];
-            $totalWeight = ($product->weight ?? 0) * $quantity;
-            $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
-            $finalWeight = max($totalWeight, $volumeWeight);
-
-            $warehouses = $this->filterWarehousesByProduct($allWarehouses, $product, $quantity, $finalWeight);
+            return $this->paginateArray($allWarehouses, $page, $perPage);
         }
 
-        // Застосовуємо пошук якщо він є
-        if (!empty($search)) {
-            $warehouses = $this->searchWarehouses($warehouses, $search);
-        }
+        $quantity = $cart['quantity'];
+        $totalWeight = ($product->weight ?? 0) * $quantity;
+        $volumeWeight = $this->calculateVolumeWeight($product->length, $product->height, $product->width, $quantity);
+        $finalWeight = max($totalWeight, $volumeWeight);
 
-        $this->sortWarehouses($warehouses);
+        $filteredWarehouses = $this->filterWarehousesByProduct($allWarehouses, $product, $quantity, $finalWeight);
+        $this->sortWarehouses($filteredWarehouses);
 
-        return $this->paginateArray($warehouses, $page, $perPage);
-    }
-
-    /**
-     * Пошук відділень за назвою та адресою
-     */
-    private function searchWarehouses(array $warehouses, string $search): array
-    {
-        $search = mb_strtolower(trim($search));
-
-        if (empty($search)) {
-            return $warehouses;
-        }
-
-        return array_filter($warehouses, function($warehouse) use ($search) {
-            $description = mb_strtolower($warehouse['Description'] ?? '');
-            $shortAddress = mb_strtolower($warehouse['ShortAddress'] ?? '');
-            $descriptionRu = mb_strtolower($warehouse['DescriptionRu'] ?? '');
-            $shortAddressRu = mb_strtolower($warehouse['ShortAddressRu'] ?? '');
-
-            // Шукаємо в українській та російській назвах і адресах
-            return str_contains($description, $search) ||
-                str_contains($shortAddress, $search) ||
-                str_contains($descriptionRu, $search) ||
-                str_contains($shortAddressRu, $search);
-        });
+        return $this->paginateArray($filteredWarehouses, $page, $perPage);
     }
 
     public function getServiceCosts(string $recipientCityRef, float $weight, float $total, $product, int $quantity = 1): float

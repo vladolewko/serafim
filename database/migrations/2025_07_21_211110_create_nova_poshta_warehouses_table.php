@@ -65,7 +65,9 @@ return new class extends Migration
             $table->index(['settlement_ref', 'is_active'], 'np_settlement_active_idx');
             $table->index(['type_of_warehouse', 'category_of_warehouse'], 'np_type_category_idx');
             $table->index(['city_description', 'is_active'], 'np_city_active_idx');
+
         });
+
     }
 
     public function down(): void
