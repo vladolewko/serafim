@@ -62,98 +62,6 @@ class OrderController extends Controller
         return back()->with('error', 'Помилка');
     }
 
-//    /**
-//     * Searching settlements by search
-//     */
-//    public function searchSettlement(SearchSettlementRequest $request): JsonResponse
-//    {
-//        try {
-//            $search = trim($request->validated()['search']);
-//            $settlements = $this->novaPostService->searchSettlement($search);
-//
-//            if (empty($settlements)) {
-//                return $this->errorResponse(
-//                    'Населені пункти з такою назвою не знайдено. Спробуйте ввести частину назви або перевірте правильність написання.',
-//                    [
-//                        'suggestions' => 'Спробуйте ввести: "Київ", "Львів", "Одеса" або частину назви вашого міста'
-//                    ]
-//                );
-//            }
-//
-//            Session::put('nova_post_data', ['search' => $search]);
-//
-//            return $this->successResponse([
-//                'settlements' => $settlements,
-//                'addressData' => ['search' => $search],
-//                'count' => count($settlements)
-//            ]);
-//
-//        } catch (\Exception $e) {
-//            return $this->errorResponse(
-//                'Сталася помилка при пошуку населених пунктів. Спробуйте пізніше.',
-//                [],
-//                500
-//            );
-//        }
-//    }
-
-//    /**
-//     * Saving Settlement to Order Data
-//     */
-//    public function chooseSettlement(ChooseSettlementRequest $request): JsonResponse
-//    {
-//        try {
-//            $settlementRef = $request->validated()['settlement'];
-//            $data = Session::get('nova_post_data', []);
-//
-//            if (empty($data['search'])) {
-//                return $this->errorResponse(
-//                    'Спочатку виконайте пошук населеного пункту',
-//                    [],
-//                    400
-//                );
-//            }
-//
-//            $data['settlement'] = $settlementRef;
-//            Session::put('nova_post_data', $data);
-//
-//            $cart = session('cart');
-//            $warehouses = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart);
-//            $settlements = $this->novaPostService->searchSettlement($data['search']);
-//
-//            if (empty($warehouses)) {
-//                $cart = session('cart');
-//                $quantity = $cart['quantity'] ?? 1;
-//
-//                if ($quantity > 1) {
-//                    return $this->errorResponse(
-//                        "Для {$quantity} товарів доступні тільки відділення (не поштомати). У цьому населеному пункті підходящих відділень не знайдено.",
-//                        ['suggestion' => 'Спробуйте обрати інше місто або зменшіть кількість до 1']
-//                    );
-//                }
-//
-//                return $this->errorResponse(
-//                    'У цьому населеному пункті немає відділень для вашого товару',
-//                    ['suggestion' => 'Спробуйте обрати інше місто']
-//                );
-//            }
-//
-//            return $this->successResponse([
-//                'warehouses' => $warehouses,
-//                'settlements' => $settlements,
-//                'addressData' => $data,
-//                'warehouses_count' => count($warehouses)
-//            ]);
-//
-//        } catch (\Exception $e) {
-//            return $this->errorResponse(
-//                'Помилка при завантаженні відділень. Спробуйте оновити сторінку.',
-//                [],
-//                500
-//            );
-//        }
-//    }
-
 
 // У контролері
     public function searchSettlement(SearchSettlementRequest $request): JsonResponse
@@ -203,7 +111,8 @@ class OrderController extends Controller
             $validated = $request->validated();
             $settlementRef = $validated['settlement'];
             $page = (int)($validated['page'] ?? 1);
-            $perPage = 15; // Зменшуємо для швидшого початкового завантаження
+            $warehouseSearch = trim($validated['warehouse_search'] ?? ''); // Новий параметр для пошуку відділень
+            $perPage = 15;
 
             $data = Session::get('nova_post_data', []);
 
@@ -219,11 +128,20 @@ class OrderController extends Controller
             Session::put('nova_post_data', $data);
 
             $cart = session('cart');
-            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage);
+            // Передаємо параметр пошуку відділень
+            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage, $warehouseSearch);
 
             if (empty($warehousesResult['warehouses']) && $page === 1) {
                 $cart = session('cart');
                 $quantity = $cart['quantity'] ?? 1;
+
+                // Якщо є пошук, змінюємо повідомлення про помилку
+                if (!empty($warehouseSearch)) {
+                    return $this->errorResponse(
+                        "За запитом \"{$warehouseSearch}\" відділень не знайдено.",
+                        ['suggestion' => 'Спробуйте змінити пошуковий запит або очистіть пошук']
+                    );
+                }
 
                 if ($quantity > 1) {
                     return $this->errorResponse(
@@ -243,7 +161,8 @@ class OrderController extends Controller
                 'pagination' => $warehousesResult['pagination'],
                 'addressData' => $data,
                 'warehouses_count' => $warehousesResult['pagination']['total'],
-                'hasMore' => $warehousesResult['pagination']['current_page'] < $warehousesResult['pagination']['last_page']
+                'hasMore' => $warehousesResult['pagination']['current_page'] < $warehousesResult['pagination']['last_page'],
+                'warehouse_search' => $warehouseSearch // Повертаємо пошуковий запит
             ];
 
             // Повертаємо дані про населені пункти тільки для першої сторінки
@@ -269,15 +188,18 @@ class OrderController extends Controller
         try {
             $validated = $request->validate([
                 'settlement' => 'required|string',
-                'page' => 'required|integer|min:1'
+                'page' => 'required|integer|min:1',
+                'warehouse_search' => 'nullable|string' // Додаємо підтримку пошуку
             ]);
 
             $settlementRef = $validated['settlement'];
             $page = $validated['page'];
+            $warehouseSearch = trim($validated['warehouse_search'] ?? '');
             $perPage = 15;
 
             $cart = session('cart');
-            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage);
+            // Передаємо параметр пошуку
+            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage, $warehouseSearch);
 
             return $this->successResponse([
                 'warehouses' => $warehousesResult['warehouses'],
@@ -288,6 +210,48 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Помилка при завантаженні додаткових відділень.',
+                [],
+                500
+            );
+        }
+    }
+
+// Новий метод для пошуку відділень
+    public function searchWarehouses(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'settlement' => 'required|string',
+                'search' => 'required|string|min:1',
+                'page' => 'integer|min:1'
+            ]);
+
+            $settlementRef = $validated['settlement'];
+            $warehouseSearch = trim($validated['search']);
+            $page = (int)($validated['page'] ?? 1);
+            $perPage = 15;
+
+            $cart = session('cart');
+            $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage, $warehouseSearch);
+
+            if (empty($warehousesResult['warehouses']) && $page === 1) {
+                return $this->errorResponse(
+                    "За запитом \"{$warehouseSearch}\" відділень не знайдено.",
+                    ['suggestion' => 'Спробуйте змінити пошуковий запит']
+                );
+            }
+
+            return $this->successResponse([
+                'warehouses' => $warehousesResult['warehouses'],
+                'pagination' => $warehousesResult['pagination'],
+                'warehouses_count' => $warehousesResult['pagination']['total'],
+                'hasMore' => $warehousesResult['pagination']['current_page'] < $warehousesResult['pagination']['last_page'],
+                'warehouse_search' => $warehouseSearch
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Помилка при пошуку відділень.',
                 [],
                 500
             );

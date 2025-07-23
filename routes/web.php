@@ -17,6 +17,7 @@ Route::prefix('orders')->group(function () {
     Route::post('/', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/searchSettlement', [OrderController::class, 'searchSettlement'])->name('orders.searchSettlement');
     Route::post('/chooseSettlement', [OrderController::class, 'chooseSettlement'])->name('orders.chooseSettlement');
+    Route::post('/searchWarehouses', [OrderController::class, 'searchWarehouses'])->name('orders.searchWarehouses');
     Route::post('/loadMoreSettlements', [OrderController::class, 'loadMoreSettlements'])->name('orders.loadMoreSettlements');
     Route::post('/loadMoreWarehouses', [OrderController::class, 'loadMoreWarehouses'])->name('orders.loadMoreWarehouses');
     Route::post('/setWarehouse', [OrderController::class, 'setWarehouse'])->name('orders.setWarehouse');

@@ -276,6 +276,7 @@
                 setWarehouse: '{{ route("orders.setWarehouse") }}',
                 loadMoreWarehouses: '{{ route("orders.loadMoreWarehouses") }}',
                 loadMoreSettlements: '{{ route("orders.loadMoreSettlements") }}',
+                searchWarehouses: '{{ route("orders.searchWarehouses") }}', // Новий маршрут
                 createOrder: '{{ route("orders.createOrder") }}',
                 orderStatus: '/api/orders/status/',
                 home: '{{ route("home") }}'
@@ -293,6 +294,7 @@
                 this.elements = this.initElements();
                 this.state = this.initState();
                 this.searchTimeout = null;
+                this.warehouseSearchTimeout = null; // Окремий таймаут для пошуку відділень
                 this.pagination = {
                     settlements: { currentPage: 1, hasMore: false, loading: false },
                     warehouses: { currentPage: 1, hasMore: false, loading: false }
@@ -327,10 +329,12 @@
                         settlement: '',
                         settlementName: '',
                         warehouse: '',
-                        warehouseName: ''
+                        warehouseName: '',
+                        warehouseSearch: '' // Додаємо стан для пошуку відділень
                     },
                     settlements: [],
                     warehouses: [],
+                    allWarehouses: [], // Зберігаємо всі відділення без фільтрації
                     filteredSettlements: [],
                     filteredWarehouses: []
                 };
@@ -382,7 +386,17 @@
                         this.resetPagination('settlements');
                     }
                 } else if (type === 'warehouse') {
-                    this.filterWarehouses(value);
+                    clearTimeout(this.warehouseSearchTimeout);
+                    this.state.address.warehouseSearch = value;
+
+                    if (value.length >= 1) {
+                        this.warehouseSearchTimeout = setTimeout(() => this.searchWarehouses(value), ORDER_CONFIG.constants.SEARCH_DELAY);
+                    } else {
+                        // Якщо пошук порожній, показуємо всі відділення
+                        this.state.filteredWarehouses = [...this.state.allWarehouses];
+                        this.renderOptions('warehouse', this.state.filteredWarehouses);
+                        this.resetPagination('warehouses');
+                    }
                 }
             }
 
@@ -406,13 +420,25 @@
 
                 try {
                     const nextPage = pagination.currentPage + 1;
-                    const endpoint = type === 'settlements'
-                        ? ORDER_CONFIG.routes.loadMoreSettlements
-                        : ORDER_CONFIG.routes.loadMoreWarehouses;
+                    let endpoint, data;
 
-                    const data = type === 'settlements'
-                        ? { search: this.state.address.search, page: nextPage }
-                        : { settlement: this.state.address.settlement, page: nextPage };
+                    if (type === 'settlements') {
+                        endpoint = ORDER_CONFIG.routes.loadMoreSettlements;
+                        data = { search: this.state.address.search, page: nextPage };
+                    } else {
+                        // Для відділень перевіряємо чи є пошук
+                        if (this.state.address.warehouseSearch) {
+                            endpoint = ORDER_CONFIG.routes.searchWarehouses;
+                            data = {
+                                settlement: this.state.address.settlement,
+                                search: this.state.address.warehouseSearch,
+                                page: nextPage
+                            };
+                        } else {
+                            endpoint = ORDER_CONFIG.routes.loadMoreWarehouses;
+                            data = { settlement: this.state.address.settlement, page: nextPage };
+                        }
+                    }
 
                     const response = await this.makeRequest(endpoint, data);
 
@@ -426,6 +452,11 @@
 
                     this.state[stateKey] = [...this.state[stateKey], ...newItems];
                     this.state[filteredKey] = [...this.state[filteredKey], ...newItems];
+
+                    // Для відділень також оновлюємо allWarehouses якщо це не пошук
+                    if (type === 'warehouses' && !this.state.address.warehouseSearch) {
+                        this.state.allWarehouses = [...this.state.allWarehouses, ...newItems];
+                    }
 
                     pagination.currentPage = nextPage;
                     pagination.hasMore = response.hasMore || false;
@@ -534,12 +565,19 @@
                     const searchInput = this.elements[`${type}Search`];
                     if (searchInput) {
                         searchInput.focus();
-                        searchInput.value = '';
+                        searchInput.value = type === 'warehouse' ? this.state.address.warehouseSearch : '';
+
                         if (type === 'settlement') {
                             searchInput.placeholder = 'Введіть назву міста (мін. 2 символи)...';
+                        } else {
+                            searchInput.placeholder = 'Пошук відділень...';
                         }
                     }
-                    if (type === 'warehouse') this.filterWarehouses('');
+
+                    if (type === 'warehouse') {
+                        // Показуємо поточні відфільтровані відділення
+                        this.renderOptions('warehouse', this.state.filteredWarehouses);
+                    }
                 }
             }
 
@@ -579,16 +617,36 @@
                 }
             }
 
-            filterWarehouses(searchValue) {
-                if (!this.state.warehouses.length) return;
+            async searchWarehouses(searchValue) {
+                if (!this.state.address.settlement) return;
 
-                this.state.filteredWarehouses = searchValue.trim()
-                    ? this.state.warehouses.filter(warehouse =>
-                        warehouse.Description.toLowerCase().includes(searchValue.toLowerCase())
-                    )
-                    : this.state.warehouses;
+                this.resetPagination('warehouses');
+                this.showLoader('warehouse');
 
-                this.renderOptions('warehouse', this.state.filteredWarehouses);
+                try {
+                    const response = await this.makeRequest(ORDER_CONFIG.routes.searchWarehouses, {
+                        settlement: this.state.address.settlement,
+                        search: searchValue,
+                        page: 1
+                    });
+
+                    if (!response.success) {
+                        throw new Error(response.error || 'Не вдалося знайти відділення');
+                    }
+
+                    this.state.warehouses = response.warehouses || [];
+                    this.state.filteredWarehouses = this.state.warehouses;
+
+                    this.pagination.warehouses.hasMore = response.hasMore || false;
+                    this.pagination.warehouses.currentPage = 1;
+
+                    this.renderOptions('warehouse', this.state.filteredWarehouses);
+                } catch (error) {
+                    this.showErrorMessage(error.message);
+                    this.renderOptions('warehouse', []);
+                } finally {
+                    this.hideLoader('warehouse');
+                }
             }
 
             renderOptions(type, options) {
@@ -598,9 +656,14 @@
                 container.innerHTML = '';
 
                 if (options.length === 0) {
-                    const noResults = type === 'settlement'
-                        ? 'Введіть назву міста для пошуку...'
-                        : 'Нічого не знайдено';
+                    let noResults;
+                    if (type === 'settlement') {
+                        noResults = 'Введіть назву міста для пошуку...';
+                    } else {
+                        noResults = this.state.address.warehouseSearch
+                            ? `За запитом "${this.state.address.warehouseSearch}" нічого не знайдено`
+                            : 'Нічого не знайдено';
+                    }
                     container.innerHTML = `<div class="no-results p-3 text-center text-gray-500">${noResults}</div>`;
                     return;
                 }
@@ -644,12 +707,14 @@
 
                     this.state.address.settlement = settlementRef;
                     this.state.address.settlementName = settlementName;
+                    this.state.address.warehouseSearch = ''; // Скидаємо пошук відділень
 
                     if (this.elements.settlementInput) {
                         this.elements.settlementInput.value = settlementName;
                     }
 
                     this.state.warehouses = response.warehouses || [];
+                    this.state.allWarehouses = [...this.state.warehouses]; // Зберігаємо копію всіх відділень
                     this.state.filteredWarehouses = this.state.warehouses;
 
                     this.pagination.warehouses.hasMore = response.hasMore || false;
