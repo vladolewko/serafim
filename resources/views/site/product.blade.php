@@ -72,9 +72,11 @@
             <!-- Product title and availability -->
             <div class="mb-6">
                 <h2 class="text-2xl sm:text-3xl font-bold mb-2">{{ $product->name }}</h2>
-                @if($product->price == 0)
+                @if($product->price == 0 && $product->on_sale_soon != 1)
                     <p class="text-red-400 text-sm sm:text-base">немає в наявності</p>
 
+                @elseif($product->on_sale_soon == 1)
+                    <p class="text-yellow-400 text-sm sm:text-base">скоро в наявності</p>
                 @else
                     <p class="text-green-400 text-sm sm:text-base">в наявності</p>
                 @endif
@@ -87,12 +89,14 @@
                 </p>
             </div>
 
+            @if($product->on_sale_soon == 0)
             <!-- Price -->
             <div class="mb-6">
                 <p class="text-4xl sm:text-5xl font-bold text-center sm:text-left">
                     <span class="text-yellow-400">{{ $product->price }}</span> грн
                 </p>
             </div>
+            @endif
 
             <!-- Quantity and order button -->
             <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-8">
@@ -117,6 +121,7 @@
                 <!-- Order button -->
 
 
+                @if($product->on_sale_soon == 0)
                 <form class="flex justify-end" id="orderForm" action="{{ route('orders.create') }}"
                         method="post"
                         data-product-id="{{ $product->id ?? '' }}">
@@ -127,6 +132,12 @@
                         замовити
                     </button>
                 </form>
+                @else
+                    <button type="button"
+                            class="bg-yellow-400 hover:bg-yellow-500 px-6 py-3 rounded-lg text-black text-lg sm:text-xl lg:text-2xl font-medium transition-colors flex-1 sm:flex-none cursor-not-allowed opacity-50">
+                        замовити
+                    </button>
+                @endif
             </div>
 
             <!-- Target audience -->

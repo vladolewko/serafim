@@ -33,6 +33,7 @@ class UpdateProductRequest extends FormRequest
             'appointment' => 'required|string|max:1000',
             'applying' => ['required', Rule::enum(ProductApplyingEnum::class)],
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'on_sale_soon' => 'numeric|in:0,1',
         ];
     }
 }

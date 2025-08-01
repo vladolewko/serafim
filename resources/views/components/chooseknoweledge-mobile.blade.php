@@ -76,97 +76,117 @@
                 </div>
             </div>
 
+            {{-- Спочатка банери --}}
             @foreach ($banners as $index => $banner)
                 <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
                     <div class="flex justify-center mt-10">
+
+                        {{-- Карточка банера --}}
                         <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
                             <div class="relative bg-white flex flex-col items-center rounded-xl">
+
+                                {{-- Стікер статусу для банера --}}
                                 @if($banner->price == 0)
                                     <div class="absolute right-0 bg-gray-400 rounded-full">
-                                        <img class="rounded-full w-[75px] h-[75px]"
-                                             src="{{ asset('img/sticker.png') }}" alt="">
+                                        <img class="rounded-full w-[75px] h-[75px]" src="{{ asset('img/sticker.png') }}" alt="">
                                     </div>
                                 @endif
-                                <!-- posible img -->
+
+                                {{-- Контейнер зображення --}}
                                 <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
                                     @if($banner->getMedia('banner_images')->isNotEmpty())
-                                        <img class="w-full h-full" src="{{ $banner->getFirstMediaUrl('banner_images') }}"
+                                        <img class="w-full h-full"
+                                             src="{{ $banner->getFirstMediaUrl('banner_images') }}"
                                              alt="{{ $banner->title }}">
                                     @endif
                                 </div>
 
-                                <p class="text-xl/6 font-semibold text-center w-4/6">{{$banner->title}}</p>
-                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$banner->price}} грн</p>
+                                {{-- Інформація про банер --}}
+                                <p class="text-xl/6 font-semibold text-center w-4/6">{{ $banner->title }}</p>
+                                <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{ $banner->price }} грн</p>
                                 <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
-                                   href="{{ $banner->reference }}">переглянути</a>
+                                   href="{{ $banner->reference }}">
+                                    переглянути
+                                </a>
 
                             </div>
                         </div>
+
                     </div>
                 </div>
             @endforeach
 
-
-            <!-- Створюємо слайд для кожного продукту окремо -->
+            {{-- Потім продукти --}}
             @foreach ($products as $index => $product)
-                @if(!isset($product->reference))
-                    <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
-                        <div class="flex justify-center mt-10">
-                            <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
-                                <div class="bg-white flex flex-col items-center rounded-xl">
-                                    <!-- posible img -->
+                <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
+                    <div class="flex justify-center mt-10">
 
-                                    <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-                                        @if($product->getMedia('product_images')->isNotEmpty())
-                                            <img class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                                 alt="{{ $product->name }}">
-                                        @endif
+                        {{-- Карточка товара/банера --}}
+                        <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
+                            <div class="bg-white flex flex-col items-center rounded-xl">
 
-                                    </div>
+                                {{-- Контейнер зображення --}}
+                                <div class="relative h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
+                                    @php
+                                        $isProduct = !isset($product->reference);
+                                        $isInDevelopment = $product->price == 0 && (!$isProduct || $product->on_sale_soon != 1);
+                                        $isOnSaleSoon = $isProduct && $product->on_sale_soon == 1;
+                                        $imageCollection = $isProduct ? 'product_images' : 'banner_images';
+                                    @endphp
 
-                                    <p class="text-base/6 font-semibold text-center w-4/6">{{$product->name}}</p>
-                                    <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
-                                    <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
-                                       href="{{ route('product.show', $product->id) }}">переглянути</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="hidden duration-500 ease-in-out bg-white" data-carousel-item>
-                        <div class="flex justify-center mt-10">
-                            <div class="w-8/12 md:w-4/12 lg:w-3/12 xl:w-1/5 h-full rounded-xl bg-gradient-to-t from-yellow-400 to-blue-500 p-[2px]">
-                                <div class="bg-white flex flex-col items-center rounded-xl">
-                                    <!-- posible img -->
-
-                                    <div class="h-[212px] w-[212px] rounded-xl bg-gray-200 m-3 slef-center overflow-hidden">
-
-                                        @if($product->getMedia('product_images')->isNotEmpty())
-                                            <img class="w-full h-full" src="{{ $product->getFirstMediaUrl('product_images') }}"
-                                                 alt="{{ $product->name }}">
-                                        @endif
-
-                                    </div>
-
-                                    @if($product->price == 0)
-                                        <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
-                                        <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
-                                        <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default"
-                                        >переглянути</a>
-                                    @else
-
-                                        <p class="text-base/6 font-semibold text-center w-4/6">{{$product->title}}</p>
-                                        <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{$product->price}} грн</p>
-                                        <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
-                                           href="{{ $product->reference }}">переглянути</a>
+                                    {{-- Стікери статусу для продуктів --}}
+                                    @if($isInDevelopment)
+                                        <div class="absolute right-0 bg-gray-400 rounded-full">
+                                            <img class="rounded-full w-[50px] h-[50px]" src="{{ asset('img/sticker.png') }}" alt="">
+                                        </div>
                                     @endif
 
+                                    @if($isOnSaleSoon)
+                                        <div class="absolute right-0 bg-gray-400 rounded-full">
+                                            <img class="rounded-full w-[50px] h-[50px]" src="{{ asset('img/on_sale_soon.png') }}" alt="">
+                                        </div>
+                                    @endif
+
+                                    {{-- Зображення --}}
+                                    @if($product->getMedia($imageCollection)->isNotEmpty())
+                                        <img class="w-full h-full"
+                                             src="{{ $product->getFirstMediaUrl($imageCollection) }}"
+                                             alt="{{ $product->name ?? $product->title }}">
+                                    @endif
                                 </div>
+
+                                @if($isInDevelopment)
+                                    {{-- В розробці --}}
+                                    <p class="text-xl/6 font-semibold text-center w-4/6">В РОЗРОБЦІ</p>
+                                    <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">0 грн</p>
+                                    <a class="flex items-center justify-center bg-gray-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl shadow-md cursor-default">
+                                        переглянути
+                                    </a>
+                                @elseif($isProduct)
+                                    {{-- Звичайний продукт --}}
+                                    <p class="text-base/6 font-semibold text-center w-4/6">{{ $product->name }}</p>
+                                    @if(!$isOnSaleSoon)
+                                        <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{ $product->price }} грн</p>
+                                    @endif
+                                    <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                       href="{{ route('product.show', $product->id) }}">
+                                        переглянути
+                                    </a>
+                                @else
+                                    {{-- Звичайний банер --}}
+                                    <p class="text-base/6 font-semibold text-center w-4/6">{{ $product->title }}</p>
+                                    <p class="text-3xl font-bold text-center my-4" style="font-weight: 700">{{ $product->price }} грн</p>
+                                    <a class="flex items-center justify-center bg-yellow-400 w-11/12 text-center m-2 rounded-lg inline-block align-middle h-10 text-black font-bold text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                       href="{{ $product->reference }}">
+                                        переглянути
+                                    </a>
+                                @endif
+
                             </div>
                         </div>
-                    </div>
 
-                @endif
+                    </div>
+                </div>
             @endforeach
 
         </div>
