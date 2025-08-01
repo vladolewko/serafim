@@ -245,6 +245,33 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-1">
+                                <label for="on_sale_soon" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Скоро в продажу?
+                                </label>
+                            </div>
+                            <div class="md:col-span-2">
+                                <!-- Прихований інпут для гарантії відправки значення 0, якщо checkbox не відмічений -->
+                                <input type="hidden" name="on_sale_soon" value="0">
+
+                                <!-- Switch-стиль checkbox -->
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox"
+                                           id="on_sale_soon"
+                                           name="on_sale_soon"
+                                           value="1"
+                                           class="sr-only peer"
+                                        {{ $product->on_sale_soon ? 'checked' : '' }}>
+
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+
+                                    <span class="ml-3 text-sm text-gray-600">
+                Товар буде доступний найближчим часом
+            </span>
+                                </label>
+                            </div>
+                        </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="md:col-span-1">

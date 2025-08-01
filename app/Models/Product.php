@@ -29,6 +29,7 @@ class Product extends Model implements HasMedia
         'applying',
         'content',
         'for_whom',
+        'on_sale_soon',
     ];
     protected $casts = [
         'applying' => ProductApplyingEnum::class,

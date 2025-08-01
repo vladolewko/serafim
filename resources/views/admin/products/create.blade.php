@@ -205,6 +205,29 @@
                         </select>
                     </div>
 
+
+                    <div class="lg:col-span-2">
+                        <label for="on_sale_soon" class="block text-sm font-medium text-gray-700 mb-2">
+                            Скоро в продажу?
+                        </label>
+                        <input type="hidden" name="on_sale_soon" value="0">
+
+                        <!-- Switch-стиль checkbox -->
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox"
+                                   id="on_sale_soon"
+                                   name="on_sale_soon"
+                                   value="1"
+                                   class="sr-only peer">
+
+                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+
+                            <span class="ml-3 text-sm text-gray-600">
+                Товар буде доступний найближчим часом
+            </span>
+                        </label>
+                    </div>
+
                     <!-- Зображення -->
                     <div class="lg:col-span-2">
                         <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -221,9 +244,9 @@
                 <!-- Submit Button -->
                 <div class="mt-8 pt-6 border-t border-gray-200">
                     <div class="flex justify-end space-x-4">
-                        <button type="button" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 font-medium">
-                            Скасувати
-                        </button>
+
+                        <a class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 font-medium"
+                           href="{{ route('admin.products') }}">Скасувати</a>
                         <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                             <span class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
