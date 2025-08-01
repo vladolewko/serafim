@@ -123,7 +123,7 @@
                                         </a>
                                     @else
                                         {{-- Звичайний товар/банер --}}
-                                        <p class="text-xl/6 font-semibold text-center w-4/6">
+                                        <p class="text-xl/6 font-semibold text-center w-5/6">
                                             {{ $isProduct ? $item->name : $item->title }}
                                         </p>
 
