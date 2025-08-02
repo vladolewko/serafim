@@ -132,18 +132,20 @@
 
             @foreach($availableApplyings as $key => $value)
                 <div
-                    class="flex items-center gap-1  sm:gap-2 bg-blue-400 rounded-lg px-1 py-1 sm:px-2 sm:py-2 radio-div">
+                    class="flex items-center gap-1  sm:gap-2 {{ $key === $firstAvailableKey ? 'bg-yellow-400' : 'bg-blue-400' }} rounded-lg px-1 py-1 sm:px-2 sm:py-2 radio-div">
                     <input id="checkbox-{{ $key }}"
-                           class="w-2 h-2 sm:w-4 sm:h-4 cursor-pointer rounded-[3px] border-none sm:rounded-md text-blue-400 bg-white"
+                           class="w-2 h-2 sm:w-4 sm:h-4 cursor-pointer rounded-[3px] border-none sm:rounded-md text-blue-400 {{ $key === $firstAvailableKey ? 'bg-blue-400' : 'bg-white' }}"
                            name="options"
                            type="radio"
                            value="{{ $key }}"
+                           {{ $key === $firstAvailableKey ? 'checked' : '' }}
                            data-price="{{ $prices[$key] ?? 0 }}"
                            data-product-id="{{ $productIds[$key] ?? 0 }}"
                            data-image-url="{{ $productImages[$key] ?? '' }}"
                            data-on-sale-soon="{{ $onSaleSoon[$key] ?? 0 }}"
+                           data-is-first="{{ $key === $firstAvailableKey ? 'true' : 'false' }}"
                            data-href="{{ route('product.show', $productIds[$key] ?? 1) }}">
-                    <label class="cursor-pointer text-white text-xs lg:text-[12px] 2xl:text-base"
+                    <label class="cursor-pointer {{ $key === $firstAvailableKey ? 'text-black' : 'text-white' }} text-xs lg:text-[12px] 2xl:text-base"
                            for="checkbox-{{ $key }}">{{ $value }}</label>
                 </div>
             @endforeach
@@ -152,14 +154,12 @@
         <div
             class="bg-gray-200 w-full h-64 sm:h-80 lg:h-[516px] rounded-lg mt-6 max-h-[480px] lg:max-w-[480px] xl:min-w-full relative">
             <!-- Стікер "Скоро в продажу" -->
-
-            <div id="onSaleSoonSticker" class="absolute right-0 bg-gray-400 rounded-full hidden">
+            <div id="onSaleSoonSticker" class="absolute right-0 bg-gray-400 rounded-full {{ ($onSaleSoon[$firstAvailableKey] ?? 0) == 1 ? '' : 'hidden' }}">
                 <img class="rounded-full w-[75px] h-[75px]" src="{{ asset('img/on_sale_soon.png') }}" alt="">
             </div>
 
-
             <img id="productImage"
-                 src=""
+                 src="{{ $productImages[$firstAvailableKey] ?? '' }}"
                  alt="Product Image"
                  class="w-full h-full object-cover rounded-lg">
         </div>
@@ -167,9 +167,9 @@
         <div
             class="flex flex-col lg:flex-row justify-between h-max lg:justify-end xl:my-2 items-center lg:gap-4 gap-2 lg:gap-5 lg:pt-20git xl:pt-16">
             <div class="text-black text-2xl lg:text-4xl">
-                <span class="text-yellow-400" id="price">600</span> грн
+                <span class="text-yellow-400" id="price">{{ $prices[$firstAvailableKey] ?? 600 }}</span> грн
             </div>
-            <a href="" id="productHref"
+            <a href="{{ route('product.show', $productIds[$firstAvailableKey] ?? 1) }}" id="productHref"
                class="w-full text-center lg:w-auto bg-yellow-400 px-6 py-1 rounded-lg text-black text-lg lg:text-xl font-[500]">замовити</a>
         </div>
     </div>
