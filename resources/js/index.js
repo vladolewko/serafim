@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     // Обробка всіх кліків з data-target
     document.addEventListener("click", function (e) {
@@ -39,10 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Оголошуємо змінні на початку файлу
-const introduction_block = document.querySelector("#introduction"); // або ваш селектор
-const hidden_introduction_btn = document.querySelector(
-    "#hidden-introduction-btn"
-); // або ваш селектор
+const introduction_block = document.querySelector("#introduction");
+const hidden_introduction_btn = document.querySelector("#hidden-introduction-btn");
 
 function checkIntroductionPosition() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -50,7 +47,6 @@ function checkIntroductionPosition() {
     const documentHeight = document.documentElement.scrollHeight;
     const isAtBottom = scrollTop + windowHeight >= documentHeight - 10;
 
-    // Перевіряємо, чи елемент існує
     if (!introduction_block) return;
 
     const introduction_block_pos = introduction_block.offsetTop || 0;
@@ -66,10 +62,8 @@ function checkIntroductionPosition() {
     }
 }
 
-// Викликаємо функцію при завантаженні сторінки
 checkIntroductionPosition();
 
-// Змінна для відслідковування стану анімації
 let ticking = false;
 
 function updatePosition() {
@@ -84,11 +78,9 @@ function requestTick() {
     }
 }
 
-// Додаємо обробник події прокрутки з оптимізацією та passive listener
 window.addEventListener("scroll", requestTick, { passive: true });
 
 const radios = document.querySelectorAll('input[name="options"]');
-
 const top7 = document.getElementById("top7");
 const description = document.getElementById("description");
 const argument1 = document.getElementById("argument-1");
@@ -214,37 +206,25 @@ function updateContent(radioValue) {
     }
 }
 
-radios.forEach((radio) => {
-    // Знаходимо першу доступну радіокнопку і встановлюємо її як вибрану за замовчуванням
-    if (radio.dataset.isFirst === 'true') {
-        radio.checked = true;
+// Ініціалізація при завантаженні сторінки
+document.addEventListener("DOMContentLoaded", function() {
+    // Знаходимо перший вибраний радіо
+    const checkedRadio = document.querySelector('input[name="options"]:checked');
 
-        radio.classList.remove("bg-white");
-        radio.classList.add("bg-blue-400");
-        radio.closest("div").classList.add("bg-yellow-400");
-        radio.closest("div").classList.remove("bg-blue-400");
-        radio.nextElementSibling.classList.remove("text-white");
-        radio.nextElementSibling.classList.add("text-black");
+    if (checkedRadio) {
+        const initialOnSaleSoon = checkedRadio.dataset.onSaleSoon;
 
-        // Встановлюємо початкові значення для першої доступної категорії
-        const initialPrice = radio.dataset.price;
-        const initialProductId = radio.dataset.productId;
-        const initialImageUrl = radio.dataset.imageUrl;
-        const initialOnSaleSoon = radio.dataset.onSaleSoon;
-
-        if (price) price.textContent = initialPrice;
-        if (productHref) productHref.href = "product/" + initialProductId;
-        if (productImage) productImage.src = initialImageUrl;
-
-        // Показуємо/приховуємо стікер для початкового продукту
+        // Ініціалізуємо стікер
         toggleOnSaleSoonSticker(initialOnSaleSoon);
 
-        // Оновлюємо контент для першої доступної категорії
-        updateContent(radio.value);
+        // Оновлюємо контент
+        updateContent(checkedRadio.value);
 
-        console.log("First available option selected:", radio.value);
+        console.log("Initial option selected:", checkedRadio.value, "On sale soon:", initialOnSaleSoon);
     }
+});
 
+radios.forEach((radio) => {
     radio.addEventListener("change", () => {
         const parentDiv = radio.closest("div");
         const label = radio.nextElementSibling;
@@ -333,25 +313,25 @@ const buttons = document.querySelectorAll(".slide_button");
 // Налаштовуємо MutationObserver для відстеження змін атрибутів
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-        const button = mutation.target; // Елемент, у якого змінився атрибут
+        const button = mutation.target;
         if (button.getAttribute("aria-current") === "true") {
-            button.style.backgroundColor = "yellow"; // Змінюємо колір на жовтий
+            button.style.backgroundColor = "yellow";
         } else {
-            button.style.backgroundColor = "blue"; // Повертаємо синій, якщо атрибут не "true"
+            button.style.backgroundColor = "blue";
         }
     });
 });
 
 // Налаштовуємо параметри observer
 const observerConfig = {
-    attributes: true, // Відстежуємо зміни атрибутів
-    attributeFilter: ["aria-current"], // Відстежуємо лише атрибут aria-current
+    attributes: true,
+    attributeFilter: ["aria-current"],
 };
 
 // Застосовуємо observer до кожної кнопки та встановлюємо початковий колір
 buttons.forEach((button) => {
-    button.style.backgroundColor = "blue"; // Встановлюємо початковий синій колір
-    observer.observe(button, observerConfig); // Починаємо відстежувати зміни
+    button.style.backgroundColor = "blue";
+    observer.observe(button, observerConfig);
 });
 
 const modalTriggers = document.querySelectorAll(".modal-trigger");
