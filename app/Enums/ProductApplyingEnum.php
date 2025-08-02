@@ -7,7 +7,7 @@ enum ProductApplyingEnum: string
     case CITIZEN = 'citizen';
     case MILITARY = 'military';
     case POLICEMAN = 'policeman';
-    case LAWYER = 'lawyer';
+//    case LAWYER = 'lawyer';
 
     /**
      * Отримати всі значення enum
