@@ -44,8 +44,6 @@ class BannerController extends Controller
      */
     public function store(CreateBannerRequest $request)
     {
-//        dd($request->all());
-
         $data = $request->validated();
 
 
@@ -72,7 +70,6 @@ class BannerController extends Controller
      */
     public function update(UpdateBannerRequest $request)
     {
-//        dd('dd');
         $data = $request->validated();
 
         $banner = $this->bannerService->update($request->banner_id, $data);

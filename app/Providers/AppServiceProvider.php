@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 
-use App\Repositories\NovaPoshtaRepository;
 use App\Services\BannerService;
 use App\Services\Interfaces\BannerServiceInterface;
 use App\Services\WayForPayService;
@@ -21,13 +20,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
         $this->app->bind(BannerServiceInterface::class, BannerService::class);
-        // Реєстрація репозиторію Nova Poshta
-        $this->app->singleton(NovaPoshtaRepository::class, function ($app) {
-            return new NovaPoshtaRepository();
-        });
-//        $this->app->bind(WayForPayService::class, WayForPayService::class);
-//        $this->app->bind(OrderService::class, OrderService::class);
-
 
     }
 

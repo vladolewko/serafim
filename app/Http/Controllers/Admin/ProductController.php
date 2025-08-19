@@ -87,7 +87,6 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product', 'applyings'));
     }
 
-// Оновлений контролер для кращої обробки помилок
     /**
      * Update the specified resource in storage.
      */

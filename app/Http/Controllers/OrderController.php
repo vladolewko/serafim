@@ -63,7 +63,6 @@ class OrderController extends Controller
     }
 
 
-// У контролері
     public function searchSettlement(SearchSettlementRequest $request): JsonResponse
     {
         try {
@@ -128,14 +127,12 @@ class OrderController extends Controller
             Session::put('nova_post_data', $data);
 
             $cart = session('cart');
-            // Передаємо параметр пошуку відділень
             $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage, $warehouseSearch);
 
             if (empty($warehousesResult['warehouses']) && $page === 1) {
                 $cart = session('cart');
                 $quantity = $cart['quantity'] ?? 1;
 
-                // Якщо є пошук, змінюємо повідомлення про помилку
                 if (!empty($warehouseSearch)) {
                     return $this->errorResponse(
                         "За запитом \"{$warehouseSearch}\" відділень не знайдено.",
@@ -165,7 +162,6 @@ class OrderController extends Controller
                 'warehouse_search' => $warehouseSearch // Повертаємо пошуковий запит
             ];
 
-            // Повертаємо дані про населені пункти тільки для першої сторінки
             if ($page === 1) {
                 $settlements = $this->novaPostService->searchSettlement($data['search'], 1, 20);
                 $response['settlements'] = $settlements['settlements'];
@@ -182,14 +178,14 @@ class OrderController extends Controller
         }
     }
 
-// Оновлений метод для завантаження додаткових відділень
+// метод для завантаження додаткових відділень
     public function loadMoreWarehouses(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
                 'settlement' => 'required|string',
                 'page' => 'required|integer|min:1',
-                'warehouse_search' => 'nullable|string' // Додаємо підтримку пошуку
+                'warehouse_search' => 'nullable|string'
             ]);
 
             $settlementRef = $validated['settlement'];
@@ -198,7 +194,6 @@ class OrderController extends Controller
             $perPage = 15;
 
             $cart = session('cart');
-            // Передаємо параметр пошуку
             $warehousesResult = $this->novaPostService->getFilteredWarehouses($settlementRef, $cart, $page, $perPage, $warehouseSearch);
 
             return $this->successResponse([
@@ -216,7 +211,7 @@ class OrderController extends Controller
         }
     }
 
-// Новий метод для пошуку відділень
+// метод для пошуку відділень
     public function searchWarehouses(Request $request): JsonResponse
     {
         try {
@@ -258,7 +253,7 @@ class OrderController extends Controller
         }
     }
 
-// Новий метод для завантаження додаткових населених пунктів
+// метод для завантаження додаткових населених пунктів
     public function loadMoreSettlements(Request $request): JsonResponse
     {
         try {
@@ -288,9 +283,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Saving Warehouse to session
-     */
     public function setWarehouse(SetWarehouseRequest $request): JsonResponse
     {
         try {
